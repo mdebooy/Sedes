@@ -17,15 +17,15 @@
 package eu.debooy.sedes.service;
 
 import eu.debooy.sedes.access.LandnaamDao;
-import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
 import eu.debooy.sedes.domain.LandnaamPK;
+import eu.debooy.sedes.form.Landnaam;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -44,96 +44,55 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Named("sedesLandnaamService")
 @Lock(LockType.WRITE)
-public class LandnaamService implements II18nLandnaam {
-  private static  Logger  logger  =
+public class LandnaamService {
+  private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(LandnaamService.class);
 
   @Inject
   private LandnaamDao   landnaamDao;
-  private Map<Long, Map<String, String>>
-      landnamenCache  = new HashMap<Long, Map<String, String>>();
-  // TODO Ophalen uit database.
-  private String        standaardTaal = "nl";
 
   /**
    * Initialisatie.
    */
   public LandnaamService() {
-    logger.debug("init LandnaamService");
+    LOGGER.debug("init LandnaamService");
   }
 
   /**
-   * Maak de cache (voor de remote bean) leeg.
-   */
-  @Override
-  public void clear() {
-    landnamenCache.clear();
-  }
-
-  /**
-   * Geef de landnaam in de standaard taal.
+   * Geef de landnamen van landen die nog bestaan.
    * 
-   * @param landId
-   * @return String
-   */
-  @Override
-  public String getI18nLandnaam(Long landId) {
-    return getI18nLandnaam(landId, getStandaardTaal());
-  }
-
-  /**
-   * Geef de landnaam in de gevraagde taal.
-   * 
-   * @param landId
    * @param taal
-   * @return String
+   * @return Collection<Landnaam>
    */
-  @Override
-  public String getI18nLandnaam(Long landId, String taal) {
-    Map<String, String> landnamen = new HashMap<String, String>();
-    if (landnamenCache.containsKey(landId)) {
-      landnamen = landnamenCache.get(landId);
+  public Collection<Landnaam> bestaandeLandnamen(String taal) {
+    Set<Landnaam>           landnamen = new HashSet<Landnaam>();
+    Collection<LandnaamDto> rijen     =
+        landnaamDao.getBestaandeLandnamenPerTaal(taal);
+    for (LandnaamDto rij : rijen) {
+      landnamen.add(new Landnaam(rij));
     }
- 
-    if (landnamen.containsKey(taal)) {
-      return landnamen.get(taal);
-    }
- 
-    LandnaamDto landnaamDto = landnaam(landId, taal);
-    if (null != landnaamDto) {
-      logger.debug(landnaamDto.toString());
-      landnamen.put(taal, landnaamDto.getLandnaam());
-      landnamenCache.put(landId, landnamen);
-      return landnamen.get(taal);
-    }
- 
-    if (landnamen.containsKey(getStandaardTaal())) {
-      return landnamen.get(getStandaardTaal());
-    }
- 
-    landnaamDto = landnaam(landId);
-    if (null != landnaamDto) {
-      logger.debug(landnaamDto.toString());
-      landnamen.put(getStandaardTaal(), landnaamDto.getLandnaam());
-      landnamenCache.put(landId, landnamen);
-      return landnamen.get(taal);
-    }
- 
-    return "???" + landId + ":" + taal + "???";
-  }
 
-  private String getStandaardTaal() {
-    return standaardTaal;
+    return landnamen;
   }
 
   /**
-   * Geef een LandnaamDto.
+   * Geef de landnamen van landen die nog bestaan voor een werelddeel.
    * 
-   * @param landId
-   * @return LandnaamDto
+   * @param String taal
+   * @param Long werelddeelId
+   * @return Collection<Landnaam>
    */
-  public LandnaamDto landnaam(Long landId) {
-    return landnaam(landId, getStandaardTaal());
+  public Collection<Landnaam>
+      bestaandeLandnamenPerWerelddeel(String taal, Long werelddeelId) {
+    Set<Landnaam>           landnamen = new HashSet<Landnaam>();
+    Collection<LandnaamDto> rijen     =
+        landnaamDao
+            .getBestaandeLandnamenPerWerelddeelPerTaal(taal, werelddeelId);
+    for (LandnaamDto rij : rijen) {
+      landnamen.add(new Landnaam(rij));
+    }
+
+    return landnamen;
   }
 
   /**
@@ -151,36 +110,52 @@ public class LandnaamService implements II18nLandnaam {
   }
 
   /**
-   * Geef alle landnamen (en landId) in de gevraagde taal.
-   *  
-   * @return List<SelectItem>
+   * Geef de landnamen in een taal.
+   * 
+   * @param String taal
+   * @return Collection<Landnaam>
    */
-  @Override
-  public List<SelectItem> selectLandnamen() {
-    return selectLandnamen(getStandaardTaal());
+  public Collection<Landnaam> landnamen(String taal) {
+    Set<Landnaam>           landnamen = new HashSet<Landnaam>();
+    Collection<LandnaamDto> rijen     = landnaamDao.getPerTaal(taal);
+    for (LandnaamDto rij : rijen) {
+      landnamen.add(new Landnaam(rij));
+    }
+
+    return landnamen;
+  }
+
+  /**
+   * Geef de landnamen van een land.
+   * 
+   * @param Long landId
+   * @return Collection<Landnaam>
+   */
+  public Collection<Landnaam> lijst(Long landId) {
+    Set<Landnaam>           landnamen = new HashSet<Landnaam>();
+    Collection<LandnaamDto> rijen     = landnaamDao.getPerLand(landId);
+    for (LandnaamDto rij : rijen) {
+      landnamen.add(new Landnaam(rij));
+    }
+
+    return landnamen;
   }
 
   /**
    * Geef alle landnamen (en landId) in de gevraagde taal als SelectItems.
    *  
    * @param taal
-   * @return List<SelectItem>
+   * @return Collection<SelectItem>
    */
-  @Override
-  public List<SelectItem> selectLandnamen(String taal) {
-    List<SelectItem>  items = new LinkedList<SelectItem>();
-    List<LandnaamDto> rijen =
-        new LinkedList<LandnaamDto>(landnaamDao.getPerTaal(taal));
-    Collections.sort(rijen, new LandnaamDto.NaamComparator());
+  public Collection<SelectItem> selectLandnamen(String taal) {
+    Collection<SelectItem>  items = new LinkedList<SelectItem>();
+    Set<LandnaamDto> rijen =
+        new TreeSet<LandnaamDto>(new LandnaamDto.NaamComparator());
+    rijen.addAll(landnaamDao.getPerTaal(taal));
     for (LandnaamDto rij : rijen) {
       items.add(new SelectItem(rij.getLandId(), rij.getLandnaam()));
     }
 
     return items;
-  }
-  
-  @Override
-  public int size() {
-    return landnamenCache.size();
   }
 }

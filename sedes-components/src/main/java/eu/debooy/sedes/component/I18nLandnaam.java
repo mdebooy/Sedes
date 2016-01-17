@@ -22,7 +22,7 @@ import eu.debooy.doosutils.service.CDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -36,13 +36,13 @@ import javax.inject.Named;
 @Named
 @SessionScoped
 public class I18nLandnaam implements Serializable {
-  private static final  long  serialVersionUID  = 1L;
+  private static final  long    serialVersionUID  = 1L;
 
   // TODO Uit de database halen.
-  private String        taal              = "nl";
+  private String        taal          = "nl";
 
   @EJB
-  private II18nLandnaam i18nLandnaamBean;
+  private II18nLandnaam i18nLandnaam;
   
   private Gebruiker     gebruiker;
 
@@ -75,25 +75,32 @@ public class I18nLandnaam implements Serializable {
       return "<null>";
     }
 
-    return i18nLandnaamBean.getI18nLandnaam(landId, taal);
+    return i18nLandnaam.getI18nLandnaam(landId, taal);
   }
 
   /**
    * Geef alle landnamen (en landId) in de gevraagde taal.
    *  
-   * @return List<SelectItem>
+   * @return Collection<SelectItem>
    */
-  public List<SelectItem> selectLandnamen() {
-    return i18nLandnaamBean.selectLandnamen();
+  public Collection<SelectItem> selectLandnamen() {
+    if (null == gebruiker) {
+      gebruiker = (Gebruiker) CDI.getBean("gebruiker");
+      if (null != gebruiker) {
+        taal  = gebruiker.getLocale().getLanguage();
+      }
+    }
+
+    return selectLandnamen(taal);
   }
 
   /**
    * Geef alle landnamen (en landId) in de gevraagde taal.
    *  
    * @param taal
-   * @return List<SelectItem>
+   * @return Collection<SelectItem>
    */
-  public List<SelectItem> selectLandnamen(String taal) {
-    return i18nLandnaamBean.selectLandnamen(taal);
+  public Collection<SelectItem> selectLandnamen(String taal) {
+    return i18nLandnaam.selectLandnamen(taal);
   }
 }

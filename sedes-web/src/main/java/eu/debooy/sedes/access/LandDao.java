@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Marco de Booij
+ * Copyright 2016 Marco de Booij
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,25 +14,28 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package eu.debooy.sedes.component.business;
+package eu.debooy.sedes.access;
 
-import java.util.Collection;
+import eu.debooy.doosutils.access.Dao;
+import eu.debooy.sedes.domain.LandDto;
 
-import javax.ejb.Remote;
-import javax.faces.model.SelectItem;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 
 /**
  * @author Marco de Booij
  */
-//TODO Toegang beperken via rollen.
-@Remote
-public interface II18nLandnaam {
-  void                    clear();
-  // Voor iedereen
-  String                  getI18nLandnaam(Long landId);
-  String                  getI18nLandnaam(Long landId, String taal);
-  Collection<SelectItem>  selectLandnamen();
-  Collection<SelectItem>  selectLandnamen(String taal);
-  int                     size();
+public class LandDao extends Dao<LandDto> {
+  @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
+  private EntityManager em;
+
+  public LandDao() {
+    super(LandDto.class);
+  }
+
+  @Override
+  protected EntityManager getEntityManager() {
+    return em;
+  }
 }

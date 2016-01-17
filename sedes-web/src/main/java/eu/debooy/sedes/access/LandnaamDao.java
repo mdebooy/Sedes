@@ -19,7 +19,7 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.sedes.domain.LandnaamDto;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,10 +38,23 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   @SuppressWarnings("unchecked")
-  public List<LandnaamDto> getPerTaal(String taal) {
+  public Collection<LandnaamDto> getBestaandeLandnamenPerTaal(String taal) {
     Query   query         =
-        getEntityManager().createNamedQuery("perTaal")
+        getEntityManager().createNamedQuery("bestaandeLandenPerTaal")
                           .setParameter("taal", taal);
+
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection<LandnaamDto>
+      getBestaandeLandnamenPerWerelddeelPerTaal(String taal,
+                                                Long werelddeelId) {
+    Query   query         =
+        getEntityManager()
+            .createNamedQuery("bestaandeLandenPerWerelddeelPerTaal")
+                          .setParameter("taal", taal)
+                          .setParameter("werelddeel", werelddeelId);
 
     return query.getResultList();
   }
@@ -49,5 +62,23 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   @Override
   protected EntityManager getEntityManager() {
     return em;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection<LandnaamDto> getPerLand(Long landId) {
+    Query   query         =
+        getEntityManager().createNamedQuery("perLand")
+                          .setParameter("landId", landId);
+
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection<LandnaamDto> getPerTaal(String taal) {
+    Query   query         =
+        getEntityManager().createNamedQuery("perTaal")
+                          .setParameter("taal", taal);
+
+    return query.getResultList();
   }
 }

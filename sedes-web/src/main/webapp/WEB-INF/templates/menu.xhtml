@@ -1,16 +1,18 @@
   <nav class="navbar navbar-default navbar-static-top">
      <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="/natuur/index.jsf">Natuur</a>
+        <a class="navbar-brand" href="/sedes/index.jsf">Sedes</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="/natuur/gebieden/gebieden.jsf">#{i18nTeksten.tekst('menu.gebieden')}</a></li>
-          <li><a href="/natuur/taxa/taxa.jsf">#{i18nTeksten.tekst('menu.taxa')}</a></li>
-          <li><a href="/natuur/waarnemingen/waarnemingen.jsf">#{i18nTeksten.tekst('menu.waarnemingen')}</a></li>
-          <li><a href="/natuur/fotos/fotos.jsf">#{i18nTeksten.tekst('menu.fotos')}</a></li>
+          <li class="dropdown"><a id="lijsten" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">#{i18nTeksten.tekst('menu.geografie')}<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="lijsten">
+              <li><a href="/sedes/landen/landen.jsf">#{i18nTeksten.tekst('menu.landen')}</a></li>
+            </ul>
+          </li>
+          <li><a href="/sedes/quiz/quizzen.jsf">#{i18nTeksten.tekst('menu.quizzen')}</a></li>
         </ul>
-        <p class="navbar-text navbar-right">#{gebruiker.userId} <img alt="#{gebruiker.locale.language}" align="right" src="/common/images/taal/#{gebruiker.locale.language}.png" title="#{gebruiker.locale.language}" height="9" /></p>
+        <p class="navbar-text navbar-right">#{gebruiker.userName} <img alt="#{gebruiker.locale.language}" align="right" hspace="10px" src="/common/images/taal/#{gebruiker.locale.language}.png" title="#{gebruiker.locale.language}" height="9" /></p>
       </div>
     </div>
   </nav>

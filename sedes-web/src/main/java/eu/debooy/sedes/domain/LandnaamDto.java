@@ -25,6 +25,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -38,7 +39,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Entity
 @Table(name="LANDNAMEN", schema="SEDES")
 @IdClass(LandnaamPK.class)
-@NamedQuery(name="perTaal", query="select l from LandnaamDto l where l.taal=:taal")
+@NamedQueries({
+  @NamedQuery(name="bestaandeLandenPerTaal", query="select n from LandnaamDto n, LandDto l where n.landId=l.landId and l.bestaat='J' and n.taal=:taal"),
+  @NamedQuery(name="bestaandeLandenPerWerelddeelPerTaal", query="select n from LandnaamDto n, LandDto l where n.landId=l.landId and l.bestaat='J' and l.werelddeelId=:werelddeel and n.taal=:taal"),
+  @NamedQuery(name="perLand", query="select l from LandnaamDto l where l.landId=:landId"),
+  @NamedQuery(name="perTaal", query="select l from LandnaamDto l where l.taal=:taal")})
 public class LandnaamDto extends Dto
     implements Comparable<LandnaamDto>, Cloneable {
   private static final  long  serialVersionUID  = 1L;
@@ -71,7 +76,15 @@ public class LandnaamDto extends Dto
 
   public int compareTo(LandnaamDto landnaamDto) {
     return new CompareToBuilder().append(landId, landnaamDto.landId)
+                                 .append(taal, landnaamDto.taal)
                                  .toComparison();
+  }
+  
+  @Override
+  public LandnaamDto clone() throws CloneNotSupportedException {
+    LandnaamDto clone = (LandnaamDto) super.clone();
+
+    return clone;
   }
 
   @Override
@@ -85,6 +98,7 @@ public class LandnaamDto extends Dto
 
     LandnaamDto landnaamDto = (LandnaamDto) object;
     return new EqualsBuilder().append(landId, landnaamDto.landId)
+                              .append(taal, landnaamDto.taal)
                               .isEquals();
   }
 
@@ -125,8 +139,7 @@ public class LandnaamDto extends Dto
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(landId)
-                                .toHashCode();
+    return new HashCodeBuilder().append(landId).append(taal).toHashCode();
   }
 
   /**
