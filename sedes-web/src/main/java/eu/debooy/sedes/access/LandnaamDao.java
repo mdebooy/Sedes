@@ -17,18 +17,22 @@
 package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
+import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.LandnaamDto;
 
 import java.util.Collection;
 
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
+
 /**
  * @author Marco de Booij
  */
+@Interceptors({PersistenceExceptionHandlerInterceptor.class})
 public class LandnaamDao extends Dao<LandnaamDto> {
   @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
   private EntityManager em;
@@ -76,7 +80,7 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   @SuppressWarnings("unchecked")
   public Collection<LandnaamDto> getPerTaal(String taal) {
     Query   query         =
-        getEntityManager().createNamedQuery("perTaal")
+        getEntityManager().createNamedQuery("landnamenPerTaal")
                           .setParameter("taal", taal);
 
     return query.getResultList();

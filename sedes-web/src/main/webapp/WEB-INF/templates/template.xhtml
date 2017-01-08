@@ -7,7 +7,9 @@
     xmlns:t="http://myfaces.apache.org/tomahawk"
    xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
-  <title>#{sedes.applicatieNaam} - #{titel}</title>
+  <ui:param name="applicatienaam" value="#{sedes.applicatieNaam}" />
+  <ui:param name="path"           value="#{sedes.path}" />
+  <title>#{applicatienaam} - #{i18nTeksten.tekst('sedes.titel')}</title>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible"  content="IE=edge" />
   <meta name="viewport"               content="width=device-width, initial-scale=1" />
@@ -18,19 +20,20 @@
   <script src="/common/js/jquery.dataTables.min.js"></script>
   <script src="/common/js/bootstrap.min.js"></script>
   <script src="/common/js/dataTables.bootstrap.js"></script>
-  <link rel="shortcut icon" href="../favicon.ico" />
-  <link rel="shortcut icon" href="favicon.ico" />
+  <script src="/common/js/DOOS.js"></script>
+  <link rel="shortcut icon" href="#{sedes.path}/favicon.ico" />
   <link type="text/css" rel="stylesheet" media="all" href="/common/css/jsf.css" />
   <ui:insert name="head" />
 </h:head>
 <h:body>
   <div id="container">
     <div id="menu" class="row">
-      <ui:include src="/WEB-INF/templates/menu.xhtml" />
+      <d:menu menu="#{sedes.menu}" applicatienaam="#{applicatienaam}" path="#{path}" />
     </div>
     <div id="content" class="row">
       <div class="container">
         <ui:insert name="body" />
+        <d:messages />
       </div>
     </div>
     <div id="footer" class="row">

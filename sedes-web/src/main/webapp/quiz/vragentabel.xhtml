@@ -21,7 +21,12 @@
         <tr>
           <td>#{vraag.landnaam}</td>
           <td>#{vraag.antwoord}</td>
-          <td>#{vraag.hoofdstad}</td>
+          <t:div rendered="#{vraag.goed}">
+            <td></td>
+          </t:div>
+          <t:div rendered="#{!vraag.goed}">
+            <td class="danger">#{vraag.hoofdstad}</td>
+          </t:div>
         </tr>
       </t:dataList>
     </tbody>

@@ -14,31 +14,28 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package eu.debooy.sedes.access;
+package eu.debooy.sedes.validator;
 
-import eu.debooy.doosutils.access.Dao;
-import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
-import eu.debooy.sedes.domain.LandDto;
+import eu.debooy.doosutils.components.Message;
+import eu.debooy.sedes.form.Werelddeel;
 
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * @author Marco de Booij
  */
-@Interceptors({PersistenceExceptionHandlerInterceptor.class})
-public class LandDao extends Dao<LandDto> {
-  @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
-  private EntityManager em;
-
-  public LandDao() {
-    super(LandDto.class);
+public final class WerelddeelValidator {
+  private WerelddeelValidator() {
   }
 
-  protected EntityManager getEntityManager() {
-    return em;
+  /**
+   * Valideer het Werelddeel.
+   */
+  public static List<Message> valideer(Werelddeel werelddeel) {
+    List<Message> fouten  = new ArrayList<Message>();
+
+    return fouten;
   }
 }

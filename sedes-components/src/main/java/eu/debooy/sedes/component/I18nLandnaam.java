@@ -42,7 +42,7 @@ public class I18nLandnaam implements Serializable {
   private String        taal          = "nl";
 
   @EJB
-  private II18nLandnaam i18nLandnaam;
+  private transient II18nLandnaam i18nLandnaam;
   
   private Gebruiker     gebruiker;
 

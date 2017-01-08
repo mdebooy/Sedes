@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html  lang="#{gebruiker.locale.language}"
       xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:t="http://myfaces.apache.org/tomahawk"
    xmlns:ui="http://java.sun.com/jsf/facelets">
@@ -20,8 +19,10 @@
           </div>
 
           <div class="col-md-4">
-            <h:commandLink action="#{sedes.startQuiz}" id="wereld" styleClass="btn btn-default btn-block">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
-            <h:commandLink action="#{sedes.startQuiz(1)}" id="europa" styleClass="btn btn-default btn-block">Europa</h:commandLink>
+            <h:commandLink action="#{sedesQuiz.startQuiz}" id="heleWereld" styleClass="btn btn-default btn-block">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
+            <t:dataList var="quiz" value="#{sedesQuiz.quizzen}" rowIndexVar="idx">
+              <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="btn btn-default btn-block">#{quiz.werelddeelnaam}</h:commandLink>
+            </t:dataList>
           </div>
         </div>
       </h:form>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html  lang="#{gebruiker.locale.language}"
       xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:d="http://java.debooy.eu/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:t="http://myfaces.apache.org/tomahawk"
@@ -41,46 +42,101 @@
     </ui:define>
     <ui:define name="body">
       <h:form class="form-horizontal" id="formLand">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
           <div class="col-md-10">
-            <t:div rendered="#{!sedes.readonly}">
-              <h2>#{i18nTeksten.tekst(sedes.subTitel)}</h2>
+            <t:div rendered="#{!sedesLand.aktie.readonly}">
+              <h2>#{i18nTeksten.tekst(sedesLand.subTitel)}</h2>
             </t:div>
-            <t:div rendered="#{sedes.readonly}">
-              <h2>#{sedes.subTitel}</h2>
+            <t:div rendered="#{sedesLand.aktie.readonly}">
+              <h2>#{i18nLandnaam.landnaam(sedesLand.land.landId)}</h2>
             </t:div>
+          </div>
+          <div align="right" class="col-md-2" >
+            <h:commandLink action="#{sedesLand.createLandnaam}" actionFor="#{formLand}">
+              <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
+            </h:commandLink>
           </div>
           <div class="row" />
-          <div class="form-group form-group-sm">
-            <label for="iso2" class="col-sm-2 control-label">#{i18nTeksten.tekst('label.iso2')}</label>
-            <div class="col-sm-4">
-              <t:inputText id="iso2" styleClass="form-control" value="#{sedes.land.iso2}" maxlength="3" size="3" readonly="#{sedes.readonly}" />
+          <div class="col-md-12">
+            <div class="form-group form-group-md col-md-4">
+              <label for="iso2" class="col-md-6 control-label">#{i18nTeksten.tekst('label.iso2')}</label>
+              <div class="col-md-6">
+                <t:inputText id="iso2" styleClass="form-control" value="#{sedesLand.land.iso2}" maxlength="2" size="2" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="iso3" class="col-md-6 control-label">#{i18nTeksten.tekst('label.iso3')}</label>
+              <div class="col-md-6">
+                <t:inputText id="iso3" styleClass="form-control" value="#{sedesLand.land.iso3}" maxlength="3" size="3" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="bestaat" class="col-md-6 control-label">#{i18nTeksten.tekst('label.bestaat')}</label>
+              <div class="col-md-6">
+                <t:selectBooleanCheckbox id="bestaat" value="#{sedesLand.land.bestaat}" disabled="#{sedesLand.aktie.readonly}" />
+              </div>
             </div>
           </div>
-          <div class="form-group form-group-sm">
-            <label for="iso3" class="col-sm-2 control-label">#{i18nTeksten.tekst('label.iso3')}</label>
-            <div class="col-sm-4">
-              <t:inputText id="iso3" styleClass="form-control" value="#{sedes.land.iso3}" maxlength="3" size="3" readonly="#{sedes.readonly}" />
+          <div class="col-md-12">
+            <div class="form-group form-group-md col-md-4">
+              <label for="landnummer" class="col-md-6 control-label">#{i18nTeksten.tekst('label.landnummer')}</label>
+              <div class="col-md-6">
+                <t:inputText id="landnummer" styleClass="form-control" value="#{sedesLand.land.landnummer}" maxlength="5" size="5" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="postLandkode" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postLandkode')}</label>
+              <div class="col-md-6">
+                <t:inputText id="postLandkode" styleClass="form-control" value="#{sedesLand.land.postLandkode}" maxlength="3" size="3" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="postkodeType" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postkodeType')}</label>
+              <div class="col-md-6">
+                <t:inputText id="postkodeType" styleClass="form-control" value="#{sedesLand.land.postkodeType}" maxlength="1" size="1" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group form-group-md col-md-4">
+              <label for="postkodeScheiding" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postkodeScheiding')}</label>
+              <div class="col-md-6">
+                <t:inputText id="postkodeScheiding" styleClass="form-control" value="#{sedesLand.land.postkodeScheiding}" maxlength="10" size="10" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="taal" class="col-md-6 control-label">#{i18nTeksten.tekst('label.taal')}</label>
+              <div class="col-md-6">
+                <t:inputText id="taal" styleClass="form-control" value="#{sedesLand.land.taal}" maxlength="2" size="2" readonly="#{sedesLand.aktie.readonly}" />
+              </div>
+            </div>
+            <div class="form-group form-group-md col-md-4">
+              <label for="werelddeelId" class="col-md-6 control-label">#{i18nTeksten.tekst('label.werelddeel')}</label>
+              <div class="col-md-6">
+                <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" readonly="#{sedesLand.aktie.readonly}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" />
+              </div>
             </div>
           </div>
 
-          <ui:include src="../landen/landnamentabel.xhtml">
-            <ui:param name="form" value="formLandnamen" />
-            <ui:param name="lijst" value="#{sedes.getLandnamen(sedes.land.landId)}" />
-          </ui:include>
+          <div class="row" />
+          <h:commandLink action="#{sedesLand.save}" id="create" styleClass="btn btn-default" rendered="#{sedesLand.aktie.nieuw}">#{i18nTeksten.tekst('button.create')}</h:commandLink>
+          <h:commandLink action="#{sedesLand.save}" id="modify" styleClass="btn btn-default" rendered="#{sedesLand.aktie.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
+          <d:cancel href="#{sedes.path}/landen/landen.xhtml" aktie="#{sedesLand.aktie}"/>
 
-          <h:commandLink action="#{sedes.saveLand}" id="create" styleClass="btn btn-default" rendered="#{sedes.nieuw}">#{i18nTeksten.tekst('button.create')}</h:commandLink>
-          <h:commandLink action="#{sedes.saveLand}" id="modify" styleClass="btn btn-default" rendered="#{sedes.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
-          <a class="btn btn-default" href="/sedes/landen/landen.jsf">#{i18nTeksten.tekst('button.cancel')}</a>
-
-          <t:messages globalOnly="false" layout="table" fatalClass="msgFatal" errorClass="msgError" warnClass="msgWarn" infoClass="msgInfo" />
+          <br />
+          <div class="row" />
+          <div class="col-md-10 col-md-offset-1">
+            <ui:include src="landnamentabel.xhtml">
+              <ui:param name="form" value="formLandnamen" />
+              <ui:param name="lijst" value="#{sedesLand.landnamen}" />
+            </ui:include>
+          </div>
         </div>
       </h:form>
     </ui:define>
 
     <ui:define name="modal">
-      <ui:param name="confirmatietitel" value="#{i18nTeksten.tekst('confirmatie.titel.verwijder.landnaam')}" />
-      <ui:include src="/WEB-INF/templates/confirmatie.xhtml" />
+      <d:confirmatie confirmatietitel="#{i18nTeksten.tekst('sedes.titel.landnaam.delete')}" />
     </ui:define>
   </ui:composition>
 </html>

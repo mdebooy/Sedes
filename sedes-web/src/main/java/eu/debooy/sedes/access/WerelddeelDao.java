@@ -18,7 +18,7 @@ package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
-import eu.debooy.sedes.domain.LandDto;
+import eu.debooy.sedes.domain.WerelddeelDto;
 
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
@@ -30,12 +30,12 @@ import javax.persistence.PersistenceContextType;
  * @author Marco de Booij
  */
 @Interceptors({PersistenceExceptionHandlerInterceptor.class})
-public class LandDao extends Dao<LandDto> {
+public class WerelddeelDao extends Dao<WerelddeelDto> {
   @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
   private EntityManager em;
 
-  public LandDao() {
-    super(LandDto.class);
+  public WerelddeelDao() {
+    super(WerelddeelDto.class);
   }
 
   protected EntityManager getEntityManager() {

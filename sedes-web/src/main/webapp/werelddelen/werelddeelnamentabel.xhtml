@@ -1,0 +1,33 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+  <table class="table table-striped table-condensed table-datatable display compact" id="werelddeelnamenTabel">
+    <colgroup>
+      <col width="45px" />
+      <col width="45px" />
+      <col />
+    </colgroup>
+    <thead>
+      <tr>
+        <th></th>
+        <th>#{i18nTeksten.tekst('label.taal')}</th>
+        <th>#{i18nTeksten.tekst('label.werelddeelnaam')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <t:dataList var="werelddeelnaam" value="#{lijst}" rowIndexVar="idx">
+        <tr>
+          <td>
+            <h:commandLink action="#{sedesWerelddeel.updateWerelddeelnaam(werelddeelnaam.taal)}" actionFor="#{form}"><img src="/common/images/16x16/actions/edit-paste.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesWerelddeel.deleteWerelddeelnaam(werelddeelnaam.taal)}" actionFor="#{form}" class="lnkDelete" id="lnkDelete" />
+            <h:commandLink onclick="confirmatie(this, '#{werelddeelnaam.taal} - #{werelddeelnaam.werelddeelnaam}');return false;" actionFor="#{form}"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
+          </td>
+          <td class="text-center" data-order="#{werelddeelnaam.taal}"><img alt="#{werelddeelnaam.taal}" src="/common/images/taal/#{werelddeelnaam.taal}.png" title="#{werelddeelnaam.taal}" /></td>
+          <td>#{werelddeelnaam.werelddeelnaam}</td>
+        </tr>
+      </t:dataList>
+    </tbody>
+  </table>
+</ui:composition>

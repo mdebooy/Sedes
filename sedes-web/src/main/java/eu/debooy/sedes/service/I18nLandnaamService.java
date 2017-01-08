@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.service;
 
+import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
@@ -27,11 +28,10 @@ import java.util.Map;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,9 +41,6 @@ import org.slf4j.LoggerFactory;
 @Named("sedesI18nLandnaamService")
 @Lock(LockType.WRITE)
 public class I18nLandnaamService implements II18nLandnaam {
-  private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(I18nLandnaamService.class);
-
   private transient LandnaamService landnaamService;
 
   private Map<Long, Map<String, String>>
@@ -54,17 +51,15 @@ public class I18nLandnaamService implements II18nLandnaam {
   /**
    * Maak de cache (voor de remote bean) leeg.
    */
-  @Override
   public void clear() {
     landnamenCache.clear();
   }
 
-  @Override
   public String getI18nLandnaam(Long landId) {
     return getI18nLandnaam(landId, getStandaardTaal());
   }
 
-  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public String getI18nLandnaam(Long landId, String taal) {
     Map<String, String> landnamen = new HashMap<String, String>();
     if (landnamenCache.containsKey(landId)) {
@@ -75,27 +70,28 @@ public class I18nLandnaamService implements II18nLandnaam {
       return landnamen.get(taal);
     }
  
-    LandnaamDto landnaamDto = getLandnaamService().landnaam(landId, taal);
-    if (null != landnaamDto) {
-      LOGGER.debug(landnaamDto.toString());
+    LandnaamDto landnaamDto;
+    try {
+      landnaamDto = getLandnaamService().landnaam(landId, taal);
       landnamen.put(taal, landnaamDto.getLandnaam());
       landnamenCache.put(landId, landnamen);
       return landnamen.get(taal);
+    } catch (ObjectNotFoundException e) {
+      // Probeer het nu met de standaardtaal.
     }
  
     if (landnamen.containsKey(getStandaardTaal())) {
       return landnamen.get(getStandaardTaal());
     }
  
-    landnaamDto = getLandnaamService().landnaam(landId, getStandaardTaal());
-    if (null != landnaamDto) {
-      LOGGER.debug(landnaamDto.toString());
+    try {
+      landnaamDto = getLandnaamService().landnaam(landId, getStandaardTaal());
       landnamen.put(getStandaardTaal(), landnaamDto.getLandnaam());
       landnamenCache.put(landId, landnamen);
       return landnamen.get(taal);
+    } catch (ObjectNotFoundException e) {
+      return "???" + landId + ":" + taal + "???";
     }
- 
-    return "???" + landId + ":" + taal + "???";
   }
 
   /**
@@ -116,18 +112,14 @@ public class I18nLandnaamService implements II18nLandnaam {
     return standaardTaal;
   }
 
-  @Override
   public Collection<SelectItem> selectLandnamen() {
     return selectLandnamen(getStandaardTaal());
   }
 
-  @Override
   public Collection<SelectItem> selectLandnamen(String taal) {
     return getLandnaamService().selectLandnamen(taal);
   }
 
- 
-  @Override
   public int size() {
     return landnamenCache.size();
   }

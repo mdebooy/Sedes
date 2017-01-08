@@ -7,14 +7,10 @@
   </parent>
   <artifactId>sedes-components</artifactId>
   <packaging>jar</packaging>
-  <name>Kontakten (components)</name>
+  <name>Sedes (components)</name>
   <description>Onderhoud van kontakten met hun adressen. (components)</description>
 
   <dependencies>
-    <dependency>
-      <groupId>eu.debooy.doosutils</groupId>
-      <artifactId>doosutils-core</artifactId>
-    </dependency>
     <dependency>
       <groupId>eu.debooy.doosutils</groupId>
       <artifactId>doosutils-components</artifactId>

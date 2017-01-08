@@ -20,15 +20,17 @@
     </thead>
     <tbody>
       <t:dataList var="land" value="#{lijst}" rowIndexVar="idx">
+        <ui:param name="naam" value="#{i18nLandnaam.landnaam(land.landId)}"/>
         <tr>
           <td>
-            <h:commandLink action="#{sedes.bekijkLand(land.landId)}" actionFor="#{form}"><img src="/common/images/16x16/mimetypes/text-x-generic.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
-            <h:commandLink action="#{sedes.wijzigLand(land.landId)}" actionFor="#{form}"><img src="/common/images/16x16/actions/edit-paste.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
-            <h:commandLink onclick="$('#bevestiging').modal('show'); return false;"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesLand.retrieve(land.landId)}" actionFor="#{form}"><img src="/common/images/16x16/mimetypes/text-x-generic.png" alt="#{i18nTeksten.tekst('img.bekijken')}" title="#{i18nTeksten.tekst('img.bekijken')}" /></h:commandLink>
+            <h:commandLink action="#{sedesLand.update(land.landId)}" actionFor="#{form}"><img src="/common/images/16x16/actions/edit-paste.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesLand.delete(land.landId)}" actionFor="#{form}" class="lnkDelete" id="lnkDelete" />
+            <h:commandLink onclick="confirmatie(this, '#{naam}');return false;" actionFor="#{form}"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
           </td>
           <td>#{land.iso2}</td>
           <td>#{land.iso3}</td>
-          <td>#{i18nLandnaam.landnaam(land.landId)}</td>
+          <td>#{naam}</td>
         </tr>
       </t:dataList>
     </tbody>

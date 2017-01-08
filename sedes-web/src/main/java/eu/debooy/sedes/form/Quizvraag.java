@@ -16,6 +16,9 @@
  */
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.form.Formulier;
+import eu.debooy.sedes.domain.LandnaamDto;
+
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -25,7 +28,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class Quizvraag implements Comparable<Quizvraag>, Serializable {
+public class Quizvraag
+    extends Formulier implements Comparable<Quizvraag>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private String  antwoord;
@@ -41,15 +45,19 @@ public class Quizvraag implements Comparable<Quizvraag>, Serializable {
     this.landnaam = landnaam.getLandnaam(); 
   }
 
-  @Override
+  public Quizvraag(LandnaamDto landnaam) {
+    hoofdstad     = landnaam.getHoofdstad();
+    landId        = landnaam.getLandId();
+    this.landnaam = landnaam.getLandnaam(); 
+  }
+
   public int compareTo(Quizvraag andere) {
     return new CompareToBuilder().append(landId, andere.landId)
                                  .toComparison();
   }
 
-  @Override
   public boolean equals(Object object) {
-    if (!(object instanceof Land)) {
+    if (!(object instanceof Quizvraag)) {
       return false;
     }
     if (object == this) {
@@ -60,35 +68,22 @@ public class Quizvraag implements Comparable<Quizvraag>, Serializable {
     return new EqualsBuilder().append(landId, andere.landId).isEquals();
   }
 
-  /**
-   * @return de antwoord
-   */
   public String getAntwoord() {
     return antwoord;
   }
 
-  /**
-   * @return de hoofdstad
-   */
   public String getHoofdstad() {
     return hoofdstad;
   }
 
-  /**
-   * @return de landId
-   */
   public Long getLandId() {
     return landId;
   }
 
-  /**
-   * @return de landnaam
-   */
   public String getLandnaam() {
     return landnaam;
   }
 
-  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).toHashCode();
   }
@@ -98,30 +93,18 @@ public class Quizvraag implements Comparable<Quizvraag>, Serializable {
                                       hoofdstad.toLowerCase()).isEquals();
   }
 
-  /**
-   * @param antwoord de waarde van antwoord
-   */
   public void setAntwoord(String antwoord) {
     this.antwoord = antwoord;
   }
 
-  /**
-   * @param hoofdstad de waarde van hoofdstad
-   */
   public void setHoofdstad(String hoofdstad) {
     this.hoofdstad = hoofdstad;
   }
 
-  /**
-   * @param landId de waarde van landId
-   */
   public void setLandId(Long landId) {
     this.landId = landId;
   }
 
-  /**
-   * @param landnaam de waarde van landnaam
-   */
   public void setLandnaam(String landnaam) {
     this.landnaam = landnaam;
   }

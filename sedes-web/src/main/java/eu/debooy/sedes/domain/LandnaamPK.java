@@ -18,6 +18,7 @@ package eu.debooy.sedes.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -25,7 +26,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class LandnaamPK implements Serializable {
+public class LandnaamPK
+    implements Cloneable, Comparable<LandnaamPK>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private Long    landId;
@@ -46,21 +48,32 @@ public class LandnaamPK implements Serializable {
     this.taal = taal;
   }
 
-  @Override
-   public boolean equals(Object object) {
-     if (!(object instanceof LandnaamPK)) {
-       return false;
-     }
-     LandnaamPK fotoPK  = (LandnaamPK) object;
-     return new EqualsBuilder().append(landId, fotoPK.landId)
-                               .append(taal, fotoPK.taal)
-                               .isEquals();
-   }
+  public LandnaamPK clone() throws CloneNotSupportedException {
+    LandnaamPK  clone = (LandnaamPK) super.clone();
+
+    return clone;
+  }
+
+  public int compareTo(LandnaamPK landnaamPK) {
+    return new CompareToBuilder().append(landId, landnaamPK.landId)
+                                 .append(taal, landnaamPK.taal)
+                                 .toComparison();
+  }
+
+  public boolean equals(Object object) {
+    if (!(object instanceof LandnaamPK)) {
+      return false;
+    }
+    LandnaamPK landnaamPK = (LandnaamPK) object;
+    return new EqualsBuilder().append(landId, landnaamPK.landId)
+                              .append(taal, landnaamPK.taal)
+                              .isEquals();
+  }
 
   /**
    * @return Long de landId
    */
-  public Long getTaxonID() {
+  public Long getLandId() {
     return landId;
   }
 
@@ -71,7 +84,6 @@ public class LandnaamPK implements Serializable {
     return taal;
   }
 
-  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId)
                                 .append(taal).toHashCode();
@@ -80,7 +92,7 @@ public class LandnaamPK implements Serializable {
   /**
    * @param Long landId de waarde van landId
    */
-  public void setTaxonID(Long landId) {
+  public void setLandId(Long landId) {
     this.landId  = landId;
   }
 
@@ -91,7 +103,6 @@ public class LandnaamPK implements Serializable {
     this.taal = taal;
   }
 
-  @Override
   public String toString() {
     return new StringBuilder().append("LandnaamPK")
                               .append(" (landId=").append(landId)

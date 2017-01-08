@@ -33,6 +33,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+
 /**
  * @author Marco de Booij
  */
@@ -43,7 +44,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
   @NamedQuery(name="bestaandeLandenPerTaal", query="select n from LandnaamDto n, LandDto l where n.landId=l.landId and l.bestaat='J' and n.taal=:taal"),
   @NamedQuery(name="bestaandeLandenPerWerelddeelPerTaal", query="select n from LandnaamDto n, LandDto l where n.landId=l.landId and l.bestaat='J' and l.werelddeelId=:werelddeel and n.taal=:taal"),
   @NamedQuery(name="perLand", query="select l from LandnaamDto l where l.landId=:landId"),
-  @NamedQuery(name="perTaal", query="select l from LandnaamDto l where l.taal=:taal")})
+  @NamedQuery(name="landnamenPerTaal", query="select l from LandnaamDto l where l.taal=:taal")})
 public class LandnaamDto extends Dto
     implements Comparable<LandnaamDto>, Cloneable {
   private static final  long  serialVersionUID  = 1L;
@@ -68,10 +69,15 @@ public class LandnaamDto extends Dto
       implements Comparator<LandnaamDto>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
-    @Override
     public int compare(LandnaamDto landnaamDto1, LandnaamDto landnaamDto2) {
       return landnaamDto1.landnaam.compareTo(landnaamDto2.landnaam);
     }
+  }
+  
+  public LandnaamDto clone() throws CloneNotSupportedException {
+    LandnaamDto clone = (LandnaamDto) super.clone();
+
+    return clone;
   }
 
   public int compareTo(LandnaamDto landnaamDto) {
@@ -79,15 +85,7 @@ public class LandnaamDto extends Dto
                                  .append(taal, landnaamDto.taal)
                                  .toComparison();
   }
-  
-  @Override
-  public LandnaamDto clone() throws CloneNotSupportedException {
-    LandnaamDto clone = (LandnaamDto) super.clone();
 
-    return clone;
-  }
-
-  @Override
   public boolean equals(Object object) {
     if (!(object instanceof LandnaamDto)) {
       return false;
@@ -137,7 +135,6 @@ public class LandnaamDto extends Dto
     return taal;
   }
 
-  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).append(taal).toHashCode();
   }

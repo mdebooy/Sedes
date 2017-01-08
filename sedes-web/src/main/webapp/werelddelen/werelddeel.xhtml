@@ -2,7 +2,6 @@
 <html  lang="#{gebruiker.locale.language}"
       xmlns="http://www.w3.org/1999/xhtml"
     xmlns:d="http://java.debooy.eu/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:t="http://myfaces.apache.org/tomahawk"
    xmlns:ui="http://java.sun.com/jsf/facelets">
@@ -11,12 +10,13 @@
     <ui:define name="head">
       <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
-        $('#landenTabel').dataTable( {
-          "order": [[2, "asc"]],
-          "columns": [{ "orderable": false },
-                      { "orderable": true },
-                      { "orderable": true },
-                      { "orderable": true }],
+        $('#werelddeelnamenTabel').dataTable( {
+          "order": [[1, "asc"]],
+          "columns": [
+                    { "orderable": false },
+                    { "orderable": true },
+                    { "orderable": true }
+                ],
           "pagingType": "full_numbers",
           "lengthMenu": #{i18nTeksten.tekst('pager.rijen.per.pagina')},
           "language": {
@@ -38,29 +38,38 @@
       </script>
     </ui:define>
     <ui:define name="body">
-      <h:form id="formLanden">
+      <h:form class="form-horizontal" id="formWerelddeel">
         <div class="col-md-10 col-md-offset-1">
           <div class="col-md-10">
-            <h2>#{i18nTeksten.tekst('sedes.titel.landen')}</h2>
+            <t:div rendered="#{!sedesWerelddeel.aktie.readonly}">
+              <h2>#{i18nTeksten.tekst(sedesWerelddeel.subTitel)}</h2>
+            </t:div>
+            <t:div rendered="#{sedesWerelddeel.aktie.readonly}">
+              <h2>#{sedesWerelddeel.i18nWerelddeelnaam(sedesWerelddeel.werelddeel.werelddeelId)}</h2>
+            </t:div>
           </div>
           <div align="right" class="col-md-2" >
-            <h:commandLink action="#{sedesLand.create}" actionFor="#{formLanden}" rendered="false">
+            <h:commandLink action="#{sedesWerelddeel.createWerelddeelnaam}" actionFor="#{formWerelddeel}">
               <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
-            </h:commandLink>
-            <h:commandLink action="#{sedesLand.landenlijst}" actionFor="#{formLanden}">
-              <f:setPropertyActionListener target="#{sedesLand.type}" value="PDF" /><img src="/common/images/32x32/apps/evince.png" alt="#{i18nTeksten.tekst('img.PDF')}" title="#{i18nTeksten.tekst('img.PDF')}" />
             </h:commandLink>
           </div>
 
-          <ui:include src="landentabel.xhtml">
-            <ui:param name="form" value="formLanden" />
-            <ui:param name="lijst" value="#{sedesLand.landen}" />
+          <ui:include src="werelddeelnamentabel.xhtml">
+            <ui:param name="form" value="formWerelddeel" />
+            <ui:param name="lijst" value="#{sedesWerelddeel.werelddeelnamen}" />
           </ui:include>
+
+          <d:spacer aantal="2"/>
+          <a class="btn btn-default" href="/sedes/werelddelen/werelddelen.xhtml">#{i18nTeksten.tekst('button.back')}</a>
+          
+          <t:messages globalOnly="false" layout="table" fatalClass="msgFatal" errorClass="msgError" warnClass="msgWarn" infoClass="msgInfo" />
         </div>
       </h:form>
     </ui:define>
+
+
     <ui:define name="modal">
-      <d:confirmatie confirmatietitel="#{i18nTeksten.tekst('sedes.titel.land.delete')}" />
+      <d:confirmatie confirmatietitel="#{i18nTeksten.tekst('sedes.titel.werelddeelnaam.delete')}" />
     </ui:define>
   </ui:composition>
 </html>

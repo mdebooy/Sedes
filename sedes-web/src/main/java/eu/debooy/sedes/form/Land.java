@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandDto;
 
 import java.io.Serializable;
@@ -28,12 +29,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class Land implements Cloneable, Comparable<Land>, Serializable {
+public class Land
+    extends Formulier implements Cloneable, Comparable<Land>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private boolean gewijzigd = false;
 
-  private String  bestaat;
+  private boolean bestaat;
   private String  iso2;
   private String  iso3;
   private Long    landId;
@@ -43,7 +45,6 @@ public class Land implements Cloneable, Comparable<Land>, Serializable {
   private String  postkodeType;
   private String  postLandkode;
   private String  taal;
-  private byte[]  vlag;
   private Long    werelddeelId;
 
   public Land() {}
@@ -59,24 +60,20 @@ public class Land implements Cloneable, Comparable<Land>, Serializable {
     postkodeType      = landDto.getPostkodeType();
     postLandkode      = landDto.getPostLandkode();
     taal              = landDto.getTaal();
-    vlag              = landDto.getVlag();
     werelddeelId      = landDto.getWerelddeelId();
   }
   
-  @Override
   public Land clone() throws CloneNotSupportedException {
     Land  clone = (Land) super.clone();
 
     return clone;
   }
 
-  @Override
   public int compareTo(Land andere) {
     return new CompareToBuilder().append(landId, andere.landId)
                                  .toComparison();
   }
 
-  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Land)) {
       return false;
@@ -89,107 +86,62 @@ public class Land implements Cloneable, Comparable<Land>, Serializable {
     return new EqualsBuilder().append(landId, andere.landId).isEquals();
   }
 
-  /**
-   * @return de bestaat
-   */
-  public String getBestaat() {
+  public boolean getBestaat() {
     return bestaat;
   }
 
-  /**
-   * @return de iso2
-   */
   public String getIso2() {
     return iso2;
   }
 
-  /**
-   * @return de iso3
-   */
   public String getIso3() {
     return iso3;
   }
 
-  /**
-   * @return de landId
-   */
   public Long getLandId() {
     return landId;
   }
 
-  /**
-   * @return de landnummer
-   */
   public Long getLandnummer() {
     return landnummer;
   }
 
-  /**
-   * @return de muntId
-   */
   public Long getMuntId() {
     return muntId;
   }
 
-  /**
-   * @return de postkodeScheiding
-   */
   public String getPostkodeScheiding() {
     return postkodeScheiding;
   }
 
-  /**
-   * @return de postkodeType
-   */
   public String getPostkodeType() {
     return postkodeType;
   }
 
-  /**
-   * @return de postLandkode
-   */
   public String getPostLandkode() {
     return postLandkode;
   }
 
-  /**
-   * @return de taal
-   */
   public String getTaal() {
     return taal;
   }
 
-  /**
-   * @return de vlag
-   */
-  public byte[] getVlag() {
-    return vlag;
-  }
-
-  /**
-   * @return de werelddeelId
-   */
   public Long getWerelddeelId() {
     return werelddeelId;
   }
 
-  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).toHashCode();
   }
 
-  /**
-   * @return de gewijzigd
-   */
+  public boolean isBestaat() {
+    return getBestaat();
+  }
+
   public boolean isGewijzigd() {
     return gewijzigd;
   }
 
-  /**
-   * Zet de gegevens in een LandDto
-   *
-   * @param LandDto
-   */
   public void persist(LandDto parameter) {
     if (!new EqualsBuilder().append(bestaat,
                                     parameter.getBestaat()).isEquals()) {
@@ -232,120 +184,91 @@ public class Land implements Cloneable, Comparable<Land>, Serializable {
                                     parameter.getTaal()).isEquals()) {
       parameter.setTaal(taal);
     }
-    if (!new EqualsBuilder().append(vlag,
-                                    parameter.getVlag()).isEquals()) {
-      parameter.setVlag(vlag);
-    }
     if (!new EqualsBuilder().append(werelddeelId,
                                     parameter.getWerelddeelId()).isEquals()) {
       parameter.setWerelddeelId(werelddeelId);
     }
   }
 
-  /**
-   * @param bestaat de waarde van bestaat
-   */
-  public void setBestaat(String bestaat) {
-    this.bestaat = bestaat;
+  public void setBestaat(boolean bestaat) {
+    if (!new EqualsBuilder().append(this.bestaat, bestaat).isEquals()) {
+      gewijzigd     = true;
+      this.bestaat  = bestaat;
+    }
   }
 
-  /**
-   * @param iso2 de waarde van iso2
-   */
   public void setIso2(String iso2) {
-    this.iso2 = iso2;
+    if (!new EqualsBuilder().append(this.iso2, iso2).isEquals()) {
+      gewijzigd = true;
+      this.iso2 = iso2;
+    }
   }
 
-  /**
-   * @param iso3 de waarde van iso3
-   */
   public void setIso3(String iso3) {
-    this.iso3 = iso3;
+    if (!new EqualsBuilder().append(this.iso3, iso3).isEquals()) {
+      gewijzigd = true;
+      this.iso3 = iso3;
+    }
   }
 
-  /**
-   * @param landId de waarde van landId
-   */
   public void setLandId(Long landId) {
-    this.landId = landId;
+    if (!new EqualsBuilder().append(this.landId, landId).isEquals()) {
+      gewijzigd   = true;
+      this.landId = landId;
+    }
   }
 
-  /**
-   * @param landnummer de waarde van landnummer
-   */
   public void setLandnummer(Long landnummer) {
-    this.landnummer = landnummer;
+    if (!new EqualsBuilder().append(this.landnummer, landnummer).isEquals()) {
+      gewijzigd       = true;
+      this.landnummer = landnummer;
+    }
   }
 
-  /**
-   * @param muntId de waarde van muntId
-   */
   public void setMuntId(Long muntId) {
+    if (!new EqualsBuilder().append(this.muntId, muntId).isEquals()) {
+      gewijzigd   = true;
+      this.muntId = muntId;
+    }
     this.muntId = muntId;
   }
 
-  /**
-   * @param postkodeScheiding de waarde van postkodeScheiding
-   */
   public void setPostkodeScheiding(String postkodeScheiding) {
-    this.postkodeScheiding = postkodeScheiding;
+    if (!new EqualsBuilder().append(this.postkodeScheiding, postkodeScheiding)
+                            .isEquals()) {
+      gewijzigd               = true;
+      this.postkodeScheiding  = postkodeScheiding;
+    }
   }
 
-  /**
-   * @param postkodeType de waarde van postkodeType
-   */
   public void setPostkodeType(String postkodeType) {
-    this.postkodeType = postkodeType;
+    if (!new EqualsBuilder().append(this.postkodeType, postkodeType)
+                            .isEquals()) {
+      gewijzigd         = true;
+      this.postkodeType = postkodeType;
+    }
   }
 
-  /**
-   * @param postLandkode de waarde van postLandkode
-   */
   public void setPostLandkode(String postLandkode) {
-    this.postLandkode = postLandkode;
+    if (!new EqualsBuilder().append(this.postLandkode, postLandkode)
+                            .isEquals()) {
+      gewijzigd         = true;
+      this.postLandkode = postLandkode;
+    }
   }
 
-  /**
-   * @param taal de waarde van taal
-   */
   public void setTaal(String taal) {
-    this.taal = taal;
+    if (!new EqualsBuilder().append(this.taal, taal).isEquals()) {
+      gewijzigd = true;
+      this.taal = taal;
+    }
   }
 
-  /**
-   * @param vlag de waarde van vlag
-   */
-  public void setVlag(byte[] vlag) {
-    this.vlag = vlag;
-  }
-
-  /**
-   * @param werelddeelId de waarde van werelddeelId
-   */
   public void setWerelddeelId(Long werelddeelId) {
-    this.werelddeelId = werelddeelId;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder resultaat = new StringBuilder();
-    resultaat.append("Land (")
-             .append("bestaat=[").append(bestaat).append("], ")
-             .append("iso2=[").append(iso2).append("], ")
-             .append("iso3=[").append(iso3).append("], ")
-             .append("landId=[").append(landId).append("], ")
-             .append("landnummer=[").append(landnummer).append("], ")
-             .append("muntId=[").append(muntId).append("], ")
-             .append("postkodeScheiding=[").append(postkodeScheiding)
-                                           .append("], ")
-             .append("postkodeType=[").append(postkodeType).append("], ")
-             .append("postLandkode=[").append(postLandkode).append("], ")
-             .append("taal=[").append(taal).append("], ")
-             .append("vlag=").append(vlag.length).append("b, ")
-             .append("werelddeelId=[").append(werelddeelId).append("], ")
-             .append("class=[").append(this.getClass().getSimpleName())
-             .append("])");
-
-    return resultaat.toString();
+    if (!new EqualsBuilder().append(this.werelddeelId, werelddeelId)
+                            .isEquals()) {
+      gewijzigd         = true;
+      this.werelddeelId = werelddeelId;
+    }
   }
 }

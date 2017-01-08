@@ -18,27 +18,49 @@ package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
-import eu.debooy.sedes.domain.LandDto;
+import eu.debooy.sedes.domain.WerelddeelnaamDto;
+
+import java.util.Collection;
 
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
 
 
 /**
  * @author Marco de Booij
  */
 @Interceptors({PersistenceExceptionHandlerInterceptor.class})
-public class LandDao extends Dao<LandDto> {
+public class WerelddeelnaamDao extends Dao<WerelddeelnaamDto> {
   @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
   private EntityManager em;
 
-  public LandDao() {
-    super(LandDto.class);
+  public WerelddeelnaamDao() {
+    super(WerelddeelnaamDto.class);
   }
 
+  @Override
   protected EntityManager getEntityManager() {
     return em;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection<WerelddeelnaamDto> getPerWerelddeel(Long werelddeelId) {
+    Query   query         =
+        getEntityManager().createNamedQuery("perWerelddeel")
+                          .setParameter("werelddeelId", werelddeelId);
+
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection<WerelddeelnaamDto> getPerTaal(String taal) {
+    Query   query         =
+        getEntityManager().createNamedQuery("wereldeelnamenPerTaal")
+                          .setParameter("taal", taal);
+
+    return query.getResultList();
   }
 }

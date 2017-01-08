@@ -7,7 +7,7 @@
   </parent>
   <artifactId>sedes-web</artifactId>
   <packaging>war</packaging>
-  <name>Kontakten (web)</name>
+  <name>Sedes (web)</name>
   <description>Onderhoud van kontakten met hun adressen. (web)</description>
 
   <build>
@@ -68,10 +68,6 @@
     <dependency>
       <groupId>eu.debooy.doosutils</groupId>
       <artifactId>doosutils-components</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>eu.debooy.doosutils</groupId>
-      <artifactId>doosutils-core</artifactId>
     </dependency>
     <dependency>
       <groupId>eu.debooy.doosutils</groupId>

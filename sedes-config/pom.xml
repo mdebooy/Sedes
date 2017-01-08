@@ -7,6 +7,6 @@
   </parent>
   <artifactId>sedes-config</artifactId>
   <packaging>jar</packaging>
-  <name>Kontakten (config)</name>
+  <name>Sedes (config)</name>
   <description>Onderhoud van kontakten met hun adressen. (config)</description>
 </project>
