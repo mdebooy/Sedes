@@ -14,8 +14,8 @@
   <description>Onderhoud van kontakten met hun adressen.</description>
   <inceptionYear>2015</inceptionYear>
   <scm>
-    <developerConnection>scm:svn:http://svn.debooy.eu/svn/Sedes/trunk</developerConnection>
-    <connection>scm:svn:http://svn.debooy.eu/svn/Sedes/trunk</connection>
+    <developerConnection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/Sedes.git</developerConnection>
+    <connection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/Sedes.git</connection>
   </scm>
 
   <modules>
