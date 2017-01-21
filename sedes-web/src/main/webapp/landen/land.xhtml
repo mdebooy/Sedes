@@ -123,7 +123,7 @@
           <h:commandLink action="#{sedesLand.save}" id="modify" styleClass="btn btn-default" rendered="#{sedesLand.aktie.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
           <d:cancel href="#{sedes.path}/landen/landen.xhtml" aktie="#{sedesLand.aktie}"/>
 
-          <br />
+          <d:spacer aantal="2" />
           <div class="row" />
           <div class="col-md-10 col-md-offset-1">
             <ui:include src="landnamentabel.xhtml">

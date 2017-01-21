@@ -33,8 +33,6 @@
           <h:commandLink action="#{sedesWerelddeel.saveWerelddeelnaam}" id="create" styleClass="btn btn-default" rendered="#{sedesWerelddeel.detailAktie.nieuw}">#{i18nTeksten.tekst('button.create')}</h:commandLink>
           <h:commandLink action="#{sedesWerelddeel.saveWerelddeelnaam}" id="modify" styleClass="btn btn-default" rendered="#{sedesWerelddeel.detailAktie.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
           <a class="btn btn-default" href="/sedes/werelddelen/werelddeel.xhtml">#{i18nTeksten.tekst('button.cancel')}</a>
-
-          <t:messages globalOnly="false" layout="table" fatalClass="msgFatal" errorClass="msgError" warnClass="msgWarn" infoClass="msgInfo" />
         </div>
       </h:form>
     </ui:define>
