@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.debooy.sedes</groupId>
     <artifactId>sedes</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
   </parent>
   <artifactId>sedes-web</artifactId>
   <packaging>war</packaging>
@@ -84,7 +84,7 @@
     <dependency>
       <groupId>eu.debooy.sedes</groupId>
       <artifactId>sedes-components</artifactId>
-      <version>0.1.1-SNAPSHOT</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
