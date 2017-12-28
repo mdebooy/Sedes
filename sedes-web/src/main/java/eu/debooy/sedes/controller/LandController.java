@@ -155,7 +155,7 @@ public class LandController extends Sedes {
     exportData.addMetadata("application", getApplicatieNaam());
     exportData.addMetadata("auteur",      getGebruikerNaam());
     exportData.addMetadata("lijstnaam",   "landenlijst");
-    exportData.setKleuren(getLijstKleuren());
+    exportData.setParameters(getLijstParameters());
 
     exportData.setKolommen(new String[] { "werelddeelnaam", "landnaam",
                                           "hoofdstad" });
@@ -187,15 +187,12 @@ public class LandController extends Sedes {
                                           .getExternalContext().getResponse();
     try {
       Export.export(response, exportData);
+      FacesContext.getCurrentInstance().responseComplete();
     } catch (IllegalArgumentException e) {
       generateExceptionMessage(e);
-      return;
     } catch (TechnicalException e) {
       generateExceptionMessage(e);
-      return;
     }
-
-    FacesContext.getCurrentInstance().responseComplete();
   }
 
   /**
@@ -261,6 +258,17 @@ public class LandController extends Sedes {
       landnaam.persist(landnaamDto);
       landDto.addLandnaam(landnaamDto);
       getLandService().save(landDto);
+      switch (getAktie().getAktie()) {
+      case PersistenceConstants.CREATE:
+        addInfo(PersistenceConstants.CREATED, "'" + landnaam.getTaal() + "'");
+        break;
+      case PersistenceConstants.UPDATE:
+        addInfo(PersistenceConstants.UPDATED, "'" + landnaam.getTaal() + "'");
+        break;
+      default:
+        addError("error.aktie.wrong", getAktie().getAktie()) ;
+        break;
+      }
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, landnaam.getTaal());
       return;
