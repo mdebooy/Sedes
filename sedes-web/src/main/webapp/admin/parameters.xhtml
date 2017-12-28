@@ -4,25 +4,25 @@
     xmlns:h="http://java.sun.com/jsf/html"
    xmlns:ui="http://java.sun.com/jsf/facelets">
   <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:param name="titel" value="#{i18nTeksten.tekst('sedes.titel')}" />
     <ui:define name="head">
       <script type="text/javascript" charset="utf-8">
-      $(document).ready(function() {
+        $(document).ready(function() {
           $('#parametersTabel').dataTable( {
             "order": [[1, "asc"]],
             "columns": [{ "orderable": false, "visible": false },
                         { "orderable": true },
                         { "orderable": false }],
             "pagingType": "full_numbers",
-            "lengthMenu": #{i18nTeksten.tekst('pager.rijen.per.pagina')},
+            "pageLength": #{properties.appValue('sedes.pagelength')},
+            "lengthChange": false,
+            "stateSave": true,
             "language": {
               "paginate": {
-                "first": "#{i18nTeksten.tekst('pager.paginate.first')}",
-                "last": "#{i18nTeksten.tekst('pager.paginate.last')}",
-                "next": "#{i18nTeksten.tekst('pager.paginate.next')}",
-                "previous": "#{i18nTeksten.tekst('pager.paginate.previous')}"
+                "first": '<span class="glyphicon glyphicon-fast-backward"></span>',
+                "last": '<span class="glyphicon glyphicon-fast-forward"></span>',
+                "next": '<span class="glyphicon glyphicon-triangle-right"></span>',
+                "previous": '<span class="glyphicon glyphicon-triangle-left"></span>'
               },
-              "lengthMenu": "#{i18nTeksten.tekst('pager.length.menu')}",
               "search": "#{i18nTeksten.tekst('pager.search')}",
               "zeroRecords": "#{i18nTeksten.tekst('pager.zero.records')}",
               "info": "#{i18nTeksten.tekst('pager.info')}",
