@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.debooy.sedes</groupId>
     <artifactId>sedes</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.0</version>
   </parent>
   <artifactId>sedes-config</artifactId>
   <packaging>jar</packaging>
