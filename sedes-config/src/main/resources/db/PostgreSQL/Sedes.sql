@@ -51,125 +51,6 @@ GRANT CONNECT ON DATABASE :q_db_naam TO SEDES_APP;
 -- Connect als SEDES om de objecten te maken
 \c :db_naam sedes
 
--- Tabellen
-CREATE TABLE SEDES.ADRESSEN (
-  ADRES                           VARCHAR(255)    NOT NULL,
-  ADRES_ID                        INTEGER         NOT NULL,
-  OPMERKING                       TEXT,
-  PLAATS_ID                       INTEGER,
-  SUB_POSTKODE                    VARCHAR(10),
-  CONSTRAINT PK_ADRESSEN PRIMARY KEY (ADRES_ID)
-);
-
-CREATE TABLE SEDES.KONTAKTADRESSEN (
-  ADRES_ID                        INTEGER         NOT NULL,
-  ADRESTYPE                       VARCHAR(50)     NOT NULL,
-  KONTAKTADRES_ID                 INTEGER         NOT NULL,
-  KONTAKT_ID                      INTEGER         NOT NULL,
-  KONTAKTTYPE                     VARCHAR(50)     NOT NULL,
-  OPMERKING                       TEXT,
-  SUB_ADRES                       VARCHAR(255),
-  TAAL                            CHAR(2),
-  CONSTRAINT PK_KONTAKTADRESSEN PRIMARY KEY (KONTAKTADRES_ID)
-);
-
-CREATE TABLE SEDES.KONTAKTEN (
-  AANSPREEK_ID                    VARCHAR(50),
-  GEBOORTEDATUM                   DATE,
-  GEBRUIKERSNAAM                  VARCHAR(20),
-  INITIALEN                       VARCHAR(20),
-  KONTAKT_ID                      INTEGER         NOT NULL,
-  NAAM                            VARCHAR(255)    NOT NULL,
-  OFFICIEEL                       CHAR(1)         NOT NULL DEFAULT 'N',
-  OPMERKING                       TEXT,
-  SEXE                            CHAR(1)         NOT NULL,
-  TAAL                            CHAR(2),
-  VOORNAAM                        VARCHAR(255)    DEFAULT NULL,
-  CONSTRAINT PK_KONTAKTEN PRIMARY KEY (KONTAKT_ID)
-);
-
-CREATE TABLE SEDES.LANDEN (
-  BESTAAT                         CHAR(2)         NOT NULL DEFAULT 'J',
-  ISO2                            CHAR(2),
-  ISO3                            CHAR(3)         NOT NULL,
-  LAND_ID                         INTEGER         NOT NULL,
-  LANDNUMMER                      SMALLINT,
-  MUNT_ID                         INTEGER         NOT NULL,
-  POSTKODE_SCHEIDING              VARCHAR(10),
-  POSTKODE_TYPE                   CHAR(1)         NOT NULL DEFAULT '1',
-  POST_LANDKODE                   CHAR(3)         NOT NULL,
-  TAAL                            CHAR(2)         NOT NULL,
-  VLAG                            BYTEA,
-  WERELDDEEL_ID                   INTEGER         NOT NULL,
-  CONSTRAINT PK_LANDEN PRIMARY KEY (LAND_ID)
-);
-
-CREATE TABLE SEDES.LANDNAMEN (
-  HOOFDSTAD                       VARCHAR(100),
-  LAND_ID                         INTEGER         NOT NULL,
-  LANDNAAM                        VARCHAR(100)    NOT NULL,
-  OFFICIELE_NAAM                  VARCHAR(225),
-  TAAL                            CHAR(2)         NOT NULL,
-  CONSTRAINT PK_LANDNAMEN PRIMARY KEY (LAND_ID, TAAL)
-);
-
-CREATE TABLE SEDES.MUNTEN (
-  BESTAAT                         CHAR(2)         NOT NULL DEFAULT 'J',
-  DECIMALEN                       SMALLINT        NOT NULL DEFAULT '2',
-  MUNT                            VARCHAR(100)    NOT NULL,
-  MUNT_ID                         INTEGER         NOT NULL,
-  ISO3                            CHAR(3)         NOT NULL,
-  MUNTTEKEN                       CHAR(3),
-  SUBEENHEID                      VARCHAR(100),
-  CONSTRAINT PK_MUNTEN PRIMARY KEY (MUNT_ID)
-);
-
-CREATE TABLE SEDES.PLAATSEN (
-  BREEDTE                         CHAR(1),
-  BREEDTEGRAAD                    NUMERIC(4,2),
-  LAND_ID                         INTEGER         NOT NULL,
-  LENGTE                          CHAR(1),
-  LENGTEGRAAD                     NUMERIC(5,2),
-  PLAATS_ID                       INTEGER         NOT NULL,
-  PLAATSNAAM                      VARCHAR(100)    NOT NULL,
-  POSTKODE                        VARCHAR(15),
-  REGIO_ID                        INTEGER,
-  ZONENUMMER                      INTEGER,
-  CONSTRAINT PK_PLAATSEN PRIMARY KEY (PLAATS_ID)
-);
-
-CREATE TABLE SEDES.POSTLIJST_KONTAKTEN (
-  KONTAKT_ID                     INTEGER         NOT NULL,
-  POSTLIJST_ID                   INTEGER         NOT NULL,
-  CONSTRAINT PK_POSTLIJST_KONTAKTEN PRIMARY KEY (POSTLIJST_ID, KONTAKT_ID)
-);
-
-CREATE TABLE SEDES.POSTLIJSTEN (
-  POSTLIJST                      VARCHAR(100)    NOT NULL,
-  POSTLIJST_ID                   INTEGER         NOT NULL,
-  CONSTRAINT PK_POSTLIJSTEN PRIMARY KEY (POSTLIJST_ID)
-);
-
-CREATE TABLE SEDES.REGIOS (
-  LAND_ID                         INTEGER         NOT NULL,
-  REGIO                           VARCHAR(100)    NOT NULL,
-  REGIOKODE                       VARCHAR(5)      NOT NULL,
-  REGIO_ID                        INTEGER         NOT NULL,
-  CONSTRAINT PK_REGIOS PRIMARY KEY (REGIO_ID)
-);
-
-CREATE TABLE SEDES.WERELDDEELNAMEN (
-  WERELDDEELNAAM                  VARCHAR(100)    NOT NULL,
-  TAAL                            CHAR(2)         NOT NULL,
-  WERELDDEEL_ID                   INTEGER         NOT NULL,
-  CONSTRAINT PK_WERELDDEELNAMEN PRIMARY KEY (WERELDDEEL_ID, TAAL)
-);
-
-CREATE TABLE SEDES.WERELDDELEN (
-  WERELDDEEL_ID                   INTEGER         NOT NULL,
-  CONSTRAINT PK_WERELDDELEN PRIMARY KEY (WERELDDEEL_ID)
-);
-
 -- Sequences
 CREATE SEQUENCE SEDES.SEQ_ADRESSEN
   INCREMENT 1
@@ -233,6 +114,125 @@ CREATE SEQUENCE SEDES.SEQ_WERELDDELEN
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
+
+-- Tabellen
+CREATE TABLE SEDES.ADRESSEN (
+  ADRES                           VARCHAR(255)    NOT NULL,
+  ADRES_ID                        INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_ADRESSEN'::REGCLASS),
+  OPMERKING                       TEXT,
+  PLAATS_ID                       INTEGER,
+  SUB_POSTKODE                    VARCHAR(10),
+  CONSTRAINT PK_ADRESSEN PRIMARY KEY (ADRES_ID)
+);
+
+CREATE TABLE SEDES.KONTAKTADRESSEN (
+  ADRES_ID                        INTEGER         NOT NULL,
+  ADRESTYPE                       VARCHAR(50)     NOT NULL,
+  KONTAKTADRES_ID                 INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_KONTAKTADRESSEN'::REGCLASS),
+  KONTAKT_ID                      INTEGER         NOT NULL,
+  KONTAKTTYPE                     VARCHAR(50)     NOT NULL,
+  OPMERKING                       TEXT,
+  SUB_ADRES                       VARCHAR(255),
+  TAAL                            CHAR(2),
+  CONSTRAINT PK_KONTAKTADRESSEN PRIMARY KEY (KONTAKTADRES_ID)
+);
+
+CREATE TABLE SEDES.KONTAKTEN (
+  AANSPREEK_ID                    VARCHAR(50),
+  GEBOORTEDATUM                   DATE,
+  GEBRUIKERSNAAM                  VARCHAR(20),
+  INITIALEN                       VARCHAR(20),
+  KONTAKT_ID                      INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_KONTAKTEN'::REGCLASS),
+  NAAM                            VARCHAR(255)    NOT NULL,
+  OFFICIEEL                       CHAR(1)         NOT NULL  DEFAULT 'N',
+  OPMERKING                       TEXT,
+  SEXE                            CHAR(1)         NOT NULL,
+  TAAL                            CHAR(2),
+  VOORNAAM                        VARCHAR(255),
+  CONSTRAINT PK_KONTAKTEN PRIMARY KEY (KONTAKT_ID)
+);
+
+CREATE TABLE SEDES.LANDEN (
+  BESTAAT                         CHAR(2)         NOT NULL  DEFAULT 'J',
+  ISO2                            CHAR(2),
+  ISO3                            CHAR(3)         NOT NULL,
+  LAND_ID                         INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_LANDEN'::REGCLASS),
+  LANDNUMMER                      SMALLINT,
+  MUNT_ID                         INTEGER         NOT NULL,
+  POSTKODE_SCHEIDING              VARCHAR(10),
+  POSTKODE_TYPE                   CHAR(1)         NOT NULL  DEFAULT '1',
+  POST_LANDKODE                   CHAR(3)         NOT NULL,
+  TAAL                            CHAR(2)         NOT NULL,
+  VLAG                            BYTEA,
+  WERELDDEEL_ID                   INTEGER         NOT NULL,
+  CONSTRAINT PK_LANDEN PRIMARY KEY (LAND_ID)
+);
+
+CREATE TABLE SEDES.LANDNAMEN (
+  HOOFDSTAD                       VARCHAR(100),
+  LAND_ID                         INTEGER         NOT NULL,
+  LANDNAAM                        VARCHAR(100)    NOT NULL,
+  OFFICIELE_NAAM                  VARCHAR(225),
+  TAAL                            CHAR(2)         NOT NULL,
+  CONSTRAINT PK_LANDNAMEN PRIMARY KEY (LAND_ID, TAAL)
+);
+
+CREATE TABLE SEDES.MUNTEN (
+  BESTAAT                         CHAR(2)         NOT NULL  DEFAULT 'J',
+  DECIMALEN                       SMALLINT        NOT NULL  DEFAULT '2',
+  MUNT                            VARCHAR(100)    NOT NULL,
+  MUNT_ID                         INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_MUNTEN'::REGCLASS),
+  ISO3                            CHAR(3)         NOT NULL,
+  MUNTTEKEN                       CHAR(3),
+  SUBEENHEID                      VARCHAR(100),
+  CONSTRAINT PK_MUNTEN PRIMARY KEY (MUNT_ID)
+);
+
+CREATE TABLE SEDES.PLAATSEN (
+  BREEDTE                         CHAR(1),
+  BREEDTEGRAAD                    NUMERIC(4,2),
+  LAND_ID                         INTEGER         NOT NULL,
+  LENGTE                          CHAR(1),
+  LENGTEGRAAD                     NUMERIC(5,2),
+  PLAATS_ID                       INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_PLAATSEN'::REGCLASS),
+  PLAATSNAAM                      VARCHAR(100)    NOT NULL,
+  POSTKODE                        VARCHAR(15),
+  REGIO_ID                        INTEGER,
+  ZONENUMMER                      INTEGER,
+  CONSTRAINT PK_PLAATSEN PRIMARY KEY (PLAATS_ID)
+);
+
+CREATE TABLE SEDES.POSTLIJST_KONTAKTEN (
+  KONTAKT_ID                     INTEGER         NOT NULL,
+  POSTLIJST_ID                   INTEGER         NOT NULL,
+  CONSTRAINT PK_POSTLIJST_KONTAKTEN PRIMARY KEY (POSTLIJST_ID, KONTAKT_ID)
+);
+
+CREATE TABLE SEDES.POSTLIJSTEN (
+  POSTLIJST                      VARCHAR(100)    NOT NULL,
+  POSTLIJST_ID                   INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_POSTLIJSTEN'::REGCLASS),
+  CONSTRAINT PK_POSTLIJSTEN PRIMARY KEY (POSTLIJST_ID)
+);
+
+CREATE TABLE SEDES.REGIOS (
+  LAND_ID                         INTEGER         NOT NULL,
+  REGIO                           VARCHAR(100)    NOT NULL,
+  REGIOKODE                       VARCHAR(5)      NOT NULL,
+  REGIO_ID                        INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_REGIOS'::REGCLASS),
+  CONSTRAINT PK_REGIOS PRIMARY KEY (REGIO_ID)
+);
+
+CREATE TABLE SEDES.WERELDDEELNAMEN (
+  WERELDDEELNAAM                  VARCHAR(100)    NOT NULL,
+  TAAL                            CHAR(2)         NOT NULL,
+  WERELDDEEL_ID                   INTEGER         NOT NULL,
+  CONSTRAINT PK_WERELDDEELNAMEN PRIMARY KEY (WERELDDEEL_ID, TAAL)
+);
+
+CREATE TABLE SEDES.WERELDDELEN (
+  WERELDDEEL_ID                   INTEGER         NOT NULL  DEFAULT NEXTVAL('SEDES.SEQ_WERELDDELEN'::REGCLASS),
+  CONSTRAINT PK_WERELDDELEN PRIMARY KEY (WERELDDEEL_ID)
+);
 
 -- Views
 
@@ -329,4 +329,14 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.POSTLIJSTEN             TO S
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.REGIOS                  TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDEELNAMEN         TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDELEN             TO SEDES_UPD;
+
+INSERT INTO SEDES.WERELDDELEN VALUES (0);
+
+INSERT INTO SEDES.WERELDDEELNAMEN VALUES ('Aarde', 'nl', 0);
+
+INSERT INTO SEDES.MUNTEN VALUES ('N', 2, 'Onbekend', 0, '-', NULL, NULL);
+
+INSERT INTO SEDES.LANDEN VALUES ('N', NULL, '-', 0, NULL, 0, NULL, '1', '-', '??', NULL, 0);
+
+INSERT INTO SEDES.LANDNAMEN VALUES (NULL, 0, 'Onbekend', NULL, 'nl');
 
