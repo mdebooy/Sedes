@@ -44,10 +44,10 @@
             <h2>#{i18nTeksten.tekst('sedes.titel.landen')}</h2>
           </div>
           <div align="right" class="col-md-2" >
-            <h:commandLink action="#{sedesLand.create}" actionFor="#{formLanden}" rendered="false">
+            <h:commandLink action="#{sedesLand.create}" rendered="false">
               <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
             </h:commandLink>
-            <h:commandLink action="#{sedesLand.landenlijst}" actionFor="#{formLanden}">
+            <h:commandLink action="#{sedesLand.landenlijst}">
               <f:setPropertyActionListener target="#{sedesLand.type}" value="PDF" /><img src="/common/images/32x32/apps/evince.png" alt="#{i18nTeksten.tekst('img.PDF')}" title="#{i18nTeksten.tekst('img.PDF')}" />
             </h:commandLink>
           </div>

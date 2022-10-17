@@ -24,9 +24,9 @@
       <t:dataList var="landnaam" value="#{lijst}" rowIndexVar="idx">
         <tr>
           <td>
-            <h:commandLink action="#{sedesLand.updateLandnaam(landnaam.taal)}" actionFor="#{form}"><img src="/common/images/16x16/actions/edit-paste.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
-            <h:commandLink action="#{sedesLand.deleteLandnaam(landnaam.taal)}" actionFor="#{form}" class="lnkDelete" id="lnkDelete" />
-            <h:commandLink onclick="confirmatie(this, '#{landnaam.taal}');return false;" actionFor="#{form}"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesLand.updateLandnaam(landnaam.taal)}"><img src="/common/images/16x16/actions/edit-paste.png" alt="#{i18nTeksten.tekst('img.wijzigen')}" title="#{i18nTeksten.tekst('img.wijzigen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesLand.deleteLandnaam(landnaam.taal)}" class="lnkDelete" id="lnkDelete" />
+            <h:commandLink onclick="confirmatie(this, '#{landnaam.taal}');return false;"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
           </td>
           <td class="text-center" data-order="#{landnaam.taal}"><img alt="#{landnaam.taal}" src="/common/images/taal/#{landnaam.taal}.png" title="#{landnaam.taal}" /></td>
           <td>#{landnaam.landnaam}</td>

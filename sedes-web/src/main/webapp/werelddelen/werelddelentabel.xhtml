@@ -21,9 +21,9 @@
         <ui:param name="naam" value="#{sedesWerelddeel.i18nWerelddeelnaam(werelddeel.werelddeelId)}"/>
         <tr>
           <td>
-            <h:commandLink action="#{sedesWerelddeel.retrieve(werelddeel.werelddeelId)}" actionFor="#{form}"><img src="/common/images/16x16/mimetypes/text-x-generic.png" alt="#{i18nTeksten.tekst('img.bekijken')}" title="#{i18nTeksten.tekst('img.bekijken')}" /></h:commandLink>
-            <h:commandLink action="#{sedesWerelddeel.delete(werelddeel.werelddeelId)}" actionFor="#{form}" class="lnkDelete" id="lnkDelete" />
-            <h:commandLink onclick="confirmatie(this, '#{naam}');return false;" actionFor="#{form}"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
+            <h:commandLink action="#{sedesWerelddeel.retrieve(werelddeel.werelddeelId)}"><img src="/common/images/16x16/mimetypes/text-x-generic.png" alt="#{i18nTeksten.tekst('img.bekijken')}" title="#{i18nTeksten.tekst('img.bekijken')}" /></h:commandLink>
+            <h:commandLink action="#{sedesWerelddeel.delete(werelddeel.werelddeelId)}" class="lnkDelete" id="lnkDelete" />
+            <h:commandLink onclick="confirmatie(this, '#{naam}');return false;"><img src="/common/images/16x16/places/user-trash.png" alt="#{i18nTeksten.tekst('img.verwijderen')}" title="#{i18nTeksten.tekst('img.verwijderen')}" /></h:commandLink>
           </td>
           <td>#{naam}</td>
         </tr>
