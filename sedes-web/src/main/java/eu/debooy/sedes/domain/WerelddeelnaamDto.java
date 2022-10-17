@@ -17,18 +17,14 @@
 package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.domain.Dto;
-
 import java.io.Serializable;
 import java.util.Comparator;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -40,12 +36,21 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Entity
 @Table(name="WERELDDEELNAMEN", schema="SEDES")
 @IdClass(WerelddeelnaamPK.class)
-@NamedQueries({
-  @NamedQuery(name="perWerelddeel", query="select w from WerelddeelnaamDto w where w.werelddeelId=:werelddeelId"),
-  @NamedQuery(name="wereldeelnamenPerTaal", query="select w from WerelddeelnaamDto w where w.taal=:taal")})
+@NamedQuery(name="wereldeelnamenPerTaal", query="select w from WerelddeelnaamDto w where w.taal=:taal")
+@NamedQuery(name="wereldeelnamenPerWerelddeel", query="select w from WerelddeelnaamDto w where w.werelddeelId=:werelddeelId")
 public class WerelddeelnaamDto extends Dto
-    implements Comparable<WerelddeelnaamDto>, Cloneable {
+    implements Comparable<WerelddeelnaamDto> {
   private static final  long  serialVersionUID  = 1L;
+
+  public static final String  COL_TAAL            = "taal";
+  public static final String  COL_WERELDDEELID    = "werelddeelId";
+  public static final String  COL_WERELDDEELNAAM  = "werelddeelnaam";
+
+  public static final String  PAR_TAAL          = "taal";
+  public static final String  PAR_WERELDDEELID  = "werelddeelId";
+
+  public static final String  QRY_PERWERELDDEEL = "wereldeelnamenPerTaal";
+  public static final String  QRY_PERTAAL       = "wereldeelnamenPerWerelddeel";
 
   @Id
   @Column(name="TAAL", length=2, nullable=false)
@@ -56,26 +61,19 @@ public class WerelddeelnaamDto extends Dto
   @Column(name="WERELDDEELNAAM", length=100, nullable=false)
   private String  werelddeelnaam;
 
-  /**
-   * Sorteren op de naam van het werelddeel.
-   */
   public static class NaamComparator
       implements Comparator<WerelddeelnaamDto>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
+    @Override
     public int compare(WerelddeelnaamDto werelddeelnaamDto1,
                        WerelddeelnaamDto werelddeelnaamDto2) {
       return werelddeelnaamDto1.werelddeelnaam
                                .compareTo(werelddeelnaamDto2.werelddeelnaam);
     }
   }
-  
-  public WerelddeelnaamDto clone() throws CloneNotSupportedException {
-    WerelddeelnaamDto clone = (WerelddeelnaamDto) super.clone();
 
-    return clone;
-  }
-
+  @Override
   public int compareTo(WerelddeelnaamDto werelddeelnaamDto) {
     return new CompareToBuilder().append(werelddeelId,
                                          werelddeelnaamDto.werelddeelId)
@@ -83,6 +81,7 @@ public class WerelddeelnaamDto extends Dto
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof WerelddeelnaamDto)) {
       return false;
@@ -110,6 +109,7 @@ public class WerelddeelnaamDto extends Dto
     return werelddeelnaam;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).append(taal).toHashCode();
   }

@@ -18,24 +18,16 @@
 -- Project: Sedes
 -- Author: Marco de Booij
 
-\prompt 'Database : ' db_naam
 \echo    Passwords
-\prompt 'SEDES    : ' sedes_pw
 \prompt 'SEDES_APP: ' sedes_app_pw
-\set q_db_naam      '\"':db_naam'\"'
-\set q_sedes_pw     '\'':sedes_pw'\''
 \set q_sedes_app_pw '\'':sedes_app_pw'\''
 
 -- Gebruikers en rollen.
-CREATE ROLE SEDES LOGIN
-  PASSWORD :q_sedes_pw
-  NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
-
 CREATE ROLE SEDES_APP LOGIN
   PASSWORD :q_sedes_app_pw
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
 
-CREATE SCHEMA SEDES AUTHORIZATION SEDES;
+CREATE SCHEMA SEDES;
 
 CREATE ROLE SEDES_SEL NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
 CREATE ROLE SEDES_UPD NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
@@ -45,11 +37,7 @@ GRANT USAGE ON SCHEMA SEDES  TO SEDES_UPD;
 
 GRANT SEDES_UPD TO SEDES_APP;
 
-GRANT CONNECT ON DATABASE :q_db_naam TO SEDES;
-GRANT CONNECT ON DATABASE :q_db_naam TO SEDES_APP;
-
--- Connect als SEDES om de objecten te maken
-\c :db_naam sedes
+GRANT CONNECT ON DATABASE :DBNAME TO SEDES_APP;
 
 -- Sequences
 CREATE SEQUENCE SEDES.SEQ_ADRESSEN

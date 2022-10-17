@@ -20,10 +20,8 @@ import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.LandDao;
 import eu.debooy.sedes.domain.LandDto;
 import eu.debooy.sedes.form.Land;
-
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -31,7 +29,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,9 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Named("sedesLandService")
+@Path("/landen")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Lock(LockType.WRITE)
 public class LandService {
   private static final  Logger  LOGGER  =
@@ -59,12 +65,11 @@ public class LandService {
     landDao.delete(land);
   }
 
-  /**
-   * Geef een Land.
-   * 
-   * @param Long landId
-   * @return LandDto.
-   */
+  @GET
+  public Response getLanden() {
+    return Response.ok().entity(landDao.getAll()).build();
+  }
+
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public LandDto land(Long landId) {
     LandDto land  = landDao.getByPrimaryKey(landId);
@@ -72,11 +77,6 @@ public class LandService {
     return land;
   }
 
-  /**
-   * Geef alle Landen.
-   * 
-   * @return Collection<Land>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Land> query() {
     Collection<Land>      landen  = new ArrayList<Land>();
@@ -92,11 +92,6 @@ public class LandService {
     return landen;
   }
 
-  /**
-   * Maak of wijzig de Land in de database.
-   * 
-   * @param LandDto land
-   */
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(LandDto land) {
     if (null == land.getLandId()) {

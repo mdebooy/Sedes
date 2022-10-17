@@ -19,8 +19,8 @@ package eu.debooy.sedes.validator;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import eu.debooy.sedes.form.Werelddeelnaam;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,21 +32,39 @@ public final class WerelddeelnaamValidator {
   private WerelddeelnaamValidator() {
   }
 
-  /**
-   * Valideer de Landnaam.
-   */
+  public static List<Message> valideer(WerelddeelnaamDto werelddeelnaam) {
+    return valideer(new Werelddeelnaam(werelddeelnaam));
+  }
+
   public static List<Message> valideer(Werelddeelnaam werelddeelnaam) {
-    List<Message> fouten  = new ArrayList<Message>();
-    String        waarde  = werelddeelnaam.getWerelddeelnaam();
-    if (DoosUtils.isBlankOrNull(waarde)) {
-      fouten.add(new Message(Message.ERROR, PersistenceConstants.REQUIRED,
-                             "_I18N.label.werelddeelnaam"));
-    }
-    if (waarde.length() > 100) {
-      fouten.add(new Message(Message.ERROR, PersistenceConstants.MAXLENGTH,
-                             new Object[] {"_I18N.label.werelddeelnaam", 100}));
-    }
+    List<Message> fouten  = new ArrayList<>();
+
+    valideerWerelddeelnaam(werelddeelnaam.getWerelddeelnaam(), fouten);
 
     return fouten;
+  }
+
+  private static void valideerWerelddeelnaam(String werelddeelnaam,
+                                             List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(werelddeelnaam)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(WerelddeelnaamDto.COL_WERELDDEELNAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(
+                                new Object[]{"_I18N.label.werelddeelnaam"})
+                            .build());
+      return;
+    }
+
+    if (werelddeelnaam.length() > 100) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(WerelddeelnaamDto.COL_WERELDDEELNAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.MAXLENGTH)
+                            .setParams(new Object[]{"_I18N.label.werelddeelnaam",
+                                                    100})
+                            .build());
+    }
   }
 }

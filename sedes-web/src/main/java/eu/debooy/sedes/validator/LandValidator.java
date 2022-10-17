@@ -18,7 +18,6 @@ package eu.debooy.sedes.validator;
 
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.form.Land;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +29,6 @@ public final class LandValidator {
   private LandValidator() {
   }
 
-  /**
-   * Valideer het Land.
-   */
   public static List<Message> valideer(Land land) {
     List<Message> fouten  = new ArrayList<Message>();
 

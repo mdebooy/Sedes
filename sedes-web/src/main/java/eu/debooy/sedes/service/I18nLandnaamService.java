@@ -20,11 +20,9 @@ import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -44,32 +42,32 @@ public class I18nLandnaamService implements II18nLandnaam {
   private transient LandnaamService landnaamService;
 
   private Map<Long, Map<String, String>>
-      landnamenCache  = new HashMap<Long, Map<String, String>>();
+      landnamenCache  = new HashMap<>();
   // TODO Ophalen uit database.
-  private String        standaardTaal = "nl";
+  private final String  standaardTaal = "nl";
 
-  /**
-   * Maak de cache (voor de remote bean) leeg.
-   */
+  @Override
   public void clear() {
     landnamenCache.clear();
   }
 
+  @Override
   public String getI18nLandnaam(Long landId) {
     return getI18nLandnaam(landId, getStandaardTaal());
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  @Override
   public String getI18nLandnaam(Long landId, String taal) {
-    Map<String, String> landnamen = new HashMap<String, String>();
+    Map<String, String> landnamen = new HashMap<>();
     if (landnamenCache.containsKey(landId)) {
       landnamen = landnamenCache.get(landId);
     }
- 
+
     if (landnamen.containsKey(taal)) {
       return landnamen.get(taal);
     }
- 
+
     LandnaamDto landnaamDto;
     try {
       landnaamDto = getLandnaamService().landnaam(landId, taal);
@@ -79,11 +77,11 @@ public class I18nLandnaamService implements II18nLandnaam {
     } catch (ObjectNotFoundException e) {
       // Probeer het nu met de standaardtaal.
     }
- 
+
     if (landnamen.containsKey(getStandaardTaal())) {
       return landnamen.get(getStandaardTaal());
     }
- 
+
     try {
       landnaamDto = getLandnaamService().landnaam(landId, getStandaardTaal());
       landnamen.put(getStandaardTaal(), landnaamDto.getLandnaam());
@@ -94,11 +92,6 @@ public class I18nLandnaamService implements II18nLandnaam {
     }
   }
 
-  /**
-   * Geef de LandnaamService. Als die nog niet gekend is haal het dan op.
-   * 
-   * @return LandnaamService
-   */
   private LandnaamService getLandnaamService() {
     if (null == landnaamService) {
       landnaamService = (LandnaamService)
@@ -112,14 +105,17 @@ public class I18nLandnaamService implements II18nLandnaam {
     return standaardTaal;
   }
 
+  @Override
   public Collection<SelectItem> selectLandnamen() {
     return selectLandnamen(getStandaardTaal());
   }
 
+  @Override
   public Collection<SelectItem> selectLandnamen(String taal) {
     return getLandnaamService().selectLandnamen(taal);
   }
 
+  @Override
   public int size() {
     return landnamenCache.size();
   }

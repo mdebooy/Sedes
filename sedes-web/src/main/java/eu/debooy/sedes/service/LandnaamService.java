@@ -21,13 +21,13 @@ import eu.debooy.sedes.access.LandnaamDao;
 import eu.debooy.sedes.domain.LandnaamDto;
 import eu.debooy.sedes.domain.LandnaamPK;
 import eu.debooy.sedes.form.Landnaam;
-
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -36,7 +36,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,163 +52,134 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Named("sedesLandnaamService")
+@Path("/landnamen")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Lock(LockType.WRITE)
 public class LandnaamService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(LandnaamService.class);
 
+  private final Map<Long, Map<String, String>>  landnamenCache;
+  private final String                          standaardTaal;
+
+  public void clear() {
+    landnamenCache.clear();
+  }
+
   @Inject
   private LandnaamDao   landnaamDao;
 
-  /**
-   * Initialisatie.
-   */
   public LandnaamService() {
+    landnamenCache  = new HashMap<>();
+    // TODO Ophalen uit database.
+    standaardTaal   = "nl";
+
     LOGGER.debug("init LandnaamService");
   }
 
-  /**
-   * Geef de landnamen van landen die nog bestaan.
-   * 
-   * @param taal
-   * @return Collection<LandnaamDto>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Landnaam> bestaandeLandnamen(String taal) {
-    Set<Landnaam>             landnamen =
-        new HashSet<Landnaam>();
-    try {
-      Collection<LandnaamDto> rijen     =
-          landnaamDao.getBestaandeLandnamenPerTaal(taal);
-      for (LandnaamDto rij : rijen) {
-        landnamen.add(new Landnaam(rij));
-      }
-    } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
+    Set<Landnaam> landnamen = new HashSet<>();
+
+    landnaamDao.getBestaandeLandnamenPerTaal(taal)
+               .forEach(rij -> landnamen.add(new Landnaam(rij)));
 
     return landnamen;
   }
 
-  /**
-   * Geef de landnamen van landen die nog bestaan voor een werelddeel.
-   * 
-   * @param String taal
-   * @param Long werelddeelId
-   * @return Collection<LandnaamDto>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Landnaam>
       bestaandeLandnamenPerWerelddeel(String taal, Long werelddeelId) {
-    Set<Landnaam>             landnamen =
-        new HashSet<Landnaam>();
-    try {
-      Collection<LandnaamDto> rijen     =
-          landnaamDao.getBestaandeLandnamenPerWerelddeelPerTaal(taal,
-                                                                werelddeelId);
-      for (LandnaamDto rij : rijen) {
-        landnamen.add(new Landnaam(rij));
-      }
-    } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
+    Set<Landnaam> landnamen = new HashSet<>();
+
+    landnaamDao.getBestaandeLandnamenPerWerelddeelPerTaal(taal,
+                                                          werelddeelId)
+               .forEach(rij -> landnamen.add(new Landnaam(rij)));
 
     return landnamen;
   }
 
-  /**
-   * Geef een LandnaamDto.
-   * 
-   * @param landId
-   * @param taal
-   * @return LandnaamDto
-   */
+  @GET
+  @Path("/{landId}/{taal}")
+  public Response getLandnaam(@PathParam(LandnaamDto.COL_LANDID) Long landId,
+                               @PathParam(LandnaamDto.COL_TAAL) String taal) {
+    Map<String, String> landnamen = new HashMap<>();
+    if (landnamenCache.containsKey(landId)) {
+      landnamen = landnamenCache.get(landId);
+    } else {
+      try {
+        var rijen = landnaamDao.getPerLand(landId);
+        for (var rij: rijen) {
+          landnamen.put(rij.getTaal(), rij.getLandnaam());
+        }
+        landnamenCache.put(landId, landnamen);
+      } catch (ObjectNotFoundException e) {
+        // Land onbekend.
+      }
+    }
+
+    if (landnamen.containsKey(taal)) {
+      return Response.ok().entity(landnamen.get(taal)).build();
+    }
+
+    if (landnamen.containsKey(getStandaardTaal())) {
+      return Response.ok().entity(landnamen.get(getStandaardTaal())).build();
+    }
+
+    return Response.ok().entity("??? " + landId + ":" + taal + " ???").build();
+  }
+
+  private String getStandaardTaal() {
+    return standaardTaal;
+  }
+
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public LandnaamDto landnaam(Long landId, String taal) {
-    LandnaamPK  sleutel   = new LandnaamPK(landId, taal);
-    LandnaamDto landnaam  = landnaamDao.getByPrimaryKey(sleutel);
+    var sleutel   = new LandnaamPK(landId, taal);
+    var landnaam  = landnaamDao.getByPrimaryKey(sleutel);
 
     return landnaam;
   }
 
-  /**
-   * Geef de landnamen in een taal.
-   * 
-   * @param String taal
-   * @return Collection<LandnaamDto>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Landnaam> landnamen(String taal) {
-    Set<Landnaam>             landnamen =
-        new HashSet<Landnaam>();
-    try {
-      Collection<LandnaamDto> rijen     = landnaamDao.getPerTaal(taal);
-      for (LandnaamDto rij : rijen) {
-        landnamen.add(new Landnaam(rij));
-      }
-    } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
+    Set<Landnaam> landnamen = new HashSet<>();
+
+    landnaamDao.getPerTaal(taal)
+               .forEach(rij -> landnamen.add(new Landnaam(rij)));
 
     return landnamen;
   }
 
-  /**
-   * Geef de landnamen van een land.
-   * 
-   * @param Long landId
-   * @return Collection<LandnaamDto>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Landnaam> query(Long landId) {
-    Set<Landnaam>             landnamen =
-        new HashSet<Landnaam>();
-    try {
-      Collection<LandnaamDto> rijen     = landnaamDao.getPerLand(landId);
-      for (LandnaamDto rij : rijen) {
-        landnamen.add(new Landnaam(rij));
-      }
-    } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
+    Set<Landnaam> landnamen = new HashSet<>();
+
+    landnaamDao.getPerLand(landId)
+               .forEach(rij -> landnamen.add(new Landnaam(rij)));
 
     return landnamen;
   }
 
-  /**
-   * Maak of wijzig de Landnaam in de database.
-   * 
-   * @param Landnaam landnaam
-   */
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(Landnaam landnaam) {
-    LandnaamDto dto = new LandnaamDto();
+    var dto = new LandnaamDto();
     landnaam.persist(dto);
 
     landnaamDao.update(dto);
   }
 
-  /**
-   * Maak of wijzig de Landnaam in de database.
-   * 
-   * @param Landnaam landnaam
-   */
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(LandnaamDto landnaam) {
     landnaamDao.update(landnaam);
   }
 
-  /**
-   * Geef alle landnamen (en landId) in de gevraagde taal als SelectItems.
-   *  
-   * @param taal
-   * @return Collection<SelectItem>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectLandnamen(String taal) {
-    Collection<SelectItem>  items = new LinkedList<SelectItem>();
-    Set<LandnaamDto> rijen =
-        new TreeSet<LandnaamDto>(new LandnaamDto.NaamComparator());
+    Collection<SelectItem>  items = new LinkedList<>();
+    Set<LandnaamDto>        rijen =
+        new TreeSet<>(new LandnaamDto.NaamComparator());
     try {
       rijen.addAll(landnaamDao.getPerTaal(taal));
       for (LandnaamDto rij : rijen) {

@@ -18,7 +18,6 @@ package eu.debooy.sedes.validator;
 
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.form.Werelddeel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +29,8 @@ public final class WerelddeelValidator {
   private WerelddeelValidator() {
   }
 
-  /**
-   * Valideer het Werelddeel.
-   */
   public static List<Message> valideer(Werelddeel werelddeel) {
-    List<Message> fouten  = new ArrayList<Message>();
+    List<Message> fouten  = new ArrayList<>();
 
     return fouten;
   }

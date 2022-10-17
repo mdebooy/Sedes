@@ -19,8 +19,8 @@ package eu.debooy.sedes.validator;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.sedes.domain.LandnaamDto;
 import eu.debooy.sedes.form.Landnaam;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,21 +32,38 @@ public final class LandnaamValidator {
   private LandnaamValidator() {
   }
 
-  /**
-   * Valideer de Landnaam.
-   */
+  public static List<Message> valideer(LandnaamDto landnaam) {
+    return valideer(new Landnaam(landnaam));
+  }
+
   public static List<Message> valideer(Landnaam landnaam) {
-    List<Message> fouten  = new ArrayList<Message>();
-    String        waarde  = landnaam.getLandnaam();
-    if (DoosUtils.isBlankOrNull(waarde)) {
-      fouten.add(new Message(Message.ERROR, PersistenceConstants.REQUIRED,
-                             "_I18N.label.landnaam"));
-    }
-    if (waarde.length() > 100) {
-      fouten.add(new Message(Message.ERROR, PersistenceConstants.MAXLENGTH,
-                             new Object[] {"_I18N.label.landnaam", 100}));
-    }
+    List<Message> fouten  = new ArrayList<>();
+
+    valideerLandnaam(landnaam.getLandnaam(), fouten);
 
     return fouten;
+  }
+
+  private static void valideerLandnaam(String landnaam,
+                                       List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(landnaam)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(LandnaamDto.COL_LANDNAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(new Object[]{"_I18N.label.landnaam"})
+                            .build());
+      return;
+    }
+
+    if (landnaam.length() > 100) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(LandnaamDto.COL_LANDNAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.MAXLENGTH)
+                            .setParams(new Object[]{"_I18N.label.landnaam",
+                                                    100})
+                            .build());
+    }
   }
 }

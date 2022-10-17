@@ -19,7 +19,6 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.WerelddeelDto;
-
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,6 +37,7 @@ public class WerelddeelDao extends Dao<WerelddeelDto> {
     super(WerelddeelDto.class);
   }
 
+  @Override
   protected EntityManager getEntityManager() {
     return em;
   }

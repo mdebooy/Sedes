@@ -19,9 +19,7 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.LandnaamDto;
-
 import java.util.Collection;
-
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,24 +39,23 @@ public class LandnaamDao extends Dao<LandnaamDto> {
     super(LandnaamDto.class);
   }
 
-  @SuppressWarnings("unchecked")
   public Collection<LandnaamDto> getBestaandeLandnamenPerTaal(String taal) {
     Query   query         =
-        getEntityManager().createNamedQuery("bestaandeLandenPerTaal")
-                          .setParameter("taal", taal);
+        getEntityManager().createNamedQuery(LandnaamDto.QRY_BESTPERTAAL)
+                          .setParameter(LandnaamDto.PAR_TAAL, taal);
 
     return query.getResultList();
   }
 
-  @SuppressWarnings("unchecked")
   public Collection<LandnaamDto>
       getBestaandeLandnamenPerWerelddeelPerTaal(String taal,
                                                 Long werelddeelId) {
     Query   query         =
         getEntityManager()
-            .createNamedQuery("bestaandeLandenPerWerelddeelPerTaal")
-                          .setParameter("taal", taal)
-                          .setParameter("werelddeel", werelddeelId);
+            .createNamedQuery(LandnaamDto.QRY_BESTPERWERELDDEELTAAL)
+                          .setParameter(LandnaamDto.PAR_TAAL, taal)
+                          .setParameter(LandnaamDto.PAR_WERELDDEEL,
+                                        werelddeelId);
 
     return query.getResultList();
   }
@@ -68,20 +65,18 @@ public class LandnaamDao extends Dao<LandnaamDto> {
     return em;
   }
 
-  @SuppressWarnings("unchecked")
   public Collection<LandnaamDto> getPerLand(Long landId) {
     Query   query         =
-        getEntityManager().createNamedQuery("perLand")
-                          .setParameter("landId", landId);
+        getEntityManager().createNamedQuery(LandnaamDto.QRY_PERLAND)
+                          .setParameter(LandnaamDto.PAR_LANDID, landId);
 
     return query.getResultList();
   }
 
-  @SuppressWarnings("unchecked")
   public Collection<LandnaamDto> getPerTaal(String taal) {
     Query   query         =
-        getEntityManager().createNamedQuery("landnamenPerTaal")
-                          .setParameter("taal", taal);
+        getEntityManager().createNamedQuery(LandnaamDto.QRY_PERTAAL)
+                          .setParameter(LandnaamDto.PAR_TAAL, taal);
 
     return query.getResultList();
   }
