@@ -20,11 +20,9 @@ import eu.debooy.doosutils.DoosConstants;
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosLayer;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +34,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -47,8 +44,20 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="LANDEN", schema="SEDES")
-public class LandDto extends Dto implements Comparable<LandDto>, Cloneable {
+public class LandDto extends Dto implements Comparable<LandDto> {
   private static final  long  serialVersionUID  = 1L;
+
+  public static final String  COL_BESTAAT           = "bestaat";
+  public static final String  COL_ISO2              = "iso2";
+  public static final String  COL_ISO3              = "iso3";
+  public static final String  COL_LANDID            = "landId";
+  public static final String  COL_LANDNUMMER        = "landnummer";
+  public static final String  COL_MUNTID            = "muntId";
+  public static final String  COL_POSTKODESCHEIDING = "postkodeScheiding";
+  public static final String  COL_POSTKODETYPE      = "postkodeType";
+  public static final String  COL_POSTLANDKODE      = "postLandkode";
+  public static final String  COL_TAAL              = "taal";
+  public static final String  COL_WERELDDEELID      = "werelddeelId";
 
   @Column(name="BESTAAT", length=1, nullable=false)
   private String  bestaat;
@@ -78,8 +87,7 @@ public class LandDto extends Dto implements Comparable<LandDto>, Cloneable {
   @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, targetEntity=LandnaamDto.class, orphanRemoval=true)
   @JoinColumn(name="LAND_ID", nullable=false, updatable=false, insertable=true)
   @MapKey(name="taal")
-  private Map<String, LandnaamDto>  landnamen =
-      new HashMap<String, LandnaamDto>();
+  private Map<String, LandnaamDto>  landnamen = new HashMap<>();
 
   public void addLandnaam(LandnaamDto landnaamDto) {
     //TODO Kijken voor 'de' JPA manier.
@@ -89,12 +97,7 @@ public class LandDto extends Dto implements Comparable<LandDto>, Cloneable {
     landnamen.put(landnaamDto.getTaal(), landnaamDto);
   }
 
-  public LandDto clone() throws CloneNotSupportedException {
-    LandDto clone = (LandDto) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(LandDto landDto) {
     return new CompareToBuilder().append(landId, landDto.landId)
                                  .toComparison();
@@ -104,6 +107,7 @@ public class LandDto extends Dto implements Comparable<LandDto>, Cloneable {
     return landnamen.containsKey(taal);
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof LandDto)) {
       return false;
@@ -173,6 +177,7 @@ public class LandDto extends Dto implements Comparable<LandDto>, Cloneable {
     return werelddeelId;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).toHashCode();
   }

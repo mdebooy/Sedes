@@ -19,7 +19,6 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.LandDto;
-
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,7 +37,12 @@ public class LandDao extends Dao<LandDto> {
     super(LandDto.class);
   }
 
+  @Override
   protected EntityManager getEntityManager() {
     return em;
+  }
+
+  public LandDto getLand(Long landId) {
+    return getByPrimaryKey(landId);
   }
 }

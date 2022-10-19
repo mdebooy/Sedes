@@ -16,6 +16,8 @@
  */
 package eu.debooy.sedes.service;
 
+import eu.debooy.doosutils.PersistenceConstants;
+import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.LandDao;
 import eu.debooy.sedes.domain.LandDto;
@@ -32,6 +34,7 @@ import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -63,6 +66,24 @@ public class LandService {
   public void delete(Long landId) {
     LandDto land  = landDao.getByPrimaryKey(landId);
     landDao.delete(land);
+  }
+
+  @GET
+  @Path("/{landId}")
+  public Response getLand(@PathParam(LandDto.COL_LANDID) Long landId) {
+    LandDto  land;
+
+    try {
+      land  = landDao.getLand(landId);
+    } catch (ObjectNotFoundException e) {
+      var message = new Message.Builder()
+                               .setAttribute(LandDto.COL_LANDID)
+                               .setMessage(PersistenceConstants.NOTFOUND)
+                               .setSeverity(Message.ERROR).build();
+      return Response.status(400).entity(message).build();
+    }
+
+    return Response.ok().entity(land).build();
   }
 
   @GET
