@@ -18,9 +18,7 @@ package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandDto;
-
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -30,7 +28,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author Marco de Booij
  */
 public class Land
-    extends Formulier implements Cloneable, Comparable<Land>, Serializable {
+    extends Formulier implements Comparable<Land>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private boolean gewijzigd = false;
@@ -62,18 +60,14 @@ public class Land
     taal              = landDto.getTaal();
     werelddeelId      = landDto.getWerelddeelId();
   }
-  
-  public Land clone() throws CloneNotSupportedException {
-    Land  clone = (Land) super.clone();
 
-    return clone;
-  }
-
+  @Override
   public int compareTo(Land andere) {
     return new CompareToBuilder().append(landId, andere.landId)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Land)) {
       return false;
@@ -130,6 +124,7 @@ public class Land
     return werelddeelId;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).toHashCode();
   }

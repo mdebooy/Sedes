@@ -20,6 +20,7 @@ import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
+import eu.debooy.sedes.domain.RegioDto;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import org.json.simple.JSONObject;
 
 
 /**
@@ -40,24 +42,27 @@ import javax.inject.Named;
 @Lock(LockType.WRITE)
 public class I18nLandnaamService implements II18nLandnaam {
   private transient LandnaamService landnaamService;
+  private transient RegioService    regioService;
 
-  private Map<Long, Map<String, String>>
+  private final Map<Long, Map<String, String>>
       landnamenCache  = new HashMap<>();
   // TODO Ophalen uit database.
   private final String  standaardTaal = "nl";
 
   @Override
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void clear() {
     landnamenCache.clear();
   }
 
   @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public String getI18nLandnaam(Long landId) {
     return getI18nLandnaam(landId, getStandaardTaal());
   }
 
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public String getI18nLandnaam(Long landId, String taal) {
     Map<String, String> landnamen = new HashMap<>();
     if (landnamenCache.containsKey(landId)) {
@@ -101,18 +106,53 @@ public class I18nLandnaamService implements II18nLandnaam {
     return landnaamService;
   }
 
+  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public JSONObject getRegio(Long regioId) {
+    var json  = new JSONObject();
+    try {
+      var regio = getRegioService().regio(regioId);
+
+      json.put(RegioDto.COL_LANDID, regio.getLandId());
+      json.put(RegioDto.COL_REGIO, regio.getRegio());
+      json.put(RegioDto.COL_REGIOID, regio.getRegioId());
+      json.put(RegioDto.COL_REGIOKODE, regio.getRegiokode());
+    } catch (ObjectNotFoundException e) {
+      // Geef een leeg JSONObject.
+    }
+
+    return json;
+  }
+
+  private RegioService getRegioService() {
+    if (null == regioService) {
+      regioService = (RegioService)
+          new JNDI.JNDINaam().metBean(RegioService.class).locate();
+    }
+
+    return regioService;
+  }
+
   private String getStandaardTaal() {
     return standaardTaal;
   }
 
   @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectLandnamen() {
     return selectLandnamen(getStandaardTaal());
   }
 
   @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectLandnamen(String taal) {
     return getLandnaamService().selectLandnamen(taal);
+  }
+
+  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<SelectItem> getSelectRegios() {
+    return getRegioService().selectRegios();
   }
 
   @Override

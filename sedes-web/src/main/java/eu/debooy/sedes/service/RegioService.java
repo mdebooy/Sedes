@@ -1,7 +1,7 @@
-/**
- * Copyright 2016 Marco de Booij
+/*
+ * Copyright (c) 2023 Marco de Booij
  *
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
  * you may not use this work except in compliance with the Licence. You may
  * obtain a copy of the Licence at:
@@ -14,21 +14,22 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
 package eu.debooy.sedes.service;
 
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
-import eu.debooy.sedes.access.LandDao;
-import eu.debooy.sedes.domain.LandDto;
-import eu.debooy.sedes.form.Land;
+import eu.debooy.sedes.access.RegioDao;
+import eu.debooy.sedes.domain.RegioDto;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -46,36 +47,31 @@ import org.slf4j.LoggerFactory;
  * @author Marco de Booij
  */
 @Singleton
-@Named("sedesLandService")
-@Path("/landen")
+@Named("sedesRegioService")
+@Path("/regios")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Lock(LockType.WRITE)
-public class LandService {
+public class RegioService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(LandService.class);
 
   @Inject
-  private LandDao landDao;
+  private RegioDao  regioDao;
 
-  public LandService() {
-    LOGGER.debug("init LandService");
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void delete(Long landId) {
-    LandDto land  = landDao.getByPrimaryKey(landId);
-    landDao.delete(land);
+  public RegioService() {
+    LOGGER.debug("init RegioService");
   }
 
   @GET
-  @Path("/{landId}")
-  public Response getLand(@PathParam(LandDto.COL_LANDID) Long landId) {
+  @Path("/{regioId}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getRegio(@PathParam(RegioDto.COL_REGIOID) Long regioId) {
     try {
-      return Response.ok().entity(landDao.getLand(landId)).build();
+      return Response.ok().entity(regioDao.getRegio(regioId)).build();
     } catch (ObjectNotFoundException e) {
       var message = new Message.Builder()
-                               .setAttribute(LandDto.COL_LANDID)
+                               .setAttribute(RegioDto.COL_REGIOID)
                                .setMessage(PersistenceConstants.NOTFOUND)
                                .setSeverity(Message.ERROR).build();
       return Response.status(400).entity(message).build();
@@ -83,43 +79,42 @@ public class LandService {
   }
 
   @GET
-  public Response getLanden() {
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getRegios() {
     try {
-      return Response.ok().entity(landDao.getAll()).build();
+      return Response.ok().entity(regioDao.getAll()).build();
     } catch (ObjectNotFoundException e) {
       return Response.ok().entity(new ArrayList<>()).build();
     }
   }
 
+  @GET
+  @Path("/ddlb")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public LandDto land(Long landId) {
-    LandDto land  = landDao.getByPrimaryKey(landId);
-
-    return land;
+  public Response getSelectRegios() {
+    return Response.ok().entity(selectRegios()).build();
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Collection<Land> query() {
-    Collection<Land>      landen  = new ArrayList<>();
+  public RegioDto regio(Long regioId) {
     try {
-      Collection<LandDto> rijen   = landDao.getAll();
-      for (LandDto rij : rijen) {
-        landen.add(new Land(rij));
-      }
+      return regioDao.getRegio(regioId);
+    } catch (ObjectNotFoundException e) {
+      return new RegioDto();
+    }
+  }
+
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public List<SelectItem> selectRegios() {
+    List<SelectItem>  items = new ArrayList<>();
+
+    try {
+      regioDao.getAll().forEach(
+          regio -> items.add(new SelectItem(regio.getRegioId().toString(),
+                                            regio.getRegio())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }
-
-    return landen;
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(LandDto land) {
-    if (null == land.getLandId()) {
-      landDao.create(land);
-      land.setLandId(land.getLandId());
-    } else {
-      landDao.update(land);
-    }
+    return items;
   }
 }

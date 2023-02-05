@@ -17,15 +17,14 @@
 package eu.debooy.sedes.component.business;
 
 import java.util.Collection;
-
 import javax.ejb.Remote;
 import javax.faces.model.SelectItem;
+import org.json.simple.JSONObject;
 
 
 /**
  * @author Marco de Booij
  */
-//TODO Toegang beperken via rollen.
 @Remote
 public interface II18nLandnaam {
   void                    clear();
@@ -34,5 +33,7 @@ public interface II18nLandnaam {
   String                  getI18nLandnaam(Long landId, String taal);
   Collection<SelectItem>  selectLandnamen();
   Collection<SelectItem>  selectLandnamen(String taal);
+  Collection<SelectItem>  getSelectRegios();
+  JSONObject              getRegio(Long regioId);
   int                     size();
 }

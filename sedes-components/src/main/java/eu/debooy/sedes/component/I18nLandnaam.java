@@ -20,10 +20,8 @@ import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.components.bean.Gebruiker;
 import eu.debooy.doosutils.service.CDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
-
 import java.io.Serializable;
 import java.util.Collection;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
@@ -43,15 +41,9 @@ public class I18nLandnaam implements Serializable {
 
   @EJB
   private transient II18nLandnaam i18nLandnaam;
-  
+
   private Gebruiker     gebruiker;
 
-  /**
-   * Geef de naam van het land in de taal van de Gebruiker.
-   * 
-   * @param landId
-   * @return String
-   */
   public String landnaam(Long landId) {
     if (null == gebruiker) {
       gebruiker = (Gebruiker) CDI.getBean("gebruiker");
@@ -63,13 +55,6 @@ public class I18nLandnaam implements Serializable {
     return landnaam(landId, taal);
   }
 
-  /**
-   * Geef de naam van het land in de gevraagde taal.
-   * 
-   * @param landId
-   * @param taal
-   * @return String
-   */
   public String landnaam(Long landId, String taal) {
     if (DoosUtils.isBlankOrNull(landId)) {
       return "<null>";
@@ -78,11 +63,6 @@ public class I18nLandnaam implements Serializable {
     return i18nLandnaam.getI18nLandnaam(landId, taal);
   }
 
-  /**
-   * Geef alle landnamen (en landId) in de gevraagde taal.
-   *  
-   * @return Collection<SelectItem>
-   */
   public Collection<SelectItem> selectLandnamen() {
     if (null == gebruiker) {
       gebruiker = (Gebruiker) CDI.getBean("gebruiker");
@@ -94,12 +74,6 @@ public class I18nLandnaam implements Serializable {
     return selectLandnamen(taal);
   }
 
-  /**
-   * Geef alle landnamen (en landId) in de gevraagde taal.
-   *  
-   * @param taal
-   * @return Collection<SelectItem>
-   */
   public Collection<SelectItem> selectLandnamen(String taal) {
     return i18nLandnaam.selectLandnamen(taal);
   }
