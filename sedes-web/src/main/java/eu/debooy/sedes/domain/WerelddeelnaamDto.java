@@ -90,7 +90,7 @@ public class WerelddeelnaamDto extends Dto
       return true;
     }
 
-    WerelddeelnaamDto werelddeelnaamDto = (WerelddeelnaamDto) object;
+    var werelddeelnaamDto = (WerelddeelnaamDto) object;
     return new EqualsBuilder().append(werelddeelId,
                                       werelddeelnaamDto.werelddeelId)
                               .append(taal, werelddeelnaamDto.taal)

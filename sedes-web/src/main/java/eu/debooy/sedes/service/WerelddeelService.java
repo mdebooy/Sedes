@@ -20,10 +20,8 @@ import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.WerelddeelDao;
 import eu.debooy.sedes.domain.WerelddeelDto;
 import eu.debooy.sedes.form.Werelddeel;
-
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -31,7 +29,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,33 +46,20 @@ public class WerelddeelService {
   @Inject
   private WerelddeelDao             werelddeelDao;
 
-  /**
-   * Initialisatie.
-   */
   public WerelddeelService() {
     LOGGER.debug("init WerelddeelService");
   }
 
 
-  /**
-   * Verwijder de WerelddeelDto.
-   * 
-   * @param Long werelddeelId
-   */
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void delete(Long werelddeelId) {
     WerelddeelDto dto = werelddeelDao.getByPrimaryKey(werelddeelId);
     werelddeelDao.delete(dto);
   }
 
-  /**
-   * Geef de werelddelen.
-   * 
-   * @return Collection<WerelddeelDto>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Werelddeel> query() {
-    Collection<Werelddeel>  werelddelen  = new ArrayList<Werelddeel>();
+    Collection<Werelddeel>  werelddelen  = new ArrayList<>();
     try {
       Collection<WerelddeelDto> rijen    = werelddeelDao.getAll();
       for (WerelddeelDto rij : rijen) {
@@ -88,11 +72,6 @@ public class WerelddeelService {
     return werelddelen;
   }
 
-  /**
-   * Maak of wijzig de Werelddeel in de database.
-   * 
-   * @param WerelddeelDto werelddee
-   */
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(WerelddeelDto werelddeel) {
     if (null == werelddeel.getWerelddeelId()) {
@@ -103,16 +82,8 @@ public class WerelddeelService {
     }
   }
 
-  /**
-   * Geef het werelddeel
-   * 
-   * @param Long werelddeelId
-   * @return WerelddeelDto
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public WerelddeelDto werelddeel(Long werelddeelId) {
-    WerelddeelDto werelddeel  = werelddeelDao.getByPrimaryKey(werelddeelId);
-
-    return werelddeel;
+    return werelddeelDao.getByPrimaryKey(werelddeelId);
   }
 }

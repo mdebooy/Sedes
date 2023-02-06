@@ -21,13 +21,11 @@ import eu.debooy.sedes.access.WerelddeelnaamDao;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import eu.debooy.sedes.domain.WerelddeelnaamPK;
 import eu.debooy.sedes.form.Werelddeelnaam;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -36,7 +34,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,33 +58,15 @@ public class WerelddeelnaamService {
     LOGGER.debug("init WerelddeelnaamService");
   }
 
-  /**
-   * Geef een WerelddeelnaamDto.
-   * 
-   * @param werelddeelId
-   * @param taal
-   * @return WerelddeelnaamDto
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public WerelddeelnaamDto werelddeelnaam(Long werelddeelId, String taal) {
-    WerelddeelnaamPK  sleutel         =
-        new WerelddeelnaamPK(taal, werelddeelId);
-    WerelddeelnaamDto werelddeelnaam  =
-        werelddeelnaamDao.getByPrimaryKey(sleutel);
-
-    return werelddeelnaam;
+    return werelddeelnaamDao
+              .getByPrimaryKey(new WerelddeelnaamPK(taal, werelddeelId));
   }
 
-  /**
-   * Geef de landnamen in een taal.
-   * 
-   * @param String taal
-   * @return Collection<Werelddeelnaam>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Werelddeelnaam> werelddeelnamen(String taal) {
-    Set<Werelddeelnaam>             werelddeelnamen =
-        new HashSet<Werelddeelnaam>();
+    Set<Werelddeelnaam>             werelddeelnamen = new HashSet<>();
     try {
       Collection<WerelddeelnaamDto> rijen           =
           werelddeelnaamDao.getPerTaal(taal);
@@ -101,16 +80,9 @@ public class WerelddeelnaamService {
     return werelddeelnamen;
   }
 
-  /**
-   * Geef de werelddeelnamen van een werelddeel.
-   * 
-   * @param Long werelddeelId
-   * @return Collection<Werelddeelnaam>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Werelddeelnaam> query(Long werelddeelId) {
-    Set<Werelddeelnaam>             werelddeelnamen =
-        new HashSet<Werelddeelnaam>();
+    Set<Werelddeelnaam>             werelddeelnamen = new HashSet<>();
     try {
       Collection<WerelddeelnaamDto> rijen           =
           werelddeelnaamDao.getPerWerelddeel(werelddeelId);
@@ -124,18 +96,11 @@ public class WerelddeelnaamService {
     return werelddeelnamen;
   }
 
-  /**
-   * Geef alle werelddeelnamen (en werelddeelId) in de gevraagde taal als
-   * SelectItems.
-   *  
-   * @param taal
-   * @return Collection<SelectItem>
-   */
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectWerelddeelnamen(String taal) {
-    Collection<SelectItem> items = new LinkedList<SelectItem>();
+    Collection<SelectItem> items = new LinkedList<>();
     Set<WerelddeelnaamDto> rijen =
-        new TreeSet<WerelddeelnaamDto>(new WerelddeelnaamDto.NaamComparator());
+        new TreeSet<>(new WerelddeelnaamDto.NaamComparator());
     try {
       rijen.addAll(werelddeelnaamDao.getPerTaal(taal));
       for (WerelddeelnaamDto rij : rijen) {

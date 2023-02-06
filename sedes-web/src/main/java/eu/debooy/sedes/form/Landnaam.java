@@ -18,10 +18,8 @@ package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandnaamDto;
-
 import java.io.Serializable;
 import java.util.Comparator;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -30,14 +28,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author Marco de Booij
  */
 public class Landnaam
-    extends Formulier implements Cloneable, Comparable<Landnaam>, Serializable {
+    extends Formulier implements Comparable<Landnaam>, Serializable {
   private static final  long  serialVersionUID  = 1L;
-
-  private boolean gewijzigd = false;
 
   private String    hoofdstad;
   private Long      landId;
-  private String    landnaam;
+  private String    naam;
   private String    officieleNaam;
   private String    taal;
 
@@ -46,7 +42,7 @@ public class Landnaam
   public Landnaam(LandnaamDto landnaamDto) {
     hoofdstad     = landnaamDto.getHoofdstad();
     landId        = landnaamDto.getLandId();
-    landnaam      = landnaamDto.getLandnaam();
+    naam          = landnaamDto.getLandnaam();
     officieleNaam = landnaamDto.getOfficieleNaam();
     taal          = landnaamDto.getTaal();
   }
@@ -55,23 +51,20 @@ public class Landnaam
       implements Comparator<Landnaam>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
+    @Override
     public int compare(Landnaam landnaam1, Landnaam landnaam2) {
-      return landnaam1.landnaam.compareTo(landnaam2.landnaam);
+      return landnaam1.naam.compareTo(landnaam2.naam);
     }
   }
 
-  public Landnaam clone() throws CloneNotSupportedException {
-    Landnaam  clone = (Landnaam) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(Landnaam andere) {
     return new CompareToBuilder().append(landId, andere.landId)
                                  .append(taal, andere.taal)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Landnaam)) {
       return false;
@@ -80,7 +73,7 @@ public class Landnaam
       return true;
     }
 
-    Landnaam  andere  = (Landnaam) object;
+    var andere  = (Landnaam) object;
     return new EqualsBuilder().append(landId, andere.landId)
                               .append(taal, andere.taal).isEquals();
   }
@@ -94,7 +87,7 @@ public class Landnaam
   }
 
   public String getLandnaam() {
-    return landnaam;
+    return naam;
   }
 
   public String getOfficieleNaam() {
@@ -105,12 +98,9 @@ public class Landnaam
     return taal;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).append(taal).toHashCode();
-  }
-
-  public boolean isGewijzigd() {
-    return gewijzigd;
   }
 
   public void persist(LandnaamDto parameter) {
@@ -122,9 +112,9 @@ public class Landnaam
                                     parameter.getLandId()).isEquals()) {
       parameter.setLandId(landId);
     }
-    if (!new EqualsBuilder().append(landnaam,
+    if (!new EqualsBuilder().append(naam,
                                     parameter.getLandnaam()).isEquals()) {
-      parameter.setLandnaam(landnaam);
+      parameter.setLandnaam(naam);
     }
     if (!new EqualsBuilder().append(officieleNaam,
                                     parameter.getOfficieleNaam()).isEquals()) {
@@ -137,38 +127,22 @@ public class Landnaam
   }
 
   public void setHoofdstad(String hoofdstad) {
-    if (!new EqualsBuilder().append(this.hoofdstad, hoofdstad).isEquals()) {
-      gewijzigd       = true;
-      this.hoofdstad  = hoofdstad;
-    }
+    this.hoofdstad  = hoofdstad;
   }
 
   public void setLandId(Long landId) {
-    if (!new EqualsBuilder().append(this.landId, landId).isEquals()) {
-      gewijzigd   = true;
-      this.landId = landId;
-    }
+    this.landId = landId;
   }
 
-  public void setLandnaam(String landnaam) {
-    if (!new EqualsBuilder().append(this.landnaam, landnaam).isEquals()) {
-      gewijzigd     = true;
-      this.landnaam = landnaam;
-    }
+  public void setLandnaam(String naam) {
+    this.naam = naam;
   }
 
   public void setOfficieleNaam(String officieleNaam) {
-    if (!new EqualsBuilder().append(this.officieleNaam, officieleNaam)
-                            .isEquals()) {
-      gewijzigd           = true;
-      this.officieleNaam  = officieleNaam;
-    }
+    this.officieleNaam  = officieleNaam;
   }
 
   public void setTaal(String taal) {
-    if (!new EqualsBuilder().append(this.taal, taal).isEquals()) {
-      gewijzigd = true;
-      this.taal = taal;
-    }
+    this.taal = taal;
   }
 }

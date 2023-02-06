@@ -17,7 +17,6 @@
 package eu.debooy.sedes.domain;
 
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -26,53 +25,36 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class LandnaamPK
-    implements Cloneable, Comparable<LandnaamPK>, Serializable {
+public class LandnaamPK implements Comparable<LandnaamPK>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private Long    landId;
   private String  taal;
 
-  /**
-   * Standaard constructor.
-   */
-  public LandnaamPK() {}
-
-  /**
-   * @param Long landId
-   * @param Long taal
-   */
   public LandnaamPK(Long landId, String taal) {
     super();
     this.landId  = landId;
     this.taal = taal;
   }
 
-  public LandnaamPK clone() throws CloneNotSupportedException {
-    LandnaamPK  clone = (LandnaamPK) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(LandnaamPK landnaamPK) {
     return new CompareToBuilder().append(landId, landnaamPK.landId)
                                  .append(taal, landnaamPK.taal)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof LandnaamPK)) {
       return false;
     }
-    LandnaamPK landnaamPK = (LandnaamPK) object;
+    var landnaamPK = (LandnaamPK) object;
     return new EqualsBuilder().append(landId, landnaamPK.landId)
                               .append(taal, landnaamPK.taal)
                               .isEquals();
   }
 
-  /**
-   * @return Long de landId
-   */
   public Long getLandId() {
     return landId;
   }
@@ -84,25 +66,21 @@ public class LandnaamPK
     return taal;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId)
                                 .append(taal).toHashCode();
   }
 
-  /**
-   * @param Long landId de waarde van landId
-   */
   public void setLandId(Long landId) {
     this.landId  = landId;
   }
 
-  /**
-   * @param String taal de waarde van taal
-   */
   public void setTaal(String taal) {
     this.taal = taal;
   }
 
+  @Override
   public String toString() {
     return new StringBuilder().append("LandnaamPK")
                               .append(" (landId=").append(landId)

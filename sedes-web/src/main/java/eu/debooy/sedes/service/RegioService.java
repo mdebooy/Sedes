@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @Lock(LockType.WRITE)
 public class RegioService {
   private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(LandService.class);
+      LoggerFactory.getLogger(RegioService.class);
 
   @Inject
   private RegioDao  regioDao;

@@ -17,7 +17,6 @@
 package eu.debooy.sedes.domain;
 
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -38,6 +37,7 @@ public class WerelddeelnaamPK implements Serializable {
     this.werelddeelId = werelddeelId;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof WerelddeelnaamPK)) {
       return false;
@@ -57,6 +57,7 @@ public class WerelddeelnaamPK implements Serializable {
     return werelddeelId;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId)
                                 .append(taal).toHashCode();
@@ -70,8 +71,9 @@ public class WerelddeelnaamPK implements Serializable {
     this.werelddeelId = werelddeelId;
   }
 
+  @Override
   public String toString() {
-    return new StringBuilder().append("LandnaamPK")
+    return new StringBuilder().append("WerelddeelnaamPK")
                               .append(", taal=").append(taal)
                               .append(" (werelddeelId=").append(werelddeelId)
                               .append(")").toString();

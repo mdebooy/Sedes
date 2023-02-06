@@ -136,10 +136,7 @@ public class LandnaamService {
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public LandnaamDto landnaam(Long landId, String taal) {
-    var sleutel   = new LandnaamPK(landId, taal);
-    var landnaam  = landnaamDao.getByPrimaryKey(sleutel);
-
-    return landnaam;
+    return landnaamDao.getByPrimaryKey(new LandnaamPK(landId, taal));
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)

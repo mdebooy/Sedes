@@ -18,10 +18,8 @@ package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
-
 import java.io.Serializable;
 import java.util.Comparator;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -34,43 +32,37 @@ public class Werelddeelnaam
     extends Formulier implements Cloneable, Comparable<Werelddeelnaam>, Serializable{
   private static final  long  serialVersionUID  = 1L;
 
-  private boolean gewijzigd = false;
-
   private String    taal;
   private Long      werelddeelId;
-  private String    werelddeelnaam;
+  private String    naam;
 
   public Werelddeelnaam() {}
 
   public Werelddeelnaam(WerelddeelnaamDto werelddeelnaamDto) {
-    taal            = werelddeelnaamDto.getTaal();
-    werelddeelId    = werelddeelnaamDto.getWerelddeelId();
-    werelddeelnaam  = werelddeelnaamDto.getWerelddeelnaam();
+    taal          = werelddeelnaamDto.getTaal();
+    werelddeelId  = werelddeelnaamDto.getWerelddeelId();
+    naam          = werelddeelnaamDto.getWerelddeelnaam();
   }
 
   public static class NaamComparator
       implements Comparator<Werelddeelnaam>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
+    @Override
     public int compare(Werelddeelnaam werelddeelnaam1,
                        Werelddeelnaam werelddeelnaam2) {
-      return werelddeelnaam1.werelddeelnaam
-                               .compareTo(werelddeelnaam2.werelddeelnaam);
+      return werelddeelnaam1.naam.compareTo(werelddeelnaam2.naam);
     }
   }
 
-  public Werelddeelnaam clone() throws CloneNotSupportedException {
-    Werelddeelnaam  clone = (Werelddeelnaam) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(Werelddeelnaam andere) {
     return new CompareToBuilder().append(werelddeelId, andere.werelddeelId)
                                  .append(taal, andere.taal)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Werelddeelnaam)) {
       return false;
@@ -79,7 +71,7 @@ public class Werelddeelnaam
       return true;
     }
 
-    Werelddeelnaam  andere  = (Werelddeelnaam) object;
+    var  andere  = (Werelddeelnaam) object;
     return new EqualsBuilder().append(werelddeelId, andere.werelddeelId)
                               .append(taal, andere.taal).isEquals();
   }
@@ -93,15 +85,12 @@ public class Werelddeelnaam
   }
 
   public String getWerelddeelnaam() {
-    return werelddeelnaam;
+    return naam;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).append(taal).toHashCode();
-  }
-
-  public boolean isGewijzigd() {
-    return gewijzigd;
   }
 
   public void persist(WerelddeelnaamDto parameter) {
@@ -113,32 +102,21 @@ public class Werelddeelnaam
                                     parameter.getWerelddeelId()).isEquals()) {
       parameter.setWerelddeelId(werelddeelId);
     }
-    if (!new EqualsBuilder().append(werelddeelnaam,
+    if (!new EqualsBuilder().append(naam,
                                     parameter.getWerelddeelnaam()).isEquals()) {
-      parameter.setWerelddeelnaam(werelddeelnaam);
+      parameter.setWerelddeelnaam(naam);
     }
   }
 
   public void setTaal(String taal) {
-    if (!new EqualsBuilder().append(this.taal, taal).isEquals()) {
-      gewijzigd = true;
-      this.taal = taal;
-    }
+    this.taal         = taal;
   }
 
   public void setWerelddeelId(Long werelddeelId) {
-    if (!new EqualsBuilder().append(this.werelddeelId, werelddeelId)
-                            .isEquals()) {
-      gewijzigd         = true;
-      this.werelddeelId = werelddeelId;
-    }
+    this.werelddeelId = werelddeelId;
   }
 
-  public void setWerelddeelnaam(String werelddeelnaam) {
-    if (!new EqualsBuilder().append(this.werelddeelnaam, werelddeelnaam)
-                            .isEquals()) {
-      gewijzigd           = true;
-      this.werelddeelnaam = werelddeelnaam;
-    }
+  public void setWerelddeelnaam(String naam) {
+    this.naam         = naam;
   }
 }

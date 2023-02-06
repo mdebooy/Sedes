@@ -90,7 +90,6 @@ public class LandDto extends Dto implements Comparable<LandDto> {
   private Map<String, LandnaamDto>  landnamen = new HashMap<>();
 
   public void addLandnaam(LandnaamDto landnaamDto) {
-    //TODO Kijken voor 'de' JPA manier.
     if (null == landnaamDto.getLandId()) {
       landnaamDto.setLandId(landId);
     }
@@ -116,7 +115,7 @@ public class LandDto extends Dto implements Comparable<LandDto> {
       return true;
     }
 
-    LandDto landDto = (LandDto) object;
+    var landDto = (LandDto) object;
     return new EqualsBuilder().append(landId, landDto.landId)
                               .isEquals();
   }

@@ -31,8 +31,6 @@ public class Land
     extends Formulier implements Comparable<Land>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
-  private boolean gewijzigd = false;
-
   private boolean bestaat;
   private String  iso2;
   private String  iso3;
@@ -133,10 +131,6 @@ public class Land
     return getBestaat();
   }
 
-  public boolean isGewijzigd() {
-    return gewijzigd;
-  }
-
   public void persist(LandDto parameter) {
     if (!new EqualsBuilder().append(bestaat,
                                     parameter.getBestaat()).isEquals()) {
@@ -186,84 +180,46 @@ public class Land
   }
 
   public void setBestaat(boolean bestaat) {
-    if (!new EqualsBuilder().append(this.bestaat, bestaat).isEquals()) {
-      gewijzigd     = true;
-      this.bestaat  = bestaat;
-    }
+    this.bestaat  = bestaat;
   }
 
   public void setIso2(String iso2) {
-    if (!new EqualsBuilder().append(this.iso2, iso2).isEquals()) {
-      gewijzigd = true;
-      this.iso2 = iso2;
-    }
+    this.iso2 = iso2;
   }
 
   public void setIso3(String iso3) {
-    if (!new EqualsBuilder().append(this.iso3, iso3).isEquals()) {
-      gewijzigd = true;
-      this.iso3 = iso3;
-    }
+    this.iso3 = iso3;
   }
 
   public void setLandId(Long landId) {
-    if (!new EqualsBuilder().append(this.landId, landId).isEquals()) {
-      gewijzigd   = true;
-      this.landId = landId;
-    }
+    this.landId = landId;
   }
 
   public void setLandnummer(Long landnummer) {
-    if (!new EqualsBuilder().append(this.landnummer, landnummer).isEquals()) {
-      gewijzigd       = true;
-      this.landnummer = landnummer;
-    }
+    this.landnummer = landnummer;
   }
 
   public void setMuntId(Long muntId) {
-    if (!new EqualsBuilder().append(this.muntId, muntId).isEquals()) {
-      gewijzigd   = true;
-      this.muntId = muntId;
-    }
-    this.muntId = muntId;
+        this.muntId = muntId;
   }
 
   public void setPostkodeScheiding(String postkodeScheiding) {
-    if (!new EqualsBuilder().append(this.postkodeScheiding, postkodeScheiding)
-                            .isEquals()) {
-      gewijzigd               = true;
-      this.postkodeScheiding  = postkodeScheiding;
-    }
+    this.postkodeScheiding  = postkodeScheiding;
   }
 
   public void setPostkodeType(String postkodeType) {
-    if (!new EqualsBuilder().append(this.postkodeType, postkodeType)
-                            .isEquals()) {
-      gewijzigd         = true;
-      this.postkodeType = postkodeType;
-    }
+    this.postkodeType = postkodeType;
   }
 
   public void setPostLandkode(String postLandkode) {
-    if (!new EqualsBuilder().append(this.postLandkode, postLandkode)
-                            .isEquals()) {
-      gewijzigd         = true;
-      this.postLandkode = postLandkode;
-    }
+    this.postLandkode = postLandkode;
   }
 
   public void setTaal(String taal) {
-    if (!new EqualsBuilder().append(this.taal, taal).isEquals()) {
-      gewijzigd = true;
-      this.taal = taal;
-    }
+    this.taal = taal;
   }
 
   public void setWerelddeelId(Long werelddeelId) {
-    if (!new EqualsBuilder().append(this.werelddeelId, werelddeelId)
-                            .isEquals()) {
-      gewijzigd         = true;
-      this.werelddeelId = werelddeelId;
-    }
+    this.werelddeelId = werelddeelId;
   }
 }

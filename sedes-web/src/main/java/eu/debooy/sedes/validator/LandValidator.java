@@ -30,7 +30,7 @@ public final class LandValidator {
   }
 
   public static List<Message> valideer(Land land) {
-    List<Message> fouten  = new ArrayList<Message>();
+    List<Message> fouten  = new ArrayList<>();
 
     return fouten;
   }

@@ -99,7 +99,7 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
       return true;
     }
 
-    LandnaamDto landnaamDto = (LandnaamDto) object;
+    var landnaamDto = (LandnaamDto) object;
     return new EqualsBuilder().append(landId, landnaamDto.landId)
                               .append(taal, landnaamDto.taal)
                               .isEquals();

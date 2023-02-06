@@ -18,9 +18,7 @@ package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.WerelddeelDto;
-
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -30,7 +28,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author Marco de Booij
  */
 public class Werelddeel
-    extends Formulier implements Cloneable, Comparable<Werelddeel>, Serializable{
+    extends Formulier implements Comparable<Werelddeel>, Serializable{
   private static final  long  serialVersionUID  = 1L;
 
   private boolean gewijzigd = false;
@@ -43,17 +41,13 @@ public class Werelddeel
     werelddeelId    = werelddeelDto.getWerelddeelId();
   }
 
-  public Werelddeel clone() throws CloneNotSupportedException {
-    Werelddeel  clone = (Werelddeel) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(Werelddeel andere) {
     return new CompareToBuilder().append(werelddeelId, andere.werelddeelId)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Werelddeel)) {
       return false;
@@ -62,7 +56,7 @@ public class Werelddeel
       return true;
     }
 
-    Werelddeel  andere  = (Werelddeel) object;
+    var andere  = (Werelddeel) object;
     return new EqualsBuilder().append(werelddeelId, andere.werelddeelId)
                               .isEquals();
   }
@@ -71,6 +65,7 @@ public class Werelddeel
     return werelddeelId;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).toHashCode();
   }
@@ -80,17 +75,10 @@ public class Werelddeel
   }
 
   public void persist(WerelddeelDto parameter) {
-    if (!new EqualsBuilder().append(werelddeelId,
-                                    parameter.getWerelddeelId()).isEquals()) {
-      parameter.setWerelddeelId(werelddeelId);
-    }
+    parameter.setWerelddeelId(werelddeelId);
   }
 
   public void setWerelddeelId(Long werelddeelId) {
-    if (!new EqualsBuilder().append(this.werelddeelId, werelddeelId)
-                            .isEquals()) {
-      gewijzigd         = true;
-      this.werelddeelId = werelddeelId;
-    }
+    this.werelddeelId = werelddeelId;
   }
 }

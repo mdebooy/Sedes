@@ -21,16 +21,15 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.form.Landnaam;
 import eu.debooy.sedes.form.Quizvraag;
 import eu.debooy.sedes.form.Werelddeelnaam;
-
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -63,13 +62,8 @@ public class QuizController extends Sedes {
     redirect(QUIZ_REDIRECT);
   }
 
-  /**
-   * Geef alle beantwoorde Quizvragen
-   * 
-   * @return Collection<Quizvraag>
-   */
   public Collection<Quizvraag> getAntwoorden() {
-    Set<Quizvraag> antwoorden  = new HashSet<Quizvraag>();
+    Set<Quizvraag> antwoorden  = new HashSet<>();
     for (Quizvraag rij : quizvragen) {
       if (DoosUtils.isNotBlankOrNull(rij.getAntwoord())) {
         antwoorden.add(rij);
@@ -79,23 +73,13 @@ public class QuizController extends Sedes {
     return antwoorden;
   }
 
-  /**
-   * Geef het nummer van de vraag.
-   * 
-   * @return Integer
-   */
   public Integer getVraag() {
     return vraag;
   }
 
-  /**
-   * Haal de werelddelen op voor de Quizzen.
-   * 
-   * @return Collection<Werelddeelnaam>
-   */
   public Collection<Werelddeelnaam> getQuizzen() {
     Set<Werelddeelnaam> werelddelen =
-        new TreeSet<Werelddeelnaam>(new Werelddeelnaam.NaamComparator());
+        new TreeSet<>(new Werelddeelnaam.NaamComparator());
     werelddelen
         .addAll(getWerelddeelnaamService()
             .werelddeelnamen(getGebruikersTaal()));
@@ -103,11 +87,6 @@ public class QuizController extends Sedes {
     return werelddelen;
   }
 
-  /**
-   * Geef de volgende vraag.
-   * 
-   * @return Quizvraag
-   */
   public Quizvraag getQuizvraag() {
     if (vraag == quizvragen.size()) {
       quizvraag = new Quizvraag();
@@ -118,24 +97,20 @@ public class QuizController extends Sedes {
     return quizvraag;
   }
 
-  /**
-   * Geef het resultaat in leesbare tekst.
-   * 
-   * @return String
-   */
   public String getQuizResultaat() {
     return MessageFormat.format(getTekst("label.quiz.score"), goedeAntwoorden,
                                 vraag);
   }
 
-  private void prepareerVragen(List<Landnaam> landnamen) {
-    Random  random  = new Random();
-    int     vragen  = Integer.parseInt(getParameter("sedes.quizvragen"));
+  private void prepareerVragen(List<Landnaam> landnamen)
+      throws NoSuchAlgorithmException {
+    var random  = SecureRandom.getInstanceStrong();
+    var vragen  = Integer.parseInt(getParameter("sedes.quizvragen"));
 
     goedeAntwoorden = Integer.valueOf("0");
     vraag           = Integer.valueOf("0");
 
-    for (int i = landnamen.size()-1; i >= 0; i--) {
+    for (var i = landnamen.size()-1; i >= 0; i--) {
       String  hoofdstad =
           DoosUtils.nullToEmpty(landnamen.get(i).getHoofdstad());
       if ("-".equals(hoofdstad) || "".equals(hoofdstad)) {
@@ -145,7 +120,7 @@ public class QuizController extends Sedes {
     if (vragen > landnamen.size()) {
       vragen  = landnamen.size();
     }
-    quizvragen      = new ArrayList<Quizvraag>(vragen);
+    quizvragen      = new ArrayList<>(vragen);
 
     for (int i = 0; i < vragen; i++) {
       int keuze = random.nextInt(landnamen.size());
@@ -154,22 +129,19 @@ public class QuizController extends Sedes {
     }
   }
 
-  /**
-   * Start de Quiz
-   */
   public void startQuiz() {
     setSubTitel(getTekst("sedes.titel.quiz.landenquiz"));
-    List<Landnaam>  landnamen = new ArrayList<Landnaam>();
+    List<Landnaam>  landnamen = new ArrayList<>();
         landnamen.addAll(
             getLandnaamService().bestaandeLandnamen(getGebruikersTaal()));
-    prepareerVragen(landnamen);
-
-    redirect(QUIZ_REDIRECT);
+    try {
+      prepareerVragen(landnamen);
+      redirect(QUIZ_REDIRECT);
+    } catch (NoSuchAlgorithmException e) {
+      generateExceptionMessage(e);
+    }
   }
 
-  /**
-   * Start de Quiz
-   */
   public void startQuiz(Long werelddeelId) {
     setSubTitel(
         MessageFormat
@@ -178,13 +150,16 @@ public class QuizController extends Sedes {
                     .werelddeelnaam(werelddeelId, getGebruikersTaal())
                     .getWerelddeelnaam()));
 
-    List<Landnaam>  landnamen = new ArrayList<Landnaam>();
+    List<Landnaam>  landnamen = new ArrayList<>();
         landnamen.addAll(
             getLandnaamService()
                 .bestaandeLandnamenPerWerelddeel(getGebruikersTaal(),
                                                  werelddeelId));
-    prepareerVragen(landnamen);
-
-    redirect(QUIZ_REDIRECT);
+    try {
+      prepareerVragen(landnamen);
+      redirect(QUIZ_REDIRECT);
+    } catch (NoSuchAlgorithmException e) {
+      generateExceptionMessage(e);
+    }
   }
 }

@@ -32,18 +32,15 @@ import eu.debooy.sedes.form.Landnaam;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.LandValidator;
 import eu.debooy.sedes.validator.LandnaamValidator;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +60,6 @@ public class LandController extends Sedes {
   private Landnaam          landnaam;
   private LandnaamDto       landnaamDto;
 
-  /**
-   * Prepareer een nieuw Land.
-   */
   public void create() {
     landDto = new LandDto();
     land    = new Land();
@@ -74,9 +68,6 @@ public class LandController extends Sedes {
     redirect(LAND_REDIRECT);
   }
 
-  /**
-   * Prepareer een nieuw Landnaam.
-   */
   public void createLandnaam() {
     landnaamDto = new LandnaamDto();
     landnaam    = new Landnaam();
@@ -85,9 +76,6 @@ public class LandController extends Sedes {
     redirect(LANDNAAM_REDIRECT);
   }
 
-  /**
-   * Verwijder de Plaats.
-   */
   public void delete(Long landId) {
     try {
       landDto = getLandService().land(landId);
@@ -104,41 +92,21 @@ public class LandController extends Sedes {
             landDto.getLandnaam(getGebruikersTaal()));
   }
 
-  /**
-   * Geef het geselecteerde land.
-   * 
-   * @return Land
-   */
   public Land getLand() {
     return land;
   }
 
-  /**
-   * Geef de lijst met landen.
-   * 
-   * @return Collection<Land> met Land objecten.
-   */
   public Collection<Land> getLanden() {
     return getLandService().query();
   }
 
-  /**
-   * Geef het geselecteerde landnaam.
-   * 
-   * @return Landnaam
-   */
   public Landnaam getLandnaam() {
     return landnaam;
   }
 
-  /**
-   * Geef de lijst met landnamen voor 1 land.
-   * 
-   * @return Collection<Landnaam> met Landnaam objecten.
-   */
   public Collection<Landnaam> getLandnamen() {
-    Collection<Landnaam>    landnamen = new HashSet<Landnaam>();
-    Collection<LandnaamDto> rijen     = landDto.getLandnamen();
+    Collection<Landnaam>  landnamen = new HashSet<>();
+    var                   rijen     = landDto.getLandnamen();
     for (LandnaamDto rij : rijen) {
       landnamen.add(new Landnaam(rij));
     }
@@ -146,9 +114,6 @@ public class LandController extends Sedes {
     return landnamen;
   }
 
-  /**
-   * Rapport met de landen van de wereld.
-   */
   public void landenlijst() {
     ExportData  exportData  = new ExportData();
 
@@ -165,20 +130,20 @@ public class LandController extends Sedes {
 
     String              taal    = getGebruikersTaal();
     Set<Werelddeelnaam> groepen =
-        new TreeSet<Werelddeelnaam>(new Werelddeelnaam.NaamComparator());
+        new TreeSet<>(new Werelddeelnaam.NaamComparator());
     groepen.addAll(getWerelddeelnaamService().werelddeelnamen(taal));
     for (Werelddeelnaam groep : groepen) {
       Long          werelddeelId    = groep.getWerelddeelId();
       String        werelddeelnaam  = groep.getWerelddeelnaam();
       Set<Landnaam> rijen           =
-          new TreeSet<Landnaam>(new Landnaam.NaamComparator());
+          new TreeSet<>(new Landnaam.NaamComparator());
       rijen.addAll(getLandnaamService()
                      .bestaandeLandnamenPerWerelddeel(taal, werelddeelId));
       for (Landnaam rij : rijen) {
         exportData.addData(new String[] {werelddeelnaam,
                                          rij.getLandnaam(),
                                          rij.getHoofdstad()});
-  
+
       }
     }
 
@@ -188,18 +153,11 @@ public class LandController extends Sedes {
     try {
       Export.export(response, exportData);
       FacesContext.getCurrentInstance().responseComplete();
-    } catch (IllegalArgumentException e) {
-      generateExceptionMessage(e);
-    } catch (TechnicalException e) {
+    } catch (IllegalArgumentException | TechnicalException e) {
       generateExceptionMessage(e);
     }
   }
 
-  /**
-   * Zet het Land dat gevraagd is klaar.
-   * 
-   * @param Long landId
-   */
   public void retrieve(Long landId) {
     landDto = getLandService().land(landId);
     land    = new Land(landDto);
@@ -243,20 +201,17 @@ public class LandController extends Sedes {
     }
   }
 
-  /**
-   * Persist de Landnaam
-   */
   public void saveLandnaam() {
-    List<Message> messages  = LandnaamValidator.valideer(landnaam);
+    var messages  = LandnaamValidator.valideer(landnaam);
     if (!messages.isEmpty()) {
       addMessage(messages);
       return;
     }
 
     try {
-      LandnaamDto landnaamDto = new LandnaamDto();
-      landnaam.persist(landnaamDto);
-      landDto.addLandnaam(landnaamDto);
+      var nieuweLandnaamDto = new LandnaamDto();
+      landnaam.persist(nieuweLandnaamDto);
+      landDto.addLandnaam(nieuweLandnaamDto);
       getLandService().save(landDto);
       switch (getAktie().getAktie()) {
       case PersistenceConstants.CREATE:
@@ -284,11 +239,6 @@ public class LandController extends Sedes {
     redirect(LAND_REDIRECT);
   }
 
-  /**
-   * Zet de Land die gewijzigd gaat worden klaar.
-   * 
-   * @param Long landId
-   */
   public void update(Long landId) {
     landDto = getLandService().land(landId);
     land    = new Land(landDto);
@@ -297,11 +247,6 @@ public class LandController extends Sedes {
     redirect(LAND_REDIRECT);
   }
 
-  /**
-   * Zet de Landnaam die gewijzigd gaat worden klaar.
-   * 
-   * @param Long landId
-   */
   public void updateLandnaam(Long landId, String taal) {
     landnaamDto = getLandnaamService().landnaam(landId, taal);
     landnaam    = new Landnaam(landnaamDto);
@@ -310,11 +255,6 @@ public class LandController extends Sedes {
     redirect(LANDNAAM_REDIRECT);
   }
 
-  /**
-   * Zet de Landnaam die gewijzigd gaat worden klaar.
-   * 
-   * @param Long landId
-   */
   public void updateLandnaam(String taal) {
     landnaamDto = getLandnaamService().landnaam(land.getLandId(), taal);
     landnaam    = new Landnaam(landnaamDto);

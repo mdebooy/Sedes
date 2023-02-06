@@ -18,9 +18,7 @@ package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandnaamDto;
-
 import java.io.Serializable;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -42,20 +40,22 @@ public class Quizvraag
   public Quizvraag(Landnaam landnaam) {
     hoofdstad     = landnaam.getHoofdstad();
     landId        = landnaam.getLandId();
-    this.landnaam = landnaam.getLandnaam(); 
+    this.landnaam = landnaam.getLandnaam();
   }
 
   public Quizvraag(LandnaamDto landnaam) {
     hoofdstad     = landnaam.getHoofdstad();
     landId        = landnaam.getLandId();
-    this.landnaam = landnaam.getLandnaam(); 
+    this.landnaam = landnaam.getLandnaam();
   }
 
+  @Override
   public int compareTo(Quizvraag andere) {
     return new CompareToBuilder().append(landId, andere.landId)
                                  .toComparison();
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof Quizvraag)) {
       return false;
@@ -84,6 +84,7 @@ public class Quizvraag
     return landnaam;
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(landId).toHashCode();
   }

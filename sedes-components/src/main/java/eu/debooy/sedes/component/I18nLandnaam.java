@@ -40,7 +40,7 @@ public class I18nLandnaam implements Serializable {
   private String        taal          = "nl";
 
   @EJB
-  private transient II18nLandnaam i18nLandnaam;
+  private transient II18nLandnaam i18nLandnaamEjb;
 
   private Gebruiker     gebruiker;
 
@@ -60,7 +60,7 @@ public class I18nLandnaam implements Serializable {
       return "<null>";
     }
 
-    return i18nLandnaam.getI18nLandnaam(landId, taal);
+    return i18nLandnaamEjb.getI18nLandnaam(landId, taal);
   }
 
   public Collection<SelectItem> selectLandnamen() {
@@ -75,6 +75,6 @@ public class I18nLandnaam implements Serializable {
   }
 
   public Collection<SelectItem> selectLandnamen(String taal) {
-    return i18nLandnaam.selectLandnamen(taal);
+    return i18nLandnaamEjb.selectLandnamen(taal);
   }
 }

@@ -24,7 +24,6 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-import javax.persistence.Query;
 
 
 /**
@@ -40,7 +39,7 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   public Collection<LandnaamDto> getBestaandeLandnamenPerTaal(String taal) {
-    Query   query         =
+    var query =
         getEntityManager().createNamedQuery(LandnaamDto.QRY_BESTPERTAAL)
                           .setParameter(LandnaamDto.PAR_TAAL, taal);
 
@@ -50,7 +49,7 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   public Collection<LandnaamDto>
       getBestaandeLandnamenPerWerelddeelPerTaal(String taal,
                                                 Long werelddeelId) {
-    Query   query         =
+    var query =
         getEntityManager()
             .createNamedQuery(LandnaamDto.QRY_BESTPERWERELDDEELTAAL)
                           .setParameter(LandnaamDto.PAR_TAAL, taal)
@@ -66,7 +65,7 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   public Collection<LandnaamDto> getPerLand(Long landId) {
-    Query   query         =
+    var query =
         getEntityManager().createNamedQuery(LandnaamDto.QRY_PERLAND)
                           .setParameter(LandnaamDto.PAR_LANDID, landId);
 
@@ -74,7 +73,7 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   public Collection<LandnaamDto> getPerTaal(String taal) {
-    Query   query         =
+    var query =
         getEntityManager().createNamedQuery(LandnaamDto.QRY_PERTAAL)
                           .setParameter(LandnaamDto.PAR_TAAL, taal);
 

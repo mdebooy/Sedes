@@ -19,11 +19,9 @@ package eu.debooy.sedes.domain;
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosLayer;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +33,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -46,8 +43,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="WERELDDELEN", schema="SEDES")
-public class WerelddeelDto extends Dto
-    implements Comparable<WerelddeelDto>, Cloneable {
+public class WerelddeelDto extends Dto implements Comparable<WerelddeelDto> {
   private static final  long  serialVersionUID  = 1L;
 
   @Id
@@ -61,12 +57,7 @@ public class WerelddeelDto extends Dto
   private Map<String, WerelddeelnaamDto>  werelddeelnamen =
       new HashMap<String, WerelddeelnaamDto>();
 
-  public WerelddeelDto clone() throws CloneNotSupportedException {
-    WerelddeelDto clone = (WerelddeelDto) super.clone();
-
-    return clone;
-  }
-
+  @Override
   public int compareTo(WerelddeelDto werelddeelnaamDto) {
     return new CompareToBuilder().append(werelddeelId,
                                          werelddeelnaamDto.werelddeelId)
@@ -81,6 +72,7 @@ public class WerelddeelDto extends Dto
     werelddeelnamen.put(werelddeelnaamDto.getTaal(), werelddeelnaamDto);
   }
 
+  @Override
   public boolean equals(Object object) {
     if (!(object instanceof WerelddeelDto)) {
       return false;
@@ -111,6 +103,7 @@ public class WerelddeelDto extends Dto
     return werelddeelnamen.values();
   }
 
+  @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).toHashCode();
   }

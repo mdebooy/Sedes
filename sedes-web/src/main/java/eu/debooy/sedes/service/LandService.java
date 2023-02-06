@@ -93,9 +93,7 @@ public class LandService {
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public LandDto land(Long landId) {
-    LandDto land  = landDao.getByPrimaryKey(landId);
-
-    return land;
+    return landDao.getByPrimaryKey(landId);
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
