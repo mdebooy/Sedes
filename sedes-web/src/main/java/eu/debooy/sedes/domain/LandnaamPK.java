@@ -31,6 +31,8 @@ public class LandnaamPK implements Comparable<LandnaamPK>, Serializable {
   private Long    landId;
   private String  taal;
 
+  public LandnaamPK() {}
+
   public LandnaamPK(Long landId, String taal) {
     super();
     this.landId  = landId;
