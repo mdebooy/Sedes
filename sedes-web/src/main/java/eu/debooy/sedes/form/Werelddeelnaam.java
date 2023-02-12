@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author Marco de Booij
  */
 public class Werelddeelnaam
-    extends Formulier implements Cloneable, Comparable<Werelddeelnaam>, Serializable{
+    extends Formulier implements Comparable<Werelddeelnaam>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
   private String    taal;
@@ -71,7 +71,7 @@ public class Werelddeelnaam
       return true;
     }
 
-    var  andere  = (Werelddeelnaam) object;
+    var andere  = (Werelddeelnaam) object;
     return new EqualsBuilder().append(werelddeelId, andere.werelddeelId)
                               .append(taal, andere.taal).isEquals();
   }

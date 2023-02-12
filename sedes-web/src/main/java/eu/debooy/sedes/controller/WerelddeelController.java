@@ -16,9 +16,9 @@
  */
 package eu.debooy.sedes.controller;
 
+import eu.debooy.doosutils.ComponentsConstants;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
-import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosRuntimeException;
@@ -29,15 +29,11 @@ import eu.debooy.sedes.form.Werelddeel;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.WerelddeelValidator;
 import eu.debooy.sedes.validator.WerelddeelnaamValidator;
-
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-
 import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +48,17 @@ public class WerelddeelController extends Sedes {
   private static final  Logger  LOGGER            =
       LoggerFactory.getLogger(WerelddeelController.class);
 
+  private static final  String  DTIT_CREATE =
+      "sedes.titel.werelddeelnaam.create";
+  private static final  String  DTIT_UPDATE =
+      "sedes.titel.werelddeelnaam.update";
+  private static final  String  TIT_UPDATE  = "sedes.titel.werelddeel.update";
+
   private Werelddeel        werelddeel;
   private WerelddeelDto     werelddeelDto;
   private Werelddeelnaam    werelddeelnaam;
   private WerelddeelnaamDto werelddeelnaamDto;
 
-  /**
-   * Prepareer een nieuw Werelddeel.
-   */
   public void create() {
     werelddeelDto = new WerelddeelDto();
     try {
@@ -71,89 +70,60 @@ public class WerelddeelController extends Sedes {
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, "");
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
   }
 
-  /**
-   * Prepareer een nieuw Werelddeelnaam.
-   */
   public void createWerelddeelnaam() {
     werelddeelnaamDto = new WerelddeelnaamDto();
     werelddeelnaam    = new Werelddeelnaam();
     setDetailAktie(PersistenceConstants.CREATE);
-    setDetailSubTitel("sedes.titel.werelddeelnaam.create");
+    setDetailSubTitel(DTIT_CREATE);
     redirect(WERELDDEELNAAM_REDIRECT);
   }
 
-  /**
-   * Verwijder de I18nCode
-   * 
-   * @param Long codeId
-   * @param String code
-   */
   public void delete(Long werelddeelId) {
     String  naam  = i18nWerelddeelnaam(werelddeelId);
+
     try {
       getWerelddeelService().delete(werelddeelId);
+      addInfo(PersistenceConstants.DELETED, naam);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, naam);
-      return;
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
-      return;
     }
-    addInfo(PersistenceConstants.DELETED, naam);
   }
 
-  /**
-   * Verwijder de Werelddeelnaam.
-   * 
-   * @param String taalKode
-   */
   public void deleteWerelddeelnaam(String taalKode) {
     try {
       werelddeelDto.removeNaam(taalKode);
       getWerelddeelService().save(werelddeelDto);
+      addInfo(PersistenceConstants.DELETED, "'" + taalKode + "'");
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, taalKode);
-      return;
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
-      return;
     }
-    addInfo(PersistenceConstants.DELETED, "'" + taalKode + "'");
   }
 
-  /**
-   * Geef het geselecteerde werelddeel.
-   * 
-   * @return Werelddeel
-   */
   public Werelddeel getWerelddeel() {
     return werelddeel;
   }
 
-  /**
-   * Geef de geselecteerde werelddeelnaam.
-   * 
-   * @return Werelddeelnaam
-   */
   public Werelddeelnaam getWerelddeelnaam() {
     return werelddeelnaam;
   }
 
-  /**
-   * Geef de lijst met werelddeelnamen.
-   * 
-   * @return Collection<Werelddeelnaam>
-   */
   public Collection<Werelddeelnaam> getWerelddeelnamen() {
-    Collection<Werelddeelnaam>    werelddeelnamen =
-        new HashSet<Werelddeelnaam>();
+    Collection<Werelddeelnaam>  werelddeelnamen = new HashSet<>();
+
     for (WerelddeelnaamDto rij : werelddeelDto.getWerelddeelnamen()) {
       werelddeelnamen.add(new Werelddeelnaam(rij));
     }
@@ -161,20 +131,13 @@ public class WerelddeelController extends Sedes {
     return werelddeelnamen;
   }
 
-  /**
-   * Geef de lijst met werelddelen.
-   * 
-   * @return Collection<Werelddeel>
-   */
   public Collection<Werelddeel> getWerelddelen() {
     return getWerelddeelService().query();
   }
 
-  /**
-   * Persist het Werelddeel
-   */
   public void save() {
-    List<Message> messages  = WerelddeelValidator.valideer(werelddeel);
+    var messages  = WerelddeelValidator.valideer(werelddeel);
+
     if (!messages.isEmpty()) {
       addMessage(messages);
       return;
@@ -184,16 +147,16 @@ public class WerelddeelController extends Sedes {
       werelddeel.persist(werelddeelDto);
       getWerelddeelService().save(werelddeelDto);
       switch (getAktie().getAktie()) {
-      case PersistenceConstants.CREATE:
-        werelddeel.setWerelddeelId(werelddeelDto.getWerelddeelId());
-        addInfo(PersistenceConstants.CREATED, "");
-        break;
-      case PersistenceConstants.UPDATE:
-        addInfo(PersistenceConstants.UPDATED, "");
-        break;
-      default:
-        addError("error.aktie.wrong", getAktie().getAktie());
-        break;
+        case PersistenceConstants.CREATE:
+          werelddeel.setWerelddeelId(werelddeelDto.getWerelddeelId());
+          addInfo(PersistenceConstants.CREATED, "");
+          break;
+        case PersistenceConstants.UPDATE:
+          addInfo(PersistenceConstants.UPDATED, "");
+          break;
+        default:
+          addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
+          break;
       }
       setAktie(PersistenceConstants.RETRIEVE);
     } catch (DuplicateObjectException e) {
@@ -201,16 +164,15 @@ public class WerelddeelController extends Sedes {
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, "");
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
   }
 
-  /**
-   * Persist de Werelddeelnaam
-   */
   public void saveWerelddeelnaam() {
-    List<Message> messages  = WerelddeelnaamValidator.valideer(werelddeelnaam);
+    var messages  = WerelddeelnaamValidator.valideer(werelddeelnaam);
+
     if (!messages.isEmpty()) {
       addMessage(messages);
       return;
@@ -222,17 +184,17 @@ public class WerelddeelController extends Sedes {
       werelddeelDto.addNaam(werelddeelnaamDto);
       getWerelddeelService().save(werelddeelDto);
       switch (getAktie().getAktie()) {
-      case PersistenceConstants.CREATE:
-        addInfo(PersistenceConstants.CREATED,
-                "'" + werelddeelnaam.getTaal() + "'");
-        break;
-      case PersistenceConstants.UPDATE:
-        addInfo(PersistenceConstants.UPDATED,
-                "'" + werelddeelnaam.getTaal() + "'");
-        break;
-      default:
-        addError("error.aktie.wrong", getAktie().getAktie()) ;
-        break;
+        case PersistenceConstants.CREATE:
+          addInfo(PersistenceConstants.CREATED,
+                  "'" + werelddeelnaam.getTaal() + "'");
+          break;
+        case PersistenceConstants.UPDATE:
+          addInfo(PersistenceConstants.UPDATED,
+                  "'" + werelddeelnaam.getTaal() + "'");
+          break;
+        default:
+          addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie()) ;
+          break;
       }
       redirect(WERELDDEEL_REDIRECT);
     } catch (DuplicateObjectException e) {
@@ -240,27 +202,17 @@ public class WerelddeelController extends Sedes {
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, werelddeelnaam.getTaal());
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
   }
 
-  /**
-   * Geef alle werelddeelnamen (en werelddeelId).
-   *  
-   * @return Collection<SelectItem>
-   */
   public Collection<SelectItem> selectWerelddeelnamen() {
     return getWerelddeelnaamService()
               .selectWerelddeelnamen(getGebruikersTaal());
   }
 
-  /**
-   * Geef de naam van het werelddeel in de taal van de gebruiker.
-   * 
-   * @param Long werelddeelId
-   * @return String
-   */
   public String i18nWerelddeelnaam(Long werelddeelId) {
     String  i18nWerelddeelnaam  =
         getWerelddeelnaamService()
@@ -276,11 +228,6 @@ public class WerelddeelController extends Sedes {
     return i18nWerelddeelnaam;
   }
 
-  /**
-   * Zet het Werelddeel dat gevraagd is klaar.
-   * 
-   * @param Long werelddeelId
-   */
   public void retrieve(Long werelddeelId) {
     werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
     werelddeel    = new Werelddeel(werelddeelDto);
@@ -288,29 +235,19 @@ public class WerelddeelController extends Sedes {
     redirect(WERELDDEEL_REDIRECT);
   }
 
-  /**
-   * Zet het Werelddeel die gewijzigd gaat worden klaar.
-   * 
-   * @param Long werelddeelId
-   */
   public void update(Long werelddeelId) {
     werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
     werelddeel    = new Werelddeel(werelddeelDto);
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel("sedes.titel.werelddeel.update");
+    setSubTitel(TIT_UPDATE);
     redirect(WERELDDEEL_REDIRECT);
   }
 
-  /**
-   * Zet de Werelddeelnaam die gewijzigd gaat worden klaar.
-   * 
-   * @param Long landId
-   */
   public void updateWerelddeelnaam(String taal) {
     werelddeelnaamDto = werelddeelDto.getWerelddeelnaam(taal);
     werelddeelnaam    = new Werelddeelnaam(werelddeelnaamDto);
     setDetailAktie(PersistenceConstants.UPDATE);
-    setDetailSubTitel("sedes.titel.werelddeelnaam.update");
+    setDetailSubTitel(DTIT_UPDATE);
     redirect(WERELDDEELNAAM_REDIRECT);
   }
 }

@@ -54,8 +54,7 @@ public class WerelddeelDto extends Dto implements Comparable<WerelddeelDto> {
   @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, targetEntity=WerelddeelnaamDto.class, orphanRemoval=true)
   @JoinColumn(name="WERELDDEEL_ID", nullable=false, updatable=false, insertable=true)
   @MapKey(name="taal")
-  private Map<String, WerelddeelnaamDto>  werelddeelnamen =
-      new HashMap<String, WerelddeelnaamDto>();
+  private Map<String, WerelddeelnaamDto>  werelddeelnamen = new HashMap<>();
 
   @Override
   public int compareTo(WerelddeelDto werelddeelnaamDto) {
@@ -65,7 +64,6 @@ public class WerelddeelDto extends Dto implements Comparable<WerelddeelDto> {
   }
 
   public void addNaam(WerelddeelnaamDto werelddeelnaamDto) {
-    //TODO Kijken voor 'de' JPA manier.
     if (null == werelddeelnaamDto.getWerelddeelId()) {
       werelddeelnaamDto.setWerelddeelId(werelddeelId);
     }
@@ -81,7 +79,7 @@ public class WerelddeelDto extends Dto implements Comparable<WerelddeelDto> {
       return true;
     }
 
-    WerelddeelDto werelddeelnaamDto = (WerelddeelDto) object;
+    var werelddeelnaamDto = (WerelddeelDto) object;
     return new EqualsBuilder().append(werelddeelId,
                                       werelddeelnaamDto.werelddeelId)
                               .isEquals();

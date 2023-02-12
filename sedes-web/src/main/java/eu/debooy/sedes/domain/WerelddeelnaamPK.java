@@ -42,7 +42,7 @@ public class WerelddeelnaamPK implements Serializable {
     if (!(object instanceof WerelddeelnaamPK)) {
       return false;
     }
-    WerelddeelnaamPK  werelddeelnaamPK  = (WerelddeelnaamPK) object;
+    var werelddeelnaamPK  = (WerelddeelnaamPK) object;
     return new EqualsBuilder().append(werelddeelId,
                                       werelddeelnaamPK.werelddeelId)
                               .append(taal, werelddeelnaamPK.taal)

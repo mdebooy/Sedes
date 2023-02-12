@@ -41,13 +41,13 @@ import org.json.simple.JSONObject;
 @Named("sedesI18nLandnaamService")
 @Lock(LockType.WRITE)
 public class I18nLandnaamService implements II18nLandnaam {
-  private transient LandnaamService landnaamService;
-  private transient RegioService    regioService;
+  private LandnaamService landnaamService;
+  private RegioService    regioService;
 
   private final Map<Long, Map<String, String>>
       landnamenCache  = new HashMap<>();
   // TODO Ophalen uit database.
-  private final String  standaardTaal = "nl";
+  private static final  String  standaardTaal = "nl";
 
   @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)

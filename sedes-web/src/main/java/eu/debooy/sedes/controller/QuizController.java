@@ -42,6 +42,14 @@ import javax.inject.Named;
 public class QuizController extends Sedes {
   private static final  long    serialVersionUID  = 1L;
 
+  private static final  String  ERR_GEENANTWOORD  = "error.quiz.geen.antwoord";
+  private static final  String  LBL_SCORE         = "label.quiz.score";
+  private static final  String  PAR_QUIZVRAGEN    = "sedes.quizvragen";
+  private static final  String  TIT_QUIZ1         =
+      "sedes.titel.quiz.landenquiz";
+  private static final  String  TIT_QUIZ2         =
+      "sedes.titel.quiz.landenquiz.per.werelddeel";
+
   private Integer         goedeAntwoorden;
   private Quizvraag       quizvraag;
   private List<Quizvraag> quizvragen;
@@ -49,15 +57,15 @@ public class QuizController extends Sedes {
 
   public void beantwoordVraag() {
     if (DoosUtils.isBlankOrNull(quizvraag.getAntwoord())) {
-      addError("error.quiz.geen.antwoord");
+      addError(ERR_GEENANTWOORD);
       return;
-    } else {
-      quizvragen.set(vraag, quizvraag);
-      if (quizvraag.isGoed()) {
-        goedeAntwoorden++;
-      }
-      vraag++;
     }
+
+    quizvragen.set(vraag, quizvraag);
+    if (quizvraag.isGoed()) {
+      goedeAntwoorden++;
+    }
+    vraag++;
 
     redirect(QUIZ_REDIRECT);
   }
@@ -98,25 +106,17 @@ public class QuizController extends Sedes {
   }
 
   public String getQuizResultaat() {
-    return MessageFormat.format(getTekst("label.quiz.score"), goedeAntwoorden,
-                                vraag);
+    return MessageFormat.format(getTekst(LBL_SCORE), goedeAntwoorden, vraag);
   }
 
   private void prepareerVragen(List<Landnaam> landnamen)
       throws NoSuchAlgorithmException {
-    var random  = SecureRandom.getInstanceStrong();
-    var vragen  = Integer.parseInt(getParameter("sedes.quizvragen"));
+    var random      = SecureRandom.getInstanceStrong();
+    var vragen      = Integer.parseInt(getParameter(PAR_QUIZVRAGEN));
 
     goedeAntwoorden = Integer.valueOf("0");
     vraag           = Integer.valueOf("0");
 
-    for (var i = landnamen.size()-1; i >= 0; i--) {
-      String  hoofdstad =
-          DoosUtils.nullToEmpty(landnamen.get(i).getHoofdstad());
-      if ("-".equals(hoofdstad) || "".equals(hoofdstad)) {
-        landnamen.remove(i);
-      }
-    }
     if (vragen > landnamen.size()) {
       vragen  = landnamen.size();
     }
@@ -126,14 +126,20 @@ public class QuizController extends Sedes {
       int keuze = random.nextInt(landnamen.size());
       quizvragen.add(new Quizvraag(landnamen.get(keuze)));
       landnamen.remove(keuze);
+      i--;
     }
   }
 
   public void startQuiz() {
-    setSubTitel(getTekst("sedes.titel.quiz.landenquiz"));
+    setSubTitel(getTekst(TIT_QUIZ1));
     List<Landnaam>  landnamen = new ArrayList<>();
-        landnamen.addAll(
-            getLandnaamService().bestaandeLandnamen(getGebruikersTaal()));
+    for (var  landnaam :
+            getLandnaamService().bestaandeLandnamen(getGebruikersTaal())) {
+      if (DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
+                   .isBlank()) {
+        landnamen.add(landnaam);
+      }
+    }
     try {
       prepareerVragen(landnamen);
       redirect(QUIZ_REDIRECT);
@@ -145,16 +151,21 @@ public class QuizController extends Sedes {
   public void startQuiz(Long werelddeelId) {
     setSubTitel(
         MessageFormat
-            .format(getTekst("sedes.titel.quiz.landenquiz.per.werelddeel"),
+            .format(getTekst(TIT_QUIZ2),
                 getWerelddeelnaamService()
                     .werelddeelnaam(werelddeelId, getGebruikersTaal())
                     .getWerelddeelnaam()));
 
     List<Landnaam>  landnamen = new ArrayList<>();
-        landnamen.addAll(
+    for (var  landnaam :
             getLandnaamService()
                 .bestaandeLandnamenPerWerelddeel(getGebruikersTaal(),
-                                                 werelddeelId));
+                                                 werelddeelId)) {
+      if (DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
+                   .isBlank()) {
+        landnamen.add(landnaam);
+      }
+    }
     try {
       prepareerVragen(landnamen);
       redirect(QUIZ_REDIRECT);

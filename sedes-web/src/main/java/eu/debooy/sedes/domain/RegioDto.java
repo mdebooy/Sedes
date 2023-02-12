@@ -87,7 +87,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
       return true;
     }
 
-    RegioDto  regioDto  = (RegioDto) object;
+    var regioDto  = (RegioDto) object;
     return new EqualsBuilder().append(regioId, regioDto.regioId)
                               .isEquals();
   }

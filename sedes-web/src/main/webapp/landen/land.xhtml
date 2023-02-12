@@ -10,7 +10,7 @@
     <ui:define name="head">
       <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
-          $('#landenTabel').dataTable( {
+          $('#landnamenTabel').dataTable( {
             "order": [[1, "asc"]],
             "columns": [{ "orderable": false },
                         { "orderable": true },
@@ -119,7 +119,7 @@
           <div class="row" />
           <h:commandLink action="#{sedesLand.save}" id="create" styleClass="btn btn-default" rendered="#{sedesLand.aktie.nieuw}">#{i18nTeksten.tekst('button.create')}</h:commandLink>
           <h:commandLink action="#{sedesLand.save}" id="modify" styleClass="btn btn-default" rendered="#{sedesLand.aktie.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
-          <d:cancel href="#{sedes.path}/landen/landen.xhtml" aktie="#{sedesLand.aktie}"/>
+          <d:cancel returnto="#{sedes.path}/landen/landen.xhtml" aktie="#{sedesLand.aktie}"/>
 
           <d:spacer aantal="2" />
           <div class="row" />
@@ -134,7 +134,7 @@
     </ui:define>
 
     <ui:define name="modal">
-      <d:confirmatie confirmatietitel="#{i18nTeksten.tekst('sedes.titel.landnaam.delete')}" />
+      <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.landnaam.delete')}" />
     </ui:define>
   </ui:composition>
 </html>

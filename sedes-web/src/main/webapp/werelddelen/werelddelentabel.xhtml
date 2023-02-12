@@ -3,7 +3,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:t="http://myfaces.apache.org/tomahawk"
     xmlns:ui="http://java.sun.com/jsf/facelets">
-  <table class="table table-striped table-condensed table-datatable display compact" id="werelddelenTabel">
+  <table id="werelddelenTabel" class="table table-striped table-condensed table-datatable display compact" aria-describedby="werelddelenTabel">
     <colgroup>
       <col width="50px" />
       <col />
@@ -12,8 +12,8 @@
     </colgroup>
     <thead>
       <tr>
-        <th></th>
-        <th>#{i18nTeksten.tekst('label.werelddeel')}</th>
+        <th id="icoon"></th>
+        <th id="werelddeel">#{i18nTeksten.tekst('label.werelddeel')}</th>
       </tr>
     </thead>
     <tbody>

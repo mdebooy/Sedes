@@ -3,7 +3,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:t="http://myfaces.apache.org/tomahawk"
     xmlns:ui="http://java.sun.com/jsf/facelets">
-  <table class="table table-striped table-condensed table-datatable display compact" id="landenTabel">
+  <table id="landenTabel" class="table table-striped table-condensed table-datatable display compact" aria-describedby="landenTabel">
     <colgroup>
       <col width="60px" />
       <col />
@@ -12,10 +12,10 @@
     </colgroup>
     <thead>
       <tr>
-        <th></th>
-        <th>#{i18nTeksten.tekst('label.iso2')}</th>
-        <th>#{i18nTeksten.tekst('label.iso3')}</th>
-        <th>#{i18nTeksten.tekst('label.land')}</th>
+        <th id="icoon"></th>
+        <th id="iso2">#{i18nTeksten.tekst('label.iso2')}</th>
+        <th id="iso3">#{i18nTeksten.tekst('label.iso3')}</th>
+        <th id="land">#{i18nTeksten.tekst('label.land')}</th>
       </tr>
     </thead>
     <tbody>
