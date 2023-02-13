@@ -122,11 +122,10 @@ public class QuizController extends Sedes {
     }
     quizvragen      = new ArrayList<>(vragen);
 
-    for (int i = 0; i < vragen; i++) {
-      int keuze = random.nextInt(landnamen.size());
+    for (var i = 0; i < vragen; i++) {
+      var keuze = random.nextInt(landnamen.size());
       quizvragen.add(new Quizvraag(landnamen.get(keuze)));
       landnamen.remove(keuze);
-      i--;
     }
   }
 

@@ -36,7 +36,7 @@
           } );
         } );
       </script>
-      
+
     </ui:define>
     <ui:define name="body">
       <h:form class="form-horizontal" id="formVraag">
@@ -58,7 +58,7 @@
                 <t:inputText id="antwoord" styleClass="form-control" value="#{sedesQuiz.quizvraag.antwoord}" maxlength="255" size="100" />
               </div>
             </div>
-  
+
             <h:commandLink action="#{sedesQuiz.beantwoordVraag}" id="confirm" styleClass="btn btn-default">#{i18nTeksten.tekst('button.confirm')}</h:commandLink>
             <a class="btn btn-default" href="/sedes/quiz/quizzen.xhtml">#{i18nTeksten.tekst('button.cancel')}</a>
           </t:div>
@@ -76,7 +76,7 @@
           <h3>#{sedesQuiz.quizResultaat}</h3>
           <t:div rendered="#{empty sedesQuiz.quizvraag.landnaam}">
             <d:spacer aantal="2"/>
-            <d:cancel href="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
+            <d:cancel returnto="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
           </t:div>
         </div>
       </h:form>
