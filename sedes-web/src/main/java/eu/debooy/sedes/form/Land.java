@@ -19,9 +19,9 @@ package eu.debooy.sedes.form;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandDto;
 import java.io.Serializable;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
@@ -74,7 +74,7 @@ public class Land
       return true;
     }
 
-    Land  andere  = (Land) object;
+    var andere  = (Land) object;
     return new EqualsBuilder().append(landId, andere.landId).isEquals();
   }
 
@@ -131,52 +131,18 @@ public class Land
     return getBestaat();
   }
 
-  public void persist(LandDto parameter) {
-    if (!new EqualsBuilder().append(bestaat,
-                                    parameter.getBestaat()).isEquals()) {
-      parameter.setBestaat(bestaat);
-    }
-    if (!new EqualsBuilder().append(iso2,
-                                    parameter.getIso2()).isEquals()) {
-      parameter.setIso2(iso2);
-    }
-    if (!new EqualsBuilder().append(iso3,
-                                    parameter.getIso3()).isEquals()) {
-      parameter.setIso3(iso3);
-    }
-    if (!new EqualsBuilder().append(landId,
-                                    parameter.getLandId()).isEquals()) {
-      parameter.setLandId(landId);
-    }
-    if (!new EqualsBuilder().append(landnummer,
-                                    parameter.getLandnummer()).isEquals()) {
-      parameter.setLandnummer(landnummer);
-    }
-    if (!new EqualsBuilder().append(muntId,
-                                    parameter.getMuntId()).isEquals()) {
-      parameter.setMuntId(muntId);
-    }
-    if (!new EqualsBuilder().append(postkodeScheiding,
-                                    parameter.getPostkodeScheiding())
-                            .isEquals()) {
-      parameter.setPostkodeScheiding(postkodeScheiding);
-    }
-    if (!new EqualsBuilder().append(postkodeType,
-                                    parameter.getPostkodeType()).isEquals()) {
-      parameter.setPostkodeType(postkodeType);
-    }
-    if (!new EqualsBuilder().append(postLandkode,
-                                    parameter.getPostLandkode()).isEquals()) {
-      parameter.setPostLandkode(postLandkode);
-    }
-    if (!new EqualsBuilder().append(taal,
-                                    parameter.getTaal()).isEquals()) {
-      parameter.setTaal(taal);
-    }
-    if (!new EqualsBuilder().append(werelddeelId,
-                                    parameter.getWerelddeelId()).isEquals()) {
-      parameter.setWerelddeelId(werelddeelId);
-    }
+  public void persist(LandDto landDto) {
+    landDto.setBestaat(getBestaat());
+    landDto.setIso2(getIso2());
+    landDto.setIso3(getIso3());
+    landDto.setLandId(getLandId());
+    landDto.setLandnummer(getLandnummer());
+    landDto.setMuntId(getMuntId());
+    landDto.setPostLandkode(getPostLandkode());
+    landDto.setPostkodeScheiding(getPostkodeScheiding());
+    landDto.setPostkodeType(getPostkodeType());
+    landDto.setTaal(getTaal());
+    landDto.setWerelddeelId(getWerelddeelId());
   }
 
   public void setBestaat(boolean bestaat) {

@@ -16,12 +16,13 @@
  */
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandnaamDto;
 import java.io.Serializable;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marco de Booij
@@ -90,8 +91,10 @@ public class Quizvraag
   }
 
   public boolean isGoed() {
-    return new EqualsBuilder().append(antwoord.toLowerCase(),
-                                      hoofdstad.toLowerCase()).isEquals();
+    return new EqualsBuilder().append(DoosUtils.nullToEmpty(antwoord)
+                                               .toLowerCase(),
+                                      DoosUtils.nullToEmpty(hoofdstad)
+                                               .toLowerCase()).isEquals();
   }
 
   public void setAntwoord(String antwoord) {

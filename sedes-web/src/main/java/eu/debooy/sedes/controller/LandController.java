@@ -19,6 +19,7 @@ package eu.debooy.sedes.controller;
 import eu.debooy.doos.component.Export;
 import eu.debooy.doos.model.ExportData;
 import eu.debooy.doosutils.ComponentsConstants;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
@@ -33,13 +34,14 @@ import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.LandValidator;
 import eu.debooy.sedes.validator.LandnaamValidator;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,40 +58,85 @@ public class LandController extends Sedes {
 
   private static final  String  DTIT_CREATE = "sedes.titel.landnaam.create";
   private static final  String  DTIT_UPDATE = "sedes.titel.landnaam.update";
+
+  private static final  String  LBL_LAND      = "label.land";
+  private static final  String  LBL_LANDNAAM  = "label.landnaam";
+
   private static final  String  TIT_CREATE  = "sedes.titel.land.create";
   private static final  String  TIT_UPDATE  = "sedes.titel.land.update";
 
   private Land        land;
   private LandDto     landDto;
   private Landnaam    landnaam;
-  private LandnaamDto landnaamDto;
 
   public void create() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     landDto = new LandDto();
     land    = new Land();
     setAktie(PersistenceConstants.CREATE);
-    setSubTitel(TIT_CREATE);
+    setSubTitel(getTekst(TIT_CREATE));
     redirect(LAND_REDIRECT);
   }
 
-  public void createLandnaam() {
-    landnaamDto = new LandnaamDto();
-    landnaam    = new Landnaam();
+  public void createDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    landnaam  = new Landnaam();
     setDetailAktie(PersistenceConstants.CREATE);
-    setDetailSubTitel(DTIT_CREATE);
+    setDetailSubTitel(getTekst(DTIT_CREATE));
     redirect(LANDNAAM_REDIRECT);
   }
 
-  public void delete(Long landId) {
+  public void delete() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var landId  = land.getLandId();
     try {
-      landDto = getLandService().land(landId);
       getLandService().delete(landId);
       addInfo(PersistenceConstants.DELETED,
               landDto.getLandnaam(getGebruikersTaal()));
+      redirect(LANDEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, landId);
     } catch (DoosRuntimeException e) {
-      LOGGER.error("RT: " + e.getLocalizedMessage(), e);
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
+      generateExceptionMessage(e);
+    }
+  }
+
+  public void deleteDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    try {
+      landDto.removeLandnaam(landnaam.getTaal());
+      getLandService().save(landDto);
+      addInfo(PersistenceConstants.DELETED, "'" + landnaam.getTaal() + "'");
+      if (getGebruikersTaal().equals(landnaam.getTaal())) {
+        setSubTitel(getTekst(TIT_UPDATE,
+                             landDto.getLandnaam(getGebruikersTaal())
+                                    .getLandnaam()));
+      }
+      landnaam  = new Landnaam();
+      redirect(LAND_REDIRECT);
+    } catch (ObjectNotFoundException e) {
+      addError(PersistenceConstants.NOTFOUND, landnaam.getTaal());
+    } catch (DoosRuntimeException e) {
+      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
+                                 e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
   }
@@ -98,25 +145,48 @@ public class LandController extends Sedes {
     return land;
   }
 
-  public Collection<Land> getLanden() {
-    return getLandService().query();
-  }
-
   public Landnaam getLandnaam() {
     return landnaam;
   }
 
-  public Collection<Landnaam> getLandnamen() {
-    Collection<Landnaam>  landnamen = new HashSet<>();
-    var                   rijen     = landDto.getLandnamen();
-    for (LandnaamDto rij : rijen) {
-      landnamen.add(new Landnaam(rij));
-    }
+  public JSONArray getLandnamen() {
+    var landnamen = new JSONArray();
+
+    landDto.getLandnamen().forEach(rij -> landnamen.add(rij.toJSON()));
 
     return landnamen;
   }
 
+  public String getNaam() {
+    if (landDto.hasTaal(getGebruikersTaal())) {
+      return landDto.getLandnaam(getGebruikersTaal()).getLandnaam();
+    }
+
+    if (landDto.hasTaal(getDefTaal())) {
+      return landDto.getLandnaam(getDefTaal()).getLandnaam();
+    }
+
+    return "??" + getGebruikersTaal() + "??";
+  }
+
+  public String i18nLandnaam(Long landId) {
+    var i18nLandnaam  =
+        getLandnaamService().landnaam(landId, getGebruikersTaal())
+                            .getLandnaam();
+    if (DoosUtils.isBlankOrNull(i18nLandnaam)) {
+      i18nLandnaam  = getLandnaamService().landnaam(landId, getDefTaal())
+                                          .getLandnaam();
+    }
+
+    return i18nLandnaam;
+  }
+
   public void landenlijst() {
+    if (!isUser() && !isView()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     var exportData        = new ExportData();
 
     exportData.addMetadata("application", getApplicatieNaam());
@@ -160,15 +230,63 @@ public class LandController extends Sedes {
     }
   }
 
-  public void retrieve(Long landId) {
-    landDto = getLandService().land(landId);
-    land    = new Land(landDto);
-    setAktie(PersistenceConstants.RETRIEVE);
+  public void retrieve() {
+    if (!isGerechtigd()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
 
-    redirect(LAND_REDIRECT);
+    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+
+    if (!ec.getRequestParameterMap().containsKey(LandDto.COL_LANDID)) {
+      addError(ComponentsConstants.GEENPARAMETER, LandDto.COL_LANDID);
+      return;
+    }
+
+    var landId  = Long.valueOf(ec.getRequestParameterMap()
+                                 .get(LandDto.COL_LANDID));
+
+    try {
+      landDto = getLandService().land(landId);
+      land    = new Land(landDto);
+      setAktie(PersistenceConstants.RETRIEVE);
+      setSubTitel(landDto.getLandnaam(getGebruikersTaal()).getLandnaam());
+      redirect(LAND_REDIRECT);
+    } catch (ObjectNotFoundException e) {
+      addError(PersistenceConstants.NOTFOUND, LBL_LAND);
+    }
+  }
+
+  public void retrieveDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var ec    = FacesContext.getCurrentInstance().getExternalContext();
+
+    if (!ec.getRequestParameterMap().containsKey(LandnaamDto.COL_TAAL)) {
+      addError(ComponentsConstants.GEENPARAMETER, LandnaamDto.COL_TAAL);
+      return;
+    }
+
+    try {
+      landnaam  = new Landnaam(landDto.getLandnaam(ec.getRequestParameterMap()
+                                                     .get(LandnaamDto.COL_TAAL)));
+      setDetailAktie(PersistenceConstants.UPDATE);
+      setDetailSubTitel(getTekst(DTIT_UPDATE));
+      redirect(LANDNAAM_REDIRECT);
+    } catch (ObjectNotFoundException e) {
+      addError(PersistenceConstants.NOTFOUND, LBL_LANDNAAM);
+    }
   }
 
   public void save() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     var messages  = LandValidator.valideer(land);
     if (!messages.isEmpty()) {
       addMessage(messages);
@@ -176,20 +294,22 @@ public class LandController extends Sedes {
     }
 
     try {
-      land.persist(landDto);
-      getLandService().save(landDto);
       switch (getAktie().getAktie()) {
-      case PersistenceConstants.CREATE:
-        addInfo(PersistenceConstants.CREATED, land.getIso3());
-        break;
-      case PersistenceConstants.UPDATE:
-        addInfo(PersistenceConstants.UPDATED, land.getIso3());
-        break;
-      default:
-        addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
-        break;
+        case PersistenceConstants.CREATE:
+          getLandService().save(land);
+          land.persist(landDto);
+          addInfo(PersistenceConstants.CREATED, land.getIso3());
+          update();
+          break;
+        case PersistenceConstants.UPDATE:
+          land.persist(landDto);
+          getLandService().save(landDto);
+          addInfo(PersistenceConstants.UPDATED, land.getIso3());
+          break;
+        default:
+          addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
+          break;
       }
-      setAktie(PersistenceConstants.RETRIEVE);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, land.getIso3());
     } catch (ObjectNotFoundException e) {
@@ -201,7 +321,12 @@ public class LandController extends Sedes {
     }
   }
 
-  public void saveLandnaam() {
+  public void saveDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     var messages  = LandnaamValidator.valideer(landnaam);
     if (!messages.isEmpty()) {
       addMessage(messages);
@@ -224,6 +349,11 @@ public class LandController extends Sedes {
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie()) ;
           break;
       }
+      if (landnaam.getTaal().equals(getGebruikersTaal())) {
+        setSubTitel(getTekst(TIT_UPDATE,
+                             landDto.getLandnaam(getGebruikersTaal())
+                                    .getLandnaam()));
+      }
       redirect(LAND_REDIRECT);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, landnaam.getTaal());
@@ -236,27 +366,18 @@ public class LandController extends Sedes {
     }
   }
 
-  public void update(Long landId) {
-    landDto = getLandService().land(landId);
-    land    = new Land(landDto);
+  public Collection<SelectItem> selectLandnamen() {
+    return getLandnaamService().selectLandnamen(getGebruikersTaal());
+  }
+
+  public void update() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel(TIT_UPDATE);
-    redirect(LAND_REDIRECT);
-  }
-
-  public void updateLandnaam(Long landId, String taal) {
-    landnaamDto = getLandnaamService().landnaam(landId, taal);
-    landnaam    = new Landnaam(landnaamDto);
-    setDetailAktie(PersistenceConstants.UPDATE);
-    setDetailSubTitel(DTIT_UPDATE);
-    redirect(LANDNAAM_REDIRECT);
-  }
-
-  public void updateLandnaam(String taal) {
-    landnaamDto = getLandnaamService().landnaam(land.getLandId(), taal);
-    landnaam    = new Landnaam(landnaamDto);
-    setDetailAktie(PersistenceConstants.UPDATE);
-    setDetailSubTitel(DTIT_UPDATE);
-    redirect(LANDNAAM_REDIRECT);
+    setSubTitel(getTekst(TIT_UPDATE, landDto.getLandnaam(getGebruikersTaal())
+                                            .getLandnaam()));
   }
 }

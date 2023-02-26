@@ -1,7 +1,7 @@
-/**
- * Copyright 2015 Marco de Booij
+/*
+ * Copyright (c) 2023 Marco de Booij
  *
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
  * you may not use this work except in compliance with the Licence. You may
  * obtain a copy of the Licence at:
@@ -14,21 +14,23 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
 package eu.debooy.sedes.service;
 
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
-import eu.debooy.sedes.access.WerelddeelDao;
-import eu.debooy.sedes.domain.WerelddeelDto;
-import eu.debooy.sedes.form.Werelddeel;
+import eu.debooy.sedes.access.MuntDao;
+import eu.debooy.sedes.domain.MuntDto;
+import eu.debooy.sedes.form.Munt;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -46,40 +48,37 @@ import org.slf4j.LoggerFactory;
  * @author Marco de Booij
  */
 @Singleton
-@Named("sedesWerelddeelService")
-@Path("/werelddelen")
+@Named("sedesMuntService")
+@Path("/munten")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Lock(LockType.WRITE)
-public class WerelddeelService {
+public class MuntService {
   private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(WerelddeelService.class);
+      LoggerFactory.getLogger(MuntService.class);
 
   @Inject
-  private WerelddeelDao             werelddeelDao;
+  private MuntDao muntDao;
 
-  public WerelddeelService() {
-    LOGGER.debug("init WerelddeelService");
+  public MuntService() {
+    LOGGER.debug("init MuntService");
   }
 
-
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void delete(Long werelddeelId) {
-    WerelddeelDto dto = werelddeelDao.getByPrimaryKey(werelddeelId);
-    werelddeelDao.delete(dto);
+  public void delete(Long muntId) {
+    MuntDto munt  = muntDao.getByPrimaryKey(muntId);
+    muntDao.delete(munt);
   }
 
   @GET
-  @Path("/{werelddeelId}")
-  public Response getLand(
-      @PathParam(WerelddeelDto.COL_WERELDDEELID) Long werelddeelId) {
+  @Path("/{muntId}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getMunt(@PathParam(MuntDto.COL_MUNTID) Long muntId) {
     try {
-      return Response.ok()
-                      .entity(werelddeelDao.getByPrimaryKey(werelddeelId))
-                      .build();
+      return Response.ok().entity(muntDao.getByPrimaryKey(muntId)).build();
     } catch (ObjectNotFoundException e) {
       var message = new Message.Builder()
-                               .setAttribute(WerelddeelDto.COL_WERELDDEELID)
+                               .setAttribute(MuntDto.COL_MUNTID)
                                .setMessage(PersistenceConstants.NOTFOUND)
                                .setSeverity(Message.ERROR).build();
       return Response.status(400).entity(message).build();
@@ -87,53 +86,56 @@ public class WerelddeelService {
   }
 
   @GET
-  public Response getLanden() {
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getMunten() {
     try {
-      return Response.ok().entity(werelddeelDao.getAll()).build();
+      return Response.ok().entity(muntDao.getAll()).build();
     } catch (ObjectNotFoundException e) {
       return Response.ok().entity(new ArrayList<>()).build();
     }
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Collection<Werelddeel> query() {
-    Collection<Werelddeel>  werelddelen  = new ArrayList<>();
+  public MuntDto munt(Long muntId) {
     try {
-      Collection<WerelddeelDto> rijen    = werelddeelDao.getAll();
-      for (WerelddeelDto rij : rijen) {
-        werelddelen.add(new Werelddeel(rij));
-      }
+      return muntDao.getByPrimaryKey(muntId);
     } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
-
-    return werelddelen;
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Werelddeel werelddeel) {
-    var dto = new WerelddeelDto();
-
-    werelddeel.persist(dto);
-    if (null == werelddeel.getWerelddeelId()) {
-      werelddeelDao.create(dto);
-      werelddeel.setWerelddeelId(dto.getWerelddeelId());
-    } else {
-      werelddeelDao.update(dto);
+      return new MuntDto();
     }
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(WerelddeelDto werelddeel) {
-    if (null == werelddeel.getWerelddeelId()) {
-      werelddeelDao.create(werelddeel);
+  public void save(Munt munt) {
+    var dto = new MuntDto();
+    munt.persist(dto);
+    if (null == munt.getMuntId()) {
+      muntDao.create(dto);
+      munt.setMuntId(dto.getMuntId());
     } else {
-      werelddeelDao.update(werelddeel);
+      muntDao.update(dto);
+    }
+  }
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public void save(MuntDto munt) {
+    if (null == munt.getMuntId()) {
+      muntDao.create(munt);
+    } else {
+      muntDao.update(munt);
     }
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public WerelddeelDto werelddeel(Long werelddeelId) {
-    return werelddeelDao.getByPrimaryKey(werelddeelId);
+  public List<SelectItem> selectMunten() {
+    List<SelectItem>  items = new ArrayList<>();
+
+    try {
+      muntDao.getAll().forEach(
+          munt -> items.add(new SelectItem(munt.getMuntId().toString(),
+                                           munt.getMuntnaam())));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+    return items;
   }
 }

@@ -1,71 +1,78 @@
-<!DOCTYPE html>
-<html  lang="#{gebruiker.locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:d="http://java.debooy.eu/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:t="http://myfaces.apache.org/tomahawk"
-   xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:define name="head">
-      <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-          $('#werelddeelnamenTabel').dataTable( {
-            "order": [[1, "asc"]],
-            "columns": [{ "orderable": false },
-                        { "orderable": true },
-                        { "orderable": true }],
-            "pagingType": "full_numbers",
-            "pageLength": #{properties.appValue('sedes.pagelength')},
-            "lengthChange": false,
-            "stateSave": true,
-            "language": {
-              "paginate": {
-                "first": '<span class="glyphicon glyphicon-fast-backward"></span>',
-                "last": '<span class="glyphicon glyphicon-fast-forward"></span>',
-                "next": '<span class="glyphicon glyphicon-triangle-right"></span>',
-                "previous": '<span class="glyphicon glyphicon-triangle-left"></span>'
-              },
-              "search": "#{i18nTeksten.tekst('pager.search')}",
-              "zeroRecords": "#{i18nTeksten.tekst('pager.zero.records')}",
-              "info": "#{i18nTeksten.tekst('pager.info')}",
-              "infoEmpty": "#{i18nTeksten.tekst('pager.info.empty')}",
-              "infoFiltered": "#{i18nTeksten.tekst('pager.info.filtered')}"
-            }
-          } );
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        werelddeelnamenTabel = $('#werelddeelnamenTabel').DataTable( {
+          data: #{sedesWerelddeel.werelddeelnamen},
+          order: [[1, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength.tab')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+            },
+          columns: [
+            { data: 'taal', visible: false },
+            { data: null, title: '#{i18nTeksten.tekst('label.taal')}', width: '50px', class: 'has-text-centered', orderData: 0, render: function ( data, type, row ) {
+                return taalvlag(data.taal);
+              }
+            },
+            { data: 'werelddeelnaam', title: '#{i18nTeksten.tekst('label.werelddeelnaam')}' }
+          ]
         } );
-      </script>
-    </ui:define>
-    <ui:define name="body">
-      <h:form class="form-horizontal" id="formWerelddeel">
-        <div class="col-md-10 col-md-offset-1">
-          <div class="col-md-10">
-            <t:div rendered="#{!sedesWerelddeel.aktie.readonly}">
-              <h2>#{i18nTeksten.tekst(sedesWerelddeel.subTitel)}</h2>
-            </t:div>
-            <t:div rendered="#{sedesWerelddeel.aktie.readonly}">
-              <h2>#{sedesWerelddeel.i18nWerelddeelnaam(sedesWerelddeel.werelddeel.werelddeelId)}</h2>
-            </t:div>
-          </div>
-          <div align="right" class="col-md-2" >
-            <h:commandLink action="#{sedesWerelddeel.createWerelddeelnaam}">
-              <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
-            </h:commandLink>
-          </div>
+        $( '#werelddeelnamenTabel tbody').on('click', 'tr', function() {
+          if (werelddeelnamenTabel.row(this).data() === undefined || #{!sedesWerelddeel.user}) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formWerelddeel:linkWerelddeelnaam');
+          alterParam(jsfCommandLink, werelddeelnamenTabel.row(this).data().taal);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesWerelddeel.aktie.wijzig and sedesWerelddeel.user}) {
+          addInsertButton('werelddeelnamenTabel', 'formWerelddeel', '#{i18nTeksten.tekst('img.nieuw')}');
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-10">
+        <h:form id="formWerelddeel">
+          <d:titel titel="#{sedesWerelddeel.subTitel}" />
 
-          <ui:include src="werelddeelnamentabel.xhtml">
-            <ui:param name="form" value="formWerelddeel" />
-            <ui:param name="lijst" value="#{sedesWerelddeel.werelddeelnamen}" />
-          </ui:include>
+          <table id="werelddeelnamenTabel" class="table is-striped is-narrow #{sedesWerelddeel.user ? 'is-hoverable' : ''}" aria-describedby="werelddeelnamenTabel" />
+          <h:commandLink id="linkWerelddeelnaam" class="is-hidden" action="#{sedesWerelddeel.retrieveDetail}">
+            <f:param name="taal" value="XX" />
+          </h:commandLink>
+          <h:commandLink id="addWerelddeelnamen" class="is-hidden" action="#{sedesWerelddeel.createDetail}" />
 
           <d:spacer aantal="2"/>
-          <a class="btn btn-default" href="/sedes/werelddelen/werelddelen.xhtml">#{i18nTeksten.tekst('button.back')}</a>
-        </div>
-      </h:form>
-    </ui:define>
+          <d:crudbuttonbar bean="#{sedesWerelddeel}" form="formWerelddeel" returnto="#{sedes.path}/werelddelen/werelddelen.xhtml" tekst="#{sedesWerelddeel.i18nWerelddeelnaam(sedesWerelddeel.werelddeel.werelddeelId)}" />
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
 
-
-    <ui:define name="modal">
-      <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.werelddeelnaam.delete')}" />
-    </ui:define>
-  </ui:composition>
-</html>
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.werelddeel.delete')}" />
+  </ui:define>
+</ui:composition>

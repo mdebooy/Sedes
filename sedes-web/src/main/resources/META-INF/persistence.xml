@@ -8,6 +8,8 @@
 
     <class>eu.debooy.sedes.domain.LandDto</class>
     <class>eu.debooy.sedes.domain.LandnaamDto</class>
+    <class>eu.debooy.sedes.domain.MuntDto</class>
+    <class>eu.debooy.sedes.domain.RegioDto</class>
     <class>eu.debooy.sedes.domain.WerelddeelDto</class>
     <class>eu.debooy.sedes.domain.WerelddeelnaamDto</class>
   </persistence-unit>

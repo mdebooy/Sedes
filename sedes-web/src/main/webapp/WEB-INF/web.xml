@@ -44,6 +44,9 @@
  <security-role>
   <role-name>sedes-user</role-name>
  </security-role>
+ <security-role>
+  <role-name>sedes-view</role-name>
+ </security-role>
  <security-constraint>
   <web-resource-collection>
    <web-resource-name>sedes</web-resource-name>
@@ -53,6 +56,7 @@
   <auth-constraint>
    <role-name>sedes-admin</role-name>
    <role-name>sedes-user</role-name>
+   <role-name>sedes-view</role-name>
   </auth-constraint>
   <user-data-constraint>
    <description>Geen encryptie nodig.</description>

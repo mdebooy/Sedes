@@ -1,0 +1,47 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formLand">
+          <d:titel titel="#{sedesRegio.subTitel}" />
+
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.regiokode')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="regiokode" value="#{sedesRegio.regio.regiokode}" maxlength="5" size="5" required="true" readonly="#{sedesRegio.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="regionaam" value="#{sedesRegio.regio.regionaam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.land')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesLand.selectLandnamen()}" textvalue="#{sedesLand.i18nLandnaam(sedesRegio.regio.landId)}" />
+                </div>
+              </div>
+
+              <d:crudbuttonbar bean="#{sedesRegio}" form="formLand" returnto="#{sedes.path}/regios/regios.xhtml" tekst="#{sedesRegio.regio.regionaam}" />
+            </div>
+          </div>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.regio.delete')}" />
+  </ui:define>
+</ui:composition>

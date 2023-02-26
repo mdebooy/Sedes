@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.controller;
 
+import eu.debooy.doosutils.DoosConstants;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.form.Landnaam;
@@ -26,12 +27,13 @@ import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 
 /**
@@ -70,13 +72,19 @@ public class QuizController extends Sedes {
     redirect(QUIZ_REDIRECT);
   }
 
-  public Collection<Quizvraag> getAntwoorden() {
-    Set<Quizvraag> antwoorden  = new HashSet<>();
-    for (Quizvraag rij : quizvragen) {
-      if (DoosUtils.isNotBlankOrNull(rij.getAntwoord())) {
-        antwoorden.add(rij);
-      }
-    }
+  public JSONArray getAntwoorden() {
+    var antwoorden  = new JSONArray();
+
+    quizvragen.stream()
+              .filter(rij -> DoosUtils.isNotBlankOrNull(rij.getAntwoord()))
+              .forEach(rij -> {
+      var antwoord  = new JSONObject();
+      antwoord.put("antwoord", rij.getAntwoord());
+      antwoord.put("goed", rij.isGoed());
+      antwoord.put("hoofdstad", rij.getHoofdstad());
+      antwoord.put("landnaam", rij.getLandnaam());
+      antwoorden.add(antwoord);
+    });
 
     return antwoorden;
   }
@@ -105,6 +113,10 @@ public class QuizController extends Sedes {
     return quizvraag;
   }
 
+  public Integer getGoedeAntwoorden() {
+    return goedeAntwoorden;
+  }
+
   public String getQuizResultaat() {
     return MessageFormat.format(getTekst(LBL_SCORE), goedeAntwoorden, vraag);
   }
@@ -114,8 +126,8 @@ public class QuizController extends Sedes {
     var random      = SecureRandom.getInstanceStrong();
     var vragen      = Integer.parseInt(getParameter(PAR_QUIZVRAGEN));
 
-    goedeAntwoorden = Integer.valueOf("0");
-    vraag           = Integer.valueOf("0");
+    goedeAntwoorden = 0;
+    vraag           = 0;
 
     if (vragen > landnamen.size()) {
       vragen  = landnamen.size();
@@ -134,7 +146,7 @@ public class QuizController extends Sedes {
     List<Landnaam>  landnamen = new ArrayList<>();
     for (var  landnaam :
             getLandnaamService().bestaandeLandnamen(getGebruikersTaal())) {
-      if (DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
+      if (!DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
                    .isBlank()) {
         landnamen.add(landnaam);
       }
@@ -142,7 +154,7 @@ public class QuizController extends Sedes {
     try {
       prepareerVragen(landnamen);
       redirect(QUIZ_REDIRECT);
-    } catch (NoSuchAlgorithmException e) {
+    } catch (NoSuchAlgorithmException | NumberFormatException e) {
       generateExceptionMessage(e);
     }
   }
@@ -160,7 +172,7 @@ public class QuizController extends Sedes {
             getLandnaamService()
                 .bestaandeLandnamenPerWerelddeel(getGebruikersTaal(),
                                                  werelddeelId)) {
-      if (DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
+      if (!DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
                    .isBlank()) {
         landnamen.add(landnaam);
       }
@@ -170,6 +182,8 @@ public class QuizController extends Sedes {
       redirect(QUIZ_REDIRECT);
     } catch (NoSuchAlgorithmException e) {
       generateExceptionMessage(e);
+    } catch (NumberFormatException e) {
+      addError(DoosConstants.ERR_UNK_PARAM, PAR_QUIZVRAGEN);
     }
   }
 }

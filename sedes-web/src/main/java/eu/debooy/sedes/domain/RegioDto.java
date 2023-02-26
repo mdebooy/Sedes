@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -36,24 +37,37 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="REGIOS", schema="SEDES")
+@NamedQuery(name="regiosPerLand", query="select r from RegioDto r where r.landId=:landId")
+@NamedQuery(name="regiosNuts0", query="select r from RegioDto r where length(r.regiokode)=2")
+@NamedQuery(name="regiosNuts1", query="select r from RegioDto r where length(r.regiokode)=3")
+@NamedQuery(name="regiosNuts2", query="select r from RegioDto r where length(r.regiokode)=4")
+@NamedQuery(name="regiosNuts3", query="select r from RegioDto r where length(r.regiokode)=5")
 public class RegioDto extends Dto implements Comparable<RegioDto> {
   private static final  long  serialVersionUID  = 1L;
 
   public static final String  COL_LANDID    = "landId";
-  public static final String  COL_REGIO     = "regio";
+  public static final String  COL_REGIONAAM = "regionaam";
   public static final String  COL_REGIOKODE = "regiokode";
   public static final String  COL_REGIOID   = "regioId";
 
+  public static final String  PAR_LANDID  = "landId";
+
+  public static final String  QRY_PERLAND = "regiosPerLand";
+  public static final String  QRY_NUTS0   = "regiosNuts0";
+  public static final String  QRY_NUTS1   = "regiosNuts1";
+  public static final String  QRY_NUTS2   = "regiosNuts2";
+  public static final String  QRY_NUTS3   = "regiosNuts3";
+
   @Column(name="LAND_ID", nullable=false)
   private Long    landId;
-  @Column(name="REGIO", length=100, nullable=false)
-  private String  regio;
-  @Column(name="REGIOKODE", length=5, nullable=false)
-  private String  regiokode;
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="REGIO_ID", nullable=false)
   private Long    regioId;
+  @Column(name="REGIOKODE", length=5, nullable=false)
+  private String  regiokode;
+  @Column(name="REGIONAAM", length=100, nullable=false)
+  private String  regionaam;
 
   /**
    * De regiokode is toegevoegd om dubbele namen niet te laten verdwijnen in een
@@ -65,7 +79,8 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
     @Override
     public int compare(RegioDto regioDto1, RegioDto regioDto2) {
-      return new CompareToBuilder().append(regioDto1.regio, regioDto2.regio)
+      return new CompareToBuilder().append(regioDto1.regionaam,
+                                           regioDto2.regionaam)
                                    .append(regioDto1.regiokode,
                                            regioDto2.regiokode)
                                    .toComparison();
@@ -96,16 +111,16 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     return landId;
   }
 
-  public String getRegio() {
-    return regio;
+  public Long getRegioId() {
+    return regioId;
   }
 
   public String getRegiokode() {
     return regiokode;
   }
 
-  public Long getRegioId() {
-    return regioId;
+  public String getRegionaam() {
+    return regionaam;
   }
 
   @Override
@@ -117,15 +132,15 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     this.landId     = landId;
   }
 
-  public void setRegio(String regio) {
-    this.regio      = regio;
+  public void setRegioId(Long regioId) {
+    this.regioId    = regioId;
   }
 
   public void setRegiokode(String regiokode) {
     this.regiokode  = regiokode;
   }
 
-  public void setRegioId(Long regioId) {
-    this.regioId    = regioId;
+  public void setRegionaam(String regionaam) {
+    this.regionaam  = regionaam;
   }
 }

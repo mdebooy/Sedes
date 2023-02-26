@@ -9,8 +9,8 @@
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
         var taal = '#{gebruiker.locale.language}';
-        var werelddelenTabel = $('#werelddelenTabel').DataTable( {
-          ajax: { url: '/sedes/werelddelen',
+        var regiosTabel = $('#regiosTabel').DataTable( {
+          ajax: { url: '/sedes/regios',
                   dataSrc: '' },
           order: [[0, 'asc']],
           pagingType: 'full_numbers',
@@ -32,38 +32,39 @@
             infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
           },
           columns: [
-            { data: null, title: '#{i18nTeksten.tekst('label.werelddeel')}', render: function ( data, type, row ) {
-                return getWerelddeelnaam(data.werelddeelnamen, taal);
+            { data: 'regiokode', title: '#{i18nTeksten.tekst('label.regiokode')}' },
+            { data: 'regionaam', title: '#{i18nTeksten.tekst('label.regionaam')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
+                return getLandIdNaam(data.landId, taal);
               }
             }
           ]
         } );
-        $( '#werelddelenTabel tbody').on('click', 'tr', function() {
-          if (werelddelenTabel.row(this).data() === undefined) {
+        $( '#regiosTabel tbody').on('click', 'tr', function() {
+          if (regiosTabel.row(this).data() === undefined) {
             return;
           }
-          var jsfCommandLink = document.getElementById('formWerelddelen:linkWerelddeel');
-          alterParam(jsfCommandLink, werelddelenTabel.row(this).data().werelddeelId);
+          var jsfCommandLink = document.getElementById('formRegios:linkRegio');
+          alterParam(jsfCommandLink, regiosTabel.row(this).data().regioId);
           jsfCommandLink.click();
         } );
-        if (#{sedesLand.user}) {
-          var imgTekst = '#{i18nTeksten.tekst('img.nieuw')}';
-          addInsertButton('werelddelenTabel', 'formWerelddelen', imgTekst);
+        if (#{sedesRegio.user}) {
+          addInsertButton('regiosTabel', 'formRegios', '#{i18nTeksten.tekst('img.nieuw')}');
         }
       } );
     </script>
   </ui:define>
   <ui:define name="body">
     <div class="columns is-centered content">
-      <div class="column is-6">
-        <h:form id="formWerelddelen">
-          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.werelddelen')}" />
+      <div class="column is-10">
+        <h:form id="formRegios">
+          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.regios')}" />
 
-          <table id="werelddelenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="werelddelenTabel" />
-          <h:commandLink id="linkWerelddeel" action="#{sedesWerelddeel.retrieve}" style="display:none">
-            <f:param name="werelddeelId" value="XX" />
+          <table id="regiosTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="landenTabel" />
+          <h:commandLink id="linkRegio" action="#{sedesRegio.retrieve}" style="display:none">
+            <f:param name="regioId" value="XX" />
           </h:commandLink>
-          <h:commandLink id="addWerelddelen" class="is-hidden" action="#{sedesWerelddeel.create}" />
+          <h:commandLink id="addRegios" class="is-hidden" action="#{sedesRegio.create}" />
         </h:form>
       </div>
     </div>

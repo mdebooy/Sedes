@@ -20,9 +20,9 @@ import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import java.io.Serializable;
 import java.util.Comparator;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
@@ -94,18 +94,9 @@ public class Werelddeelnaam
   }
 
   public void persist(WerelddeelnaamDto parameter) {
-    if (!new EqualsBuilder().append(taal,
-                                    parameter.getTaal()).isEquals()) {
-      parameter.setTaal(taal);
-    }
-    if (!new EqualsBuilder().append(werelddeelId,
-                                    parameter.getWerelddeelId()).isEquals()) {
-      parameter.setWerelddeelId(werelddeelId);
-    }
-    if (!new EqualsBuilder().append(naam,
-                                    parameter.getWerelddeelnaam()).isEquals()) {
-      parameter.setWerelddeelnaam(naam);
-    }
+    parameter.setTaal(taal);
+    parameter.setWerelddeelId(werelddeelId);
+    parameter.setWerelddeelnaam(naam);
   }
 
   public void setTaal(String taal) {

@@ -1,0 +1,83 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var muntenTabel = $('#muntenTabel').DataTable( {
+          ajax: { url: '/sedes/munten',
+                  dataSrc: '' },
+          order: [[2, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: 'iso3', title: '#{i18nTeksten.tekst('label.iso3')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.muntteken')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('muntteken')) {
+                  return data.muntteken;
+                }
+                return '';
+              }
+            },
+            { data: 'muntnaam', title: '#{i18nTeksten.tekst('label.muntnaam')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.subeenheid')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('subeenheid')) {
+                  return data.subeenheid;
+                }
+                return '';
+              }
+            },
+            { data: 'decimalen', title: '#{i18nTeksten.tekst('label.decimalen')}' }
+          ]
+        } );
+        $( '#muntenTabel tbody').on('click', 'tr', function() {
+          if (muntenTabel.row(this).data() === undefined) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formMunten:linkMunt');
+          alterParam(jsfCommandLink, muntenTabel.row(this).data().muntId);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesMunt.user}) {
+          addInsertButton('muntenTabel', 'formMunten', '#{i18nTeksten.tekst('img.nieuw')}');
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-10">
+        <h:form id="formMunten">
+          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.munten')}" />
+
+          <table id="muntenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="landenTabel" />
+          <h:commandLink id="linkMunt" action="#{sedesMunt.retrieve}" style="display:none">
+            <f:param name="muntId" value="XX" />
+          </h:commandLink>
+          <h:commandLink id="addMunten" class="is-hidden" action="#{sedesMunt.create}" />
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

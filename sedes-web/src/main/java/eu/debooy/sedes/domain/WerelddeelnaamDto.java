@@ -25,9 +25,9 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
@@ -49,8 +49,8 @@ public class WerelddeelnaamDto extends Dto
   public static final String  PAR_TAAL          = "taal";
   public static final String  PAR_WERELDDEELID  = "werelddeelId";
 
-  public static final String  QRY_PERWERELDDEEL = "wereldeelnamenPerTaal";
-  public static final String  QRY_PERTAAL       = "wereldeelnamenPerWerelddeel";
+  public static final String  QRY_PERTAAL       = "wereldeelnamenPerTaal";
+  public static final String  QRY_PERWERELDDEEL = "wereldeelnamenPerWerelddeel";
 
   @Id
   @Column(name="TAAL", length=2, nullable=false)

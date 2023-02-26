@@ -19,8 +19,7 @@ package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
-import eu.debooy.sedes.domain.RegioDto;
-import java.util.Collection;
+import eu.debooy.sedes.domain.MuntDto;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,47 +30,16 @@ import javax.persistence.PersistenceContextType;
  * @author Marco de Booij
  */
 @Interceptors({PersistenceExceptionHandlerInterceptor.class})
-public class RegioDao extends Dao<RegioDto> {
+public class MuntDao extends Dao<MuntDto> {
   @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
   private EntityManager em;
 
-  public RegioDao() {
-    super(RegioDto.class);
+  public MuntDao() {
+    super(MuntDto.class);
   }
 
   @Override
   protected EntityManager getEntityManager() {
     return em;
-  }
-
-  public Collection<RegioDto> getNuts0() {
-    var query = getEntityManager().createNamedQuery(RegioDto.QRY_NUTS0);
-
-    return query.getResultList();
-  }
-
-  public Collection<RegioDto> getNuts1() {
-    var query = getEntityManager().createNamedQuery(RegioDto.QRY_NUTS1);
-
-    return query.getResultList();
-  }
-
-  public Collection<RegioDto> getNuts2() {
-    var query = getEntityManager().createNamedQuery(RegioDto.QRY_NUTS2);
-
-    return query.getResultList();
-  }
-
-  public Collection<RegioDto> getNuts3() {
-    var query = getEntityManager().createNamedQuery(RegioDto.QRY_NUTS3);
-
-    return query.getResultList();
-  }
-
-  public Collection<RegioDto> getPerLand(Long landId) {
-    var query = getEntityManager().createNamedQuery(RegioDto.QRY_PERLAND)
-                                  .setParameter(RegioDto.PAR_LANDID, landId);
-
-    return query.getResultList();
   }
 }

@@ -22,9 +22,9 @@ package eu.debooy.sedes;
  */
 public final class TestConstants {
   public static final Long    LANDID      = 100L;
-  public static final String  REGIO       = "Regio";
-  public static final String  REGIO_G     = "Z-Regio";
-  public static final String  REGIO_K     = "A-Regio";
+  public static final String  REGIONAAM   = "Regio";
+  public static final String  REGIONAAM_G = "Z-Regio";
+  public static final String  REGIONAAM_K = "A-Regio";
   public static final int     REGIO_HASH  = 829;
   public static final Long    REGIOID     = 200L;
   public static final String  REGIOKODE   = "RK123";

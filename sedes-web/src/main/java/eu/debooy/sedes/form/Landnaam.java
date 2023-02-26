@@ -20,9 +20,9 @@ import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandnaamDto;
 import java.io.Serializable;
 import java.util.Comparator;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marco de Booij
@@ -104,26 +104,11 @@ public class Landnaam
   }
 
   public void persist(LandnaamDto parameter) {
-    if (!new EqualsBuilder().append(hoofdstad,
-                                    parameter.getHoofdstad()).isEquals()) {
-      parameter.setHoofdstad(hoofdstad);
-    }
-    if (!new EqualsBuilder().append(landId,
-                                    parameter.getLandId()).isEquals()) {
-      parameter.setLandId(landId);
-    }
-    if (!new EqualsBuilder().append(naam,
-                                    parameter.getLandnaam()).isEquals()) {
-      parameter.setLandnaam(naam);
-    }
-    if (!new EqualsBuilder().append(officieleNaam,
-                                    parameter.getOfficieleNaam()).isEquals()) {
-      parameter.setOfficieleNaam(officieleNaam);
-    }
-    if (!new EqualsBuilder().append(taal,
-                                    parameter.getTaal()).isEquals()) {
-      parameter.setTaal(taal);
-    }
+    parameter.setHoofdstad(hoofdstad);
+    parameter.setLandId(landId);
+    parameter.setLandnaam(naam);
+    parameter.setOfficieleNaam(officieleNaam);
+    parameter.setTaal(taal);
   }
 
   public void setHoofdstad(String hoofdstad) {

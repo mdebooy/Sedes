@@ -20,12 +20,12 @@ import eu.debooy.doos.component.bean.DoosBean;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.service.LandService;
 import eu.debooy.sedes.service.LandnaamService;
+import eu.debooy.sedes.service.MuntService;
+import eu.debooy.sedes.service.RegioService;
 import eu.debooy.sedes.service.WerelddeelService;
 import eu.debooy.sedes.service.WerelddeelnaamService;
-
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,18 +42,26 @@ public class Sedes extends DoosBean {
 
   private transient LandService           landService;
   private transient LandnaamService       landnaamService;
+  private transient MuntService           muntService;
+  private transient RegioService          regioService;
   private transient WerelddeelService     werelddeelService;
   private transient WerelddeelnaamService werelddeelnaamService;
 
   public static final String  ADMIN_ROLE              = "sedes-admin";
   public static final String  APPLICATIE_NAAM         = "Sedes";
+  public static final String  DD_GEO                  = "geo";
   public static final String  LAND_REDIRECT           = "/landen/land.xhtml";
   public static final String  LANDEN_REDIRECT         = "/landen/landen.xhtml";
   public static final String  LANDNAAM_REDIRECT       =
       "/landen/landnaam.xhtml";
+  public static final String  MUNT_REDIRECT           = "/munten/munt.xhtml";
+  public static final String  MUNTEN_REDIRECT         = "/munten/munten.xhtml";
   public static final String  QUIZ_REDIRECT           = "/quiz/quiz.xhtml";
   public static final String  QUIZZEN_REDIRECT        = "/quiz/quizzen.xhtml";
+  public static final String  REGIO_REDIRECT          = "/regios/regio.xhtml";
+  public static final String  REGIOS_REDIRECT         = "/regios/regios.xhtml";
   public static final String  USER_ROLE               = "sedes-user";
+  public static final String  VIEW_ROLE               = "sedes-view";
   public static final String  WERELDDEEL_REDIRECT     =
       "/werelddelen/werelddeel.xhtml";
   public static final String  WERELDDEELNAAM_REDIRECT =
@@ -66,20 +74,23 @@ public class Sedes extends DoosBean {
     setAdminRole(getExternalContext().isUserInRole(ADMIN_ROLE));
     setApplicatieNaam(APPLICATIE_NAAM);
     setUserRole(getExternalContext().isUserInRole(USER_ROLE));
+    setViewRole(getExternalContext().isUserInRole(VIEW_ROLE));
     setPath(getExternalContext().getRequestContextPath());
     if (isAdministrator()) {
-      addMenuitem(APP_PARAMS_REDIRECT,  "menu.applicatieparameters");
+      addMenuitem("Dropdown.admin", "menu.administratie");
+      addDropdownmenuitem(DD_ADMIN, APP_LOGS_REDIRECT,
+          "menu.applicatielogs");
+      addDropdownmenuitem(DD_ADMIN, APP_PARAMS_REDIRECT,
+          "menu.applicatieparameters");
     }
-    addMenuitem(LANDEN_REDIRECT,        "menu.landen");
-    addMenuitem(WERELDDELEN_REDIRECT,   "menu.werelddelen");
-    addMenuitem(QUIZZEN_REDIRECT,       "menu.quizzen");
+    addMenuitem("Dropdown.geo", "menu.geografie");
+    addDropdownmenuitem(DD_GEO, LANDEN_REDIRECT,      "menu.landen");
+    addDropdownmenuitem(DD_GEO, REGIOS_REDIRECT,      "menu.regios");
+    addDropdownmenuitem(DD_GEO, WERELDDELEN_REDIRECT, "menu.werelddelen");
+    addMenuitem(MUNTEN_REDIRECT,  "menu.munten");
+    addMenuitem(QUIZZEN_REDIRECT, "menu.quizzen");
   }
 
-  /**
-   * Geef de LandnaamService. Als die nog niet gekend is haal het dan op.
-   * 
-   * @return LandnaamService
-   */
   protected LandnaamService getLandnaamService() {
     if (null == landnaamService) {
       landnaamService = (LandnaamService)
@@ -89,11 +100,6 @@ public class Sedes extends DoosBean {
     return landnaamService;
   }
 
-  /**
-   * Geef de LandService. Als die nog niet gekend is haal het dan op.
-   * 
-   * @return LandService
-   */
   protected LandService getLandService() {
     if (null == landService) {
       landService = (LandService)
@@ -103,11 +109,24 @@ public class Sedes extends DoosBean {
     return landService;
   }
 
-  /**
-   * Geef de WerelddeelnaamService. Als die nog niet gekend is haal het dan op.
-   * 
-   * @return WerelddeelnaamService
-   */
+  protected MuntService getMuntService() {
+    if (null == muntService) {
+      muntService = (MuntService)
+          new JNDI.JNDINaam().metBean(MuntService.class).locate();
+    }
+
+    return muntService;
+  }
+
+  protected RegioService getRegioService() {
+    if (null == regioService) {
+      regioService = (RegioService)
+          new JNDI.JNDINaam().metBean(RegioService.class).locate();
+    }
+
+    return regioService;
+  }
+
   protected WerelddeelnaamService getWerelddeelnaamService() {
     if (null == werelddeelnaamService) {
       werelddeelnaamService = (WerelddeelnaamService)
@@ -117,11 +136,6 @@ public class Sedes extends DoosBean {
     return werelddeelnaamService;
   }
 
-  /**
-   * Geef de WerelddeelService. Als die nog niet gekend is haal het dan op.
-   * 
-   * @return WerelddeelService
-   */
   protected WerelddeelService getWerelddeelService() {
     if (null == werelddeelService) {
       werelddeelService = (WerelddeelService)

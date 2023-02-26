@@ -22,6 +22,7 @@ import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.RegioDao;
 import eu.debooy.sedes.domain.RegioDto;
+import eu.debooy.sedes.form.Regio;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Lock;
@@ -63,12 +64,73 @@ public class RegioService {
     LOGGER.debug("init RegioService");
   }
 
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public void delete(Long regioId) {
+    RegioDto regio  = regioDao.getByPrimaryKey(regioId);
+    regioDao.delete(regio);
+  }
+
+  @GET
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  @Path("/NUTS0")
+  public Response getNuts0() {
+    try {
+      return Response.ok().entity(regioDao.getNuts0()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/NUTS1")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getNuts1() {
+    try {
+      return Response.ok().entity(regioDao.getNuts1()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/NUTS2")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getNuts2() {
+    try {
+      return Response.ok().entity(regioDao.getNuts2()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/NUTS3")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getNuts3() {
+    try {
+      return Response.ok().entity(regioDao.getNuts3()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/land/{landId}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getPerLand(@PathParam(RegioDto.COL_REGIOID) Long landId) {
+    try {
+      return Response.ok().entity(regioDao.getPerLand(landId)).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
   @GET
   @Path("/{regioId}")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Response getRegio(@PathParam(RegioDto.COL_REGIOID) Long regioId) {
     try {
-      return Response.ok().entity(regioDao.getRegio(regioId)).build();
+      return Response.ok().entity(regioDao.getByPrimaryKey(regioId)).build();
     } catch (ObjectNotFoundException e) {
       var message = new Message.Builder()
                                .setAttribute(RegioDto.COL_REGIOID)
@@ -98,9 +160,31 @@ public class RegioService {
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public RegioDto regio(Long regioId) {
     try {
-      return regioDao.getRegio(regioId);
+      return regioDao.getByPrimaryKey(regioId);
     } catch (ObjectNotFoundException e) {
       return new RegioDto();
+    }
+  }
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public void save(Regio regio) {
+    var dto = new RegioDto();
+    regio.persist(dto);
+    if (null == regio.getRegioId()) {
+      regioDao.create(dto);
+      regio.setRegioId(dto.getRegioId());
+    } else {
+      regioDao.update(dto);
+    }
+  }
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  public void save(RegioDto regio) {
+    if (null == regio.getRegioId()) {
+      regioDao.create(regio);
+      regio.setRegioId(regio.getRegioId());
+    } else {
+      regioDao.update(regio);
     }
   }
 
@@ -111,7 +195,7 @@ public class RegioService {
     try {
       regioDao.getAll().forEach(
           regio -> items.add(new SelectItem(regio.getRegioId().toString(),
-                                            regio.getRegio())));
+                                            regio.getRegionaam())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }

@@ -82,8 +82,12 @@ public class LandnaamService {
   public Collection<Landnaam> bestaandeLandnamen(String taal) {
     Set<Landnaam> landnamen = new HashSet<>();
 
-    landnaamDao.getBestaandeLandnamenPerTaal(taal)
-               .forEach(rij -> landnamen.add(new Landnaam(rij)));
+    try {
+      landnaamDao.getBestaandeLandnamenPerTaal(taal)
+                 .forEach(rij -> landnamen.add(new Landnaam(rij)));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
 
     return landnamen;
   }
@@ -93,9 +97,13 @@ public class LandnaamService {
       bestaandeLandnamenPerWerelddeel(String taal, Long werelddeelId) {
     Set<Landnaam> landnamen = new HashSet<>();
 
-    landnaamDao.getBestaandeLandnamenPerWerelddeelPerTaal(taal,
-                                                          werelddeelId)
-               .forEach(rij -> landnamen.add(new Landnaam(rij)));
+    try {
+      landnaamDao.getBestaandeLandnamenPerWerelddeelPerTaal(taal,
+                                                            werelddeelId)
+                 .forEach(rij -> landnamen.add(new Landnaam(rij)));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
 
     return landnamen;
   }

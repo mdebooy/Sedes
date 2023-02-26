@@ -1,140 +1,145 @@
-<!DOCTYPE html>
-<html  lang="#{gebruiker.locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:d="http://java.debooy.eu/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:t="http://myfaces.apache.org/tomahawk"
-   xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:define name="head">
-      <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-          $('#landnamenTabel').dataTable( {
-            "order": [[1, "asc"]],
-            "columns": [{ "orderable": false },
-                        { "orderable": true },
-                        { "orderable": true },
-                        { "orderable": true },
-                        { "orderable": true }],
-            "pagingType": "full_numbers",
-            "pageLength": #{properties.appValue('sedes.pagelength')},
-            "lengthChange": false,
-            "stateSave": true,
-            "language": {
-              "paginate": {
-                "first": '<span class="glyphicon glyphicon-fast-backward"></span>',
-                "last": '<span class="glyphicon glyphicon-fast-forward"></span>',
-                "next": '<span class="glyphicon glyphicon-triangle-right"></span>',
-                "previous": '<span class="glyphicon glyphicon-triangle-left"></span>'
-              },
-              "search": "#{i18nTeksten.tekst('pager.search')}",
-              "zeroRecords": "#{i18nTeksten.tekst('pager.zero.records')}",
-              "info": "#{i18nTeksten.tekst('pager.info')}",
-              "infoEmpty": "#{i18nTeksten.tekst('pager.info.empty')}",
-              "infoFiltered": "#{i18nTeksten.tekst('pager.info.filtered')}"
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var landnamenTabel = $('#landnamenTabel').DataTable( {
+          data: #{sedesLand.landnamen},
+          order: [[1, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength.tab')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: 'taal', visible: false },
+            { data: null, title: '#{i18nTeksten.tekst('label.taal')}', width: '50px', class: 'has-text-centered', orderData: 0, render: function ( data, type, row ) {
+                return taalvlag(data.taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('landnaam')) {
+                  return data.landnaam;
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.officieleNaam')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('officieleNaam')) {
+                  return data.officieleNaam;
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.hoofdstad')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('hoofdstad')) {
+                  return data.hoofdstad;
+                }
+                return '';
+              }
             }
-          } );
+          ]
         } );
-      </script>
-    </ui:define>
-    <ui:define name="body">
-      <h:form class="form-horizontal" id="formLand">
-        <div class="col-md-12">
-          <div class="col-md-10">
-            <t:div rendered="#{!sedesLand.aktie.readonly}">
-              <h2>#{i18nTeksten.tekst(sedesLand.subTitel)}</h2>
-            </t:div>
-            <t:div rendered="#{sedesLand.aktie.readonly}">
-              <h2>#{i18nLandnaam.landnaam(sedesLand.land.landId)}</h2>
-            </t:div>
-          </div>
-          <div align="right" class="col-md-2" >
-            <h:commandLink action="#{sedesLand.createLandnaam}">
-              <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
-            </h:commandLink>
-          </div>
-          <div class="row" />
-          <div class="col-md-12">
-            <div class="form-group form-group-md col-md-4">
-              <label for="iso2" class="col-md-6 control-label">#{i18nTeksten.tekst('label.iso2')}</label>
-              <div class="col-md-6">
-                <t:inputText id="iso2" styleClass="form-control" value="#{sedesLand.land.iso2}" maxlength="2" size="2" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="iso3" class="col-md-6 control-label">#{i18nTeksten.tekst('label.iso3')}</label>
-              <div class="col-md-6">
-                <t:inputText id="iso3" styleClass="form-control" value="#{sedesLand.land.iso3}" maxlength="3" size="3" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="bestaat" class="col-md-6 control-label">#{i18nTeksten.tekst('label.bestaat')}</label>
-              <div class="col-md-6">
-                <t:selectBooleanCheckbox id="bestaat" value="#{sedesLand.land.bestaat}" disabled="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group form-group-md col-md-4">
-              <label for="landnummer" class="col-md-6 control-label">#{i18nTeksten.tekst('label.landnummer')}</label>
-              <div class="col-md-6">
-                <t:inputText id="landnummer" styleClass="form-control" value="#{sedesLand.land.landnummer}" maxlength="5" size="5" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="postLandkode" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postLandkode')}</label>
-              <div class="col-md-6">
-                <t:inputText id="postLandkode" styleClass="form-control" value="#{sedesLand.land.postLandkode}" maxlength="3" size="3" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="postkodeType" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postkodeType')}</label>
-              <div class="col-md-6">
-                <t:inputText id="postkodeType" styleClass="form-control" value="#{sedesLand.land.postkodeType}" maxlength="1" size="1" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group form-group-md col-md-4">
-              <label for="postkodeScheiding" class="col-md-6 control-label">#{i18nTeksten.tekst('label.postkodeScheiding')}</label>
-              <div class="col-md-6">
-                <t:inputText id="postkodeScheiding" styleClass="form-control" value="#{sedesLand.land.postkodeScheiding}" maxlength="10" size="10" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="taal" class="col-md-6 control-label">#{i18nTeksten.tekst('label.taal')}</label>
-              <div class="col-md-6">
-                <t:inputText id="taal" styleClass="form-control" value="#{sedesLand.land.taal}" maxlength="2" size="2" readonly="#{sedesLand.aktie.readonly}" />
-              </div>
-            </div>
-            <div class="form-group form-group-md col-md-4">
-              <label for="werelddeelId" class="col-md-6 control-label">#{i18nTeksten.tekst('label.werelddeel')}</label>
-              <div class="col-md-6">
-                <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" readonly="#{sedesLand.aktie.readonly}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" />
-              </div>
-            </div>
-          </div>
+        $( '#landnamenTabel tbody').on('click', 'tr', function() {
+          if (landnamenTabel.row(this).data() === undefined || #{!sedesLand.user} || #{sedesLand.aktie.bekijk}) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formLand:linkLandnaam');
+          alterParam(jsfCommandLink, landnamenTabel.row(this).data().taal);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesLand.aktie.wijzig and sedesLand.user}) {
+          addInsertButton('landnamenTabel', 'formLand', '#{i18nTeksten.tekst('img.nieuw')}');
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formLand">
+          <d:titel titel="#{sedesLand.subTitel}" />
 
-          <div class="row" />
-          <h:commandLink action="#{sedesLand.save}" id="create" styleClass="btn btn-default" rendered="#{sedesLand.aktie.nieuw}">#{i18nTeksten.tekst('button.create')}</h:commandLink>
-          <h:commandLink action="#{sedesLand.save}" id="modify" styleClass="btn btn-default" rendered="#{sedesLand.aktie.wijzig}">#{i18nTeksten.tekst('button.save')}</h:commandLink>
-          <d:cancel returnto="#{sedes.path}/landen/landen.xhtml" aktie="#{sedesLand.aktie}"/>
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.iso2')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="iso2" value="#{sedesLand.land.iso2}" maxlength="2" size="2" readonly="#{sedesLand.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.iso3')}" />
+                  <d:inputText id="iso3" value="#{sedesLand.land.iso3}" maxlength="3" size="3" required="true" readonly="#{sedesLand.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.bestaat')}" />
+                <div class="field-body is-normal">
+                  <d:selectBooleanCheckbox id="bestaat" value="#{sedesLand.land.bestaat}" disabled="#{sedesLand.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.landnummer')}" />
+                  <d:inputText id="landnummer" value="#{sedesLand.land.landnummer}" maxlength="5" size="5" readonly="#{sedesLand.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.postLandkode')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="postLandkode" value="#{sedesLand.land.postLandkode}" maxlength="3" size="3" required="true" readonly="#{sedesLand.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.postkodeType')}" />
+                  <d:inputText id="postkodeType" value="#{sedesLand.land.postkodeType}" maxlength="1" size="1" required="true" readonly="#{sedesLand.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.postkodeScheiding')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="postkodeScheiding" value="#{sedesLand.land.postkodeScheiding}" maxlength="10" size="10" readonly="#{sedesLand.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.taal')}" />
+                  <d:listbox id="taal" value="#{sedesLand.land.taal}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{i18nTeksten.talen()}" textvalue="#{i18nTeksten.taal(sedesLand.land.taal)}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.werelddeel')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" fullwidth="true" readonly="#{sedesLand.aktie.readonly}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" required="true" />
+                  <d:label label="#{i18nTeksten.tekst('label.munt')}" />
+                  <d:listbox id="muntId" value="#{sedesLand.land.muntId}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{sedesMunt.selectMunten()}" textvalue="#{sedesMunt.munt(sedesLand.land.muntId).muntnaam}" />
+                </div>
+              </div>
 
-          <d:spacer aantal="2" />
-          <div class="row" />
-          <div class="col-md-10 col-md-offset-1">
-            <ui:include src="landnamentabel.xhtml">
-              <ui:param name="form" value="formLandnamen" />
-              <ui:param name="lijst" value="#{sedesLand.landnamen}" />
-            </ui:include>
+              <d:crudbuttonbar bean="#{sedesLand}" form="formLand" returnto="#{sedes.path}/landen/landen.xhtml" tekst="#{sedesLand.naam}" />
+
+              <t:div rendered="#{!sedesLand.aktie.nieuw}">
+                <table id="landnamenTabel" class="table is-striped is-narrow #{sedesLand.user ? 'is-hoverable' : ''}" aria-describedby="landnamenTabel" />
+                <h:commandLink id="linkLandnaam" class="is-hidden" action="#{sedesLand.retrieveDetail}">
+                  <f:param name="taal" value="XX" />
+                </h:commandLink>
+                <h:commandLink id="addLandnamen" class="is-hidden" action="#{sedesLand.createDetail}" />
+              </t:div>
+            </div>
           </div>
-        </div>
-      </h:form>
-    </ui:define>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
 
-    <ui:define name="modal">
-      <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.landnaam.delete')}" />
-    </ui:define>
-  </ui:composition>
-</html>
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.land.delete')}" />
+  </ui:define>
+</ui:composition>

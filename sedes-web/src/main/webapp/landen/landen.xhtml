@@ -1,66 +1,91 @@
-<!DOCTYPE html>
-<html  lang="#{gebruiker.locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:d="http://java.debooy.eu/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:t="http://myfaces.apache.org/tomahawk"
-   xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:define name="head">
-      <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-          $('#landenTabel').dataTable( {
-            "order": [[2, "asc"]],
-            "columns": [{ "orderable": false },
-                        { "orderable": true },
-                        { "orderable": true },
-                        { "orderable": true }],
-            "pagingType": "full_numbers",
-            "pageLength": #{properties.appValue('sedes.pagelength')},
-            "lengthChange": false,
-            "stateSave": true,
-            "language": {
-              "paginate": {
-                "first": '<span class="glyphicon glyphicon-fast-backward"></span>',
-                "last": '<span class="glyphicon glyphicon-fast-forward"></span>',
-                "next": '<span class="glyphicon glyphicon-triangle-right"></span>',
-                "previous": '<span class="glyphicon glyphicon-triangle-left"></span>'
-              },
-              "search": "#{i18nTeksten.tekst('pager.search')}",
-              "zeroRecords": "#{i18nTeksten.tekst('pager.zero.records')}",
-              "info": "#{i18nTeksten.tekst('pager.info')}",
-              "infoEmpty": "#{i18nTeksten.tekst('pager.info.empty')}",
-              "infoFiltered": "#{i18nTeksten.tekst('pager.info.filtered')}"
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var landenTabel = $('#landenTabel').DataTable( {
+          ajax: { url: '/sedes/landen',
+                  dataSrc: '' },
+          order: [[2, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: null, title: '#{i18nTeksten.tekst('label.iso2')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('iso2')) {
+                  return data.iso2;
+                }
+                return '';
+              }
+            },
+            { data: 'iso3', title: '#{i18nTeksten.tekst('label.iso3')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
+                return getLandnaam(data, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.hoofdstad')}', render: function ( data, type, row ) {
+                return getHoofdstad(data, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.werelddeel')}', render: function ( data, type, row ) {
+                return getWerelddeelIdNaam(data.werelddeelId, taal);
+              }
             }
-          } );
+          ]
         } );
-      </script>
-    </ui:define>
-    <ui:define name="body">
-      <h:form id="formLanden">
-        <div class="col-md-10 col-md-offset-1">
-          <div class="col-md-10">
-            <h2>#{i18nTeksten.tekst('sedes.titel.landen')}</h2>
-          </div>
-          <div align="right" class="col-md-2" >
-            <h:commandLink action="#{sedesLand.create}" rendered="false">
-              <img src="/common/images/32x32/actions/document-new.png" alt="#{i18nTeksten.tekst('img.nieuw')}" title="#{i18nTeksten.tekst('img.nieuw')}" />
-            </h:commandLink>
-            <h:commandLink action="#{sedesLand.landenlijst}">
-              <f:setPropertyActionListener target="#{sedesLand.type}" value="PDF" /><img src="/common/images/32x32/apps/evince.png" alt="#{i18nTeksten.tekst('img.PDF')}" title="#{i18nTeksten.tekst('img.PDF')}" />
-            </h:commandLink>
-          </div>
+        $( '#landenTabel tbody').on('click', 'tr', function() {
+          if (landenTabel.row(this).data() === undefined) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formLanden:linkLand');
+          alterParam(jsfCommandLink, landenTabel.row(this).data().landId);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesLand.user}) {
+          var imgTekst = '#{i18nTeksten.tekst('img.nieuw')}';
+          addInsertButton('landenTabel', 'formLanden', imgTekst);
+          addPdfButton('landenTabel', 'formLanden', imgTekst);
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-10">
+        <h:form id="formLanden">
+          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.landen')}" />
 
-          <ui:include src="landentabel.xhtml">
-            <ui:param name="form" value="formLanden" />
-            <ui:param name="lijst" value="#{sedesLand.landen}" />
-          </ui:include>
-        </div>
-      </h:form>
-    </ui:define>
-    <ui:define name="modal">
-      <d:confirmatie confirmatietitel="#{i18nTeksten.tekst('sedes.titel.land.delete')}" />
-    </ui:define>
-  </ui:composition>
-</html>
+          <table id="landenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="landenTabel" />
+          <h:commandLink id="linkLand" action="#{sedesLand.retrieve}" style="display:none">
+            <f:param name="landId" value="XX" />
+          </h:commandLink>
+          <h:commandLink id="addLanden" class="is-hidden" action="#{sedesLand.create}" />
+          <h:commandLink id="pdfLanden" class="is-hidden" action="#{sedesLand.landenlijst}">
+            <f:setPropertyActionListener target="#{sedesLand.type}" value="PDF" />
+          </h:commandLink>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

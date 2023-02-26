@@ -1,85 +1,95 @@
-<!DOCTYPE html>
-<html  lang="#{gebruiker.locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:d="http://java.debooy.eu/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:t="http://myfaces.apache.org/tomahawk"
-   xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:define name="head">
-      <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-          $('#vragenTabel').dataTable( {
-        	  "searching": false,
-        	  "lengthChange": false,
-            "order": [[0, "asc"]],
-            "columns": [{ "orderable": false },
-                        { "orderable": false },
-                        { "orderable": false },],
-            "pagingType": "full_numbers",
-            "pageLength": #{properties.appValue('sedes.pagelength')},
-            "lengthChange": false,
-            "stateSave": true,
-            "language": {
-              "paginate": {
-                "first": '<span class="glyphicon glyphicon-fast-backward"></span>',
-                "last": '<span class="glyphicon glyphicon-fast-forward"></span>',
-                "next": '<span class="glyphicon glyphicon-triangle-right"></span>',
-                "previous": '<span class="glyphicon glyphicon-triangle-left"></span>'
-              },
-              "search": "#{i18nTeksten.tekst('pager.search')}",
-              "zeroRecords": "#{i18nTeksten.tekst('pager.zero.records')}",
-              "info": "#{i18nTeksten.tekst('pager.info')}",
-              "infoEmpty": "#{i18nTeksten.tekst('pager.info.empty')}",
-              "infoFiltered": "#{i18nTeksten.tekst('pager.info.filtered')}"
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        $('#vragenTabel').DataTable( {
+          data: #{sedesQuiz.antwoorden},
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength.tab')},
+          lengthChange: false,
+        	searching: false,
+          stateSave: false,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          createdRow: function ( row, data, dataIndex ) {
+                if ( !data.goed ) {
+                  $(row).addClass('has-text-weight-bold');
+                }
+            },
+           columns: [
+            { data: 'landnaam', title: '#{i18nTeksten.tekst('label.landnaam')}', orderable: false },
+            { data: 'antwoord', title: '#{i18nTeksten.tekst('label.antwoord')}', orderable: false },
+            { data: null, title: '#{i18nTeksten.tekst('label.hoofdstad')}', orderable: false, render: function ( data, type, row ) {
+                if (!data.goed) {
+                  return data.hoofdstad;
+                }
+                return '';
+              }
             }
-          } );
+          ]
         } );
-      </script>
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-10">
+        <h:form id="formVraag">
+          <d:titel titel="#{sedesQuiz.subTitel}" />
 
-    </ui:define>
-    <ui:define name="body">
-      <h:form class="form-horizontal" id="formVraag">
-        <div class="col-md-10 col-md-offset-1">
-          <div class="col-md-10">
-            <h2>#{sedesQuiz.subTitel}</h2>
-          </div>
-          <div class="row" />
-          <t:div rendered="#{! empty sedesQuiz.quizvraag.landnaam}">
-            <div class="form-group form-group-sm">
-              <label for="landnaam" class="col-sm-2 control-label">#{i18nTeksten.tekst('label.landnaam')}</label>
-              <div class="col-sm-6">
-                <t:inputText id="landnaam" styleClass="form-control" value="#{sedesQuiz.quizvraag.landnaam}" maxlength="255" size="100" readonly="true" />
-              </div>
+          <div class="columns is-centered">
+            <div class="column">
+              <t:div rendered="#{! empty sedesQuiz.quizvraag.landnaam}">
+                <div class="field is-horizontal">
+                  <d:label label="#{i18nTeksten.tekst('label.landnaam')}" />
+                  <div class="field-body is-normal">
+                    <d:inputText id="landnaam" value="#{sedesQuiz.quizvraag.landnaam}" maxlength="255" size="100" readonly="true" />
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <d:label label="#{i18nTeksten.tekst('label.antwoord')}" />
+                  <div class="field-body is-normal">
+                    <d:inputText id="antwoord" value="#{sedesQuiz.quizvraag.antwoord}" maxlength="255" size="100" />
+                  </div>
+                </div>
+
+                <h:commandLink action="#{sedesQuiz.beantwoordVraag}" id="confirm" styleClass="button is-primary">#{i18nTeksten.tekst('button.confirm')}</h:commandLink>
+                <a class="button" href="#{sedes.path}/quiz/quizzen.xhtml">#{i18nTeksten.tekst('button.cancel')}</a>
+              </t:div>
+
+             <t:div rendered="#{! empty sedesQuiz.antwoorden}">
+                <d:spacer aantal="2"/>
+                <table id="vragenTabel" class="table is-narrow" aria-describedby="vragenTabel" />
+              </t:div>
+
+              <h3>#{sedesQuiz.quizResultaat}</h3>
+              <t:div rendered="#{empty sedesQuiz.quizvraag.landnaam}">
+                <d:spacer aantal="2"/>
+                <d:cancel returnto="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
+              </t:div>
             </div>
-            <div class="form-group form-group-sm">
-              <label for="antwoord" class="col-sm-2 control-label">#{i18nTeksten.tekst('label.antwoord')}</label>
-              <div class="col-sm-6">
-                <t:inputText id="antwoord" styleClass="form-control" value="#{sedesQuiz.quizvraag.antwoord}" maxlength="255" size="100" />
-              </div>
-            </div>
-
-            <h:commandLink action="#{sedesQuiz.beantwoordVraag}" id="confirm" styleClass="btn btn-default">#{i18nTeksten.tekst('button.confirm')}</h:commandLink>
-            <a class="btn btn-default" href="/sedes/quiz/quizzen.xhtml">#{i18nTeksten.tekst('button.cancel')}</a>
-          </t:div>
-
-          <t:messages globalOnly="false" layout="table" fatalClass="msgFatal" errorClass="msgError" warnClass="msgWarn" infoClass="msgInfo" />
-
-          <d:spacer aantal="2"/>
-          <div class="col-md-10 col-md-offset-1">
-            <ui:include src="vragentabel.xhtml">
-              <ui:param name="lijst" value="#{sedesQuiz.antwoorden}"/>
-            </ui:include>
           </div>
-
-          <div class="row" />
-          <h3>#{sedesQuiz.quizResultaat}</h3>
-          <t:div rendered="#{empty sedesQuiz.quizvraag.landnaam}">
-            <d:spacer aantal="2"/>
-            <d:cancel returnto="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
-          </t:div>
-        </div>
-      </h:form>
-    </ui:define>
-  </ui:composition>
-</html>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

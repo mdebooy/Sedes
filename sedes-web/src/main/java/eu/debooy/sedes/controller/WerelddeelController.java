@@ -17,7 +17,7 @@
 package eu.debooy.sedes.controller;
 
 import eu.debooy.doosutils.ComponentsConstants;
-import eu.debooy.doosutils.DoosUtils;
+import eu.debooy.doosutils.DoosConstants;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
@@ -30,10 +30,11 @@ import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.WerelddeelValidator;
 import eu.debooy.sedes.validator.WerelddeelnaamValidator;
 import java.util.Collection;
-import java.util.HashSet;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,40 +53,50 @@ public class WerelddeelController extends Sedes {
       "sedes.titel.werelddeelnaam.create";
   private static final  String  DTIT_UPDATE =
       "sedes.titel.werelddeelnaam.update";
+
+  private static final  String  LBL_WERELDDEEL      = "label.land";
+  private static final  String  LBL_WERELDDEELNAAM  = "label.landnaam";
+
+  private static final  String  TIT_CREATE  = "sedes.titel.werelddeel.create";
   private static final  String  TIT_UPDATE  = "sedes.titel.werelddeel.update";
 
   private Werelddeel        werelddeel;
   private WerelddeelDto     werelddeelDto;
   private Werelddeelnaam    werelddeelnaam;
-  private WerelddeelnaamDto werelddeelnaamDto;
 
   public void create() {
-    werelddeelDto = new WerelddeelDto();
-    try {
-      getWerelddeelService().save(werelddeelDto);
-      addInfo(PersistenceConstants.CREATED, "");
-      setAktie(PersistenceConstants.RETRIEVE);
-    } catch (DuplicateObjectException e) {
-      addError(PersistenceConstants.DUPLICATE, "");
-    } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, "");
-    } catch (DoosRuntimeException e) {
-      LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
-                                 e.getLocalizedMessage()), e);
-      generateExceptionMessage(e);
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
     }
+
+    werelddeelDto = new WerelddeelDto();
+    werelddeel    = new Werelddeel();
+    setAktie(PersistenceConstants.CREATE);
+    setSubTitel(getTekst(TIT_CREATE));
+    redirect(WERELDDEEL_REDIRECT);
   }
 
-  public void createWerelddeelnaam() {
-    werelddeelnaamDto = new WerelddeelnaamDto();
+  public void createDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     werelddeelnaam    = new Werelddeelnaam();
     setDetailAktie(PersistenceConstants.CREATE);
-    setDetailSubTitel(DTIT_CREATE);
+    setDetailSubTitel(getTekst(DTIT_CREATE));
     redirect(WERELDDEELNAAM_REDIRECT);
   }
 
-  public void delete(Long werelddeelId) {
-    String  naam  = i18nWerelddeelnaam(werelddeelId);
+  public void delete() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var werelddeelId  = werelddeel.getWerelddeelId();
+    var naam          = i18nWerelddeelnaam(werelddeelId);
 
     try {
       getWerelddeelService().delete(werelddeelId);
@@ -99,11 +110,19 @@ public class WerelddeelController extends Sedes {
     }
   }
 
-  public void deleteWerelddeelnaam(String taalKode) {
+  public void deleteDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var taalKode  = werelddeelnaam.getTaal();
     try {
       werelddeelDto.removeNaam(taalKode);
       getWerelddeelService().save(werelddeelDto);
       addInfo(PersistenceConstants.DELETED, "'" + taalKode + "'");
+      werelddeelnaam  = new Werelddeelnaam();
+      redirect(WERELDDEEL_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, taalKode);
     } catch (DoosRuntimeException e) {
@@ -121,21 +140,97 @@ public class WerelddeelController extends Sedes {
     return werelddeelnaam;
   }
 
-  public Collection<Werelddeelnaam> getWerelddeelnamen() {
-    Collection<Werelddeelnaam>  werelddeelnamen = new HashSet<>();
+  public JSONArray getWerelddeelnamen() {
+    var werelddeelnamen = new JSONArray();
 
-    for (WerelddeelnaamDto rij : werelddeelDto.getWerelddeelnamen()) {
-      werelddeelnamen.add(new Werelddeelnaam(rij));
-    }
+    werelddeelDto.getWerelddeelnamen()
+                 .forEach(rij -> werelddeelnamen.add(rij.toJSON()));
 
     return werelddeelnamen;
   }
 
-  public Collection<Werelddeel> getWerelddelen() {
-    return getWerelddeelService().query();
+  public String i18nWerelddeelnaam(Long werelddeelId) {
+    String  i18nWerelddeelnaam;
+    try {
+      i18nWerelddeelnaam  =
+        getWerelddeelnaamService()
+            .werelddeelnaam(werelddeelId, getGebruikersTaal())
+            .getWerelddeelnaam();
+    } catch(ObjectNotFoundException e) {
+      try {
+        i18nWerelddeelnaam  =
+            getWerelddeelnaamService()
+                .werelddeelnaam(werelddeelId, getDefTaal()).getWerelddeelnaam();
+      } catch(ObjectNotFoundException ex) {
+        i18nWerelddeelnaam  = DoosConstants.NA;
+      }
+    }
+
+    return i18nWerelddeelnaam;
+  }
+
+  public void retrieve() {
+    if (!isGerechtigd()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var ec            = FacesContext.getCurrentInstance().getExternalContext();
+
+    if (!ec.getRequestParameterMap()
+           .containsKey(WerelddeelDto.COL_WERELDDEELID)) {
+      addError(ComponentsConstants.GEENPARAMETER,
+               WerelddeelDto.COL_WERELDDEELID);
+      return;
+    }
+
+    var werelddeelId  = Long.valueOf(ec.getRequestParameterMap()
+                                       .get(WerelddeelDto.COL_WERELDDEELID));
+
+    try {
+      werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
+      werelddeel    = new Werelddeel(werelddeelDto);
+      setAktie(PersistenceConstants.RETRIEVE);
+      setSubTitel(werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
+                               .getWerelddeelnaam());
+      redirect(WERELDDEEL_REDIRECT);
+    } catch (ObjectNotFoundException e) {
+      addError(PersistenceConstants.NOTFOUND, LBL_WERELDDEEL);
+    }
+  }
+
+  public void retrieveDetail() {
+    if (!isGerechtigd()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
+    var ec    = FacesContext.getCurrentInstance().getExternalContext();
+
+    if (!ec.getRequestParameterMap().containsKey(WerelddeelnaamDto.COL_TAAL)) {
+      addError(ComponentsConstants.GEENPARAMETER, WerelddeelnaamDto.COL_TAAL);
+      return;
+    }
+
+    try {
+      werelddeelnaam  =
+          new Werelddeelnaam(
+            werelddeelDto.getWerelddeelnaam(
+                ec.getRequestParameterMap().get(WerelddeelnaamDto.COL_TAAL)));
+      setDetailAktie(PersistenceConstants.UPDATE);
+      setDetailSubTitel(getTekst(DTIT_UPDATE));
+      redirect(WERELDDEELNAAM_REDIRECT);
+    } catch (ObjectNotFoundException e) {
+      addError(PersistenceConstants.NOTFOUND, LBL_WERELDDEELNAAM);
+    }
   }
 
   public void save() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     var messages  = WerelddeelValidator.valideer(werelddeel);
 
     if (!messages.isEmpty()) {
@@ -144,21 +239,22 @@ public class WerelddeelController extends Sedes {
     }
 
     try {
-      werelddeel.persist(werelddeelDto);
-      getWerelddeelService().save(werelddeelDto);
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          werelddeel.setWerelddeelId(werelddeelDto.getWerelddeelId());
+          getWerelddeelService().save(werelddeel);
+          werelddeel.persist(werelddeelDto);
           addInfo(PersistenceConstants.CREATED, "");
+          update();
           break;
         case PersistenceConstants.UPDATE:
+          werelddeel.persist(werelddeelDto);
+          getWerelddeelService().save(werelddeelDto);
           addInfo(PersistenceConstants.UPDATED, "");
           break;
         default:
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
           break;
       }
-      setAktie(PersistenceConstants.RETRIEVE);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, "");
     } catch (ObjectNotFoundException e) {
@@ -170,7 +266,12 @@ public class WerelddeelController extends Sedes {
     }
   }
 
-  public void saveWerelddeelnaam() {
+  public void saveDetail() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
+    }
+
     var messages  = WerelddeelnaamValidator.valideer(werelddeelnaam);
 
     if (!messages.isEmpty()) {
@@ -179,16 +280,17 @@ public class WerelddeelController extends Sedes {
     }
 
     try {
-      werelddeelnaamDto = new WerelddeelnaamDto();
+      var werelddeelnaamDto = new WerelddeelnaamDto();
       werelddeelnaam.persist(werelddeelnaamDto);
       werelddeelDto.addNaam(werelddeelnaamDto);
-      getWerelddeelService().save(werelddeelDto);
-      switch (getAktie().getAktie()) {
+      switch (getDetailAktie().getAktie()) {
         case PersistenceConstants.CREATE:
+          getWerelddeelService().save(werelddeelDto);
           addInfo(PersistenceConstants.CREATED,
                   "'" + werelddeelnaam.getTaal() + "'");
           break;
         case PersistenceConstants.UPDATE:
+          getWerelddeelService().save(werelddeelDto);
           addInfo(PersistenceConstants.UPDATED,
                   "'" + werelddeelnaam.getTaal() + "'");
           break;
@@ -196,6 +298,9 @@ public class WerelddeelController extends Sedes {
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie()) ;
           break;
       }
+      setSubTitel(getTekst(TIT_UPDATE,
+                           werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
+                                        .getWerelddeelnaam()));
       redirect(WERELDDEEL_REDIRECT);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, werelddeelnaam.getTaal());
@@ -213,41 +318,15 @@ public class WerelddeelController extends Sedes {
               .selectWerelddeelnamen(getGebruikersTaal());
   }
 
-  public String i18nWerelddeelnaam(Long werelddeelId) {
-    String  i18nWerelddeelnaam  =
-        getWerelddeelnaamService()
-            .werelddeelnaam(werelddeelId, getGebruikersTaal())
-            .getWerelddeelnaam();
-    if (DoosUtils.isBlankOrNull(i18nWerelddeelnaam)) {
-      i18nWerelddeelnaam  =
-          getWerelddeelnaamService()
-              .werelddeelnaam(werelddeelId, getParameter("default.taal"))
-              .getWerelddeelnaam();
+  public void update() {
+    if (!isUser()) {
+      addError(ComponentsConstants.GEENRECHTEN);
+      return;
     }
 
-    return i18nWerelddeelnaam;
-  }
-
-  public void retrieve(Long werelddeelId) {
-    werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
-    werelddeel    = new Werelddeel(werelddeelDto);
-    setAktie(PersistenceConstants.RETRIEVE);
-    redirect(WERELDDEEL_REDIRECT);
-  }
-
-  public void update(Long werelddeelId) {
-    werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
-    werelddeel    = new Werelddeel(werelddeelDto);
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel(TIT_UPDATE);
-    redirect(WERELDDEEL_REDIRECT);
-  }
-
-  public void updateWerelddeelnaam(String taal) {
-    werelddeelnaamDto = werelddeelDto.getWerelddeelnaam(taal);
-    werelddeelnaam    = new Werelddeelnaam(werelddeelnaamDto);
-    setDetailAktie(PersistenceConstants.UPDATE);
-    setDetailSubTitel(DTIT_UPDATE);
-    redirect(WERELDDEELNAAM_REDIRECT);
+    setSubTitel(getTekst(TIT_UPDATE,
+                         werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
+                                      .getWerelddeelnaam()));
   }
 }

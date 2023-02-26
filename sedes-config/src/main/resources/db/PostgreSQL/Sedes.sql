@@ -68,7 +68,7 @@ CREATE TABLE SEDES.KONTAKTEN (
   GEBOORTEDATUM                   DATE,
   GEBRUIKERSNAAM                  VARCHAR(20),
   INITIALEN                       VARCHAR(20),
-  KONTAKT_ID                      INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,,
+  KONTAKT_ID                      INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
   NAAM                            VARCHAR(255)    NOT NULL,
   OFFICIEEL                       CHAR(1)         NOT NULL  DEFAULT 'N',
   OPMERKING                       TEXT,
@@ -79,7 +79,7 @@ CREATE TABLE SEDES.KONTAKTEN (
 );
 
 CREATE TABLE SEDES.LANDEN (
-  BESTAAT                         CHAR(2)         NOT NULL  DEFAULT 'J',
+  BESTAAT                         CHAR(1)         NOT NULL  DEFAULT 'J',
   ISO2                            CHAR(2),
   ISO3                            CHAR(3)         NOT NULL,
   LAND_ID                         INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
@@ -104,11 +104,11 @@ CREATE TABLE SEDES.LANDNAMEN (
 );
 
 CREATE TABLE SEDES.MUNTEN (
-  BESTAAT                         CHAR(2)         NOT NULL  DEFAULT 'J',
+  BESTAAT                         CHAR(1)         NOT NULL  DEFAULT 'J',
   DECIMALEN                       SMALLINT        NOT NULL  DEFAULT '2',
-  MUNT                            VARCHAR(100)    NOT NULL,
-  MUNT_ID                         INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
   ISO3                            CHAR(3)         NOT NULL,
+  MUNT_ID                         INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
+  MUNTNAAM                        VARCHAR(100)    NOT NULL,
   MUNTTEKEN                       CHAR(3),
   SUBEENHEID                      VARCHAR(100),
   CONSTRAINT PK_MUNTEN PRIMARY KEY (MUNT_ID)
@@ -142,7 +142,7 @@ CREATE TABLE SEDES.POSTLIJSTEN (
 
 CREATE TABLE SEDES.REGIOS (
   LAND_ID                         INTEGER         NOT NULL,
-  REGIO                           VARCHAR(100)    NOT NULL,
+  REGIONAAM                       VARCHAR(100)    NOT NULL,
   REGIOKODE                       VARCHAR(5)      NOT NULL,
   REGIO_ID                        INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
   CONSTRAINT PK_REGIOS PRIMARY KEY (REGIO_ID)

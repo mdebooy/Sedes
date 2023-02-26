@@ -51,9 +51,6 @@ public class WerelddeelnaamService {
   @Inject
   private WerelddeelnaamDao werelddeelnaamDao;
 
-  /**
-   * Initialisatie.
-   */
   public WerelddeelnaamService() {
     LOGGER.debug("init WerelddeelnaamService");
   }

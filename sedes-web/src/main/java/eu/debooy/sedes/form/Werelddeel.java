@@ -19,9 +19,9 @@ package eu.debooy.sedes.form;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.WerelddeelDto;
 import java.io.Serializable;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
@@ -30,8 +30,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class Werelddeel
     extends Formulier implements Comparable<Werelddeel>, Serializable{
   private static final  long  serialVersionUID  = 1L;
-
-  private boolean gewijzigd = false;
 
   private Long  werelddeelId;
 
@@ -68,10 +66,6 @@ public class Werelddeel
   @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).toHashCode();
-  }
-
-  public boolean isGewijzigd() {
-    return gewijzigd;
   }
 
   public void persist(WerelddeelDto parameter) {

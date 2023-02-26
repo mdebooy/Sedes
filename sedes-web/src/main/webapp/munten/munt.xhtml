@@ -1,0 +1,57 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formMunt">
+          <d:titel titel="#{sedesMunt.subTitel}" />
+
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.bestaat')}" />
+                <div class="field-body is-normal">
+                  <d:selectBooleanCheckbox id="bestaat" value="#{sedesMunt.munt.bestaat}" disabled="#{sedesMunt.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.muntnaam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="muntnaam" value="#{sedesMunt.munt.muntnaam}" maxlength="100" size="100" required="true" readonly="#{sedesMunt.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.subeenheid')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="subeenheid" value="#{sedesMunt.munt.subeenheid}" maxlength="100" size="100" readonly="#{sedesMunt.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.iso3')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="iso3" value="#{sedesMunt.munt.iso3}" maxlength="3" size="3" required="true" readonly="#{sedesMunt.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.muntteken')}" />
+                  <d:inputText id="muntteken" value="#{sedesMunt.munt.muntteken}" maxlength="3" size="3" readonly="#{sedesMunt.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.decimalen')}" />
+                  <d:inputText id="decimalen" value="#{sedesMunt.munt.decimalen}" maxlength="2" size="2" required="true" readonly="#{sedesMunt.aktie.readonly}" />
+                </div>
+              </div>
+
+              <d:crudbuttonbar bean="#{sedesMunt}" form="formMunt" returnto="#{sedes.path}/munten/munten.xhtml" tekst="#{sedesMunt.munt.muntnaam}" />
+            </div>
+          </div>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.munt.delete')}" />
+  </ui:define>
+</ui:composition>
