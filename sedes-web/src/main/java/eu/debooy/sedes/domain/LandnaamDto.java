@@ -45,7 +45,7 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
 
   public static final String  COL_HOOFDSTAD     = "hoofdstad";
   public static final String  COL_LANDID        = "landId";
-  public static final String  COL_LANDNAAM      = "landnaam";
+  public static final String  COL_NAAM          = "naam";
   public static final String  COL_OFFICIELENAAM = "officieleNaam";
   public static final String  COL_TAAL          = "taal";
 
@@ -65,8 +65,8 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
   @Id
   @Column(name="LAND_ID", nullable=false)
   private Long      landId;
-  @Column(name="LANDNAAM", length=100, nullable=false)
-  private String    landnaam;
+  @Column(name="NAAM", length=100, nullable=false)
+  private String    naam;
   @Column(name="OFFICIELE_NAAM", length=255)
   private String    officieleNaam;
   @Id
@@ -79,7 +79,7 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
 
     @Override
     public int compare(LandnaamDto landnaamDto1, LandnaamDto landnaamDto2) {
-      return landnaamDto1.landnaam.compareTo(landnaamDto2.landnaam);
+      return landnaamDto1.naam.compareTo(landnaamDto2.naam);
     }
   }
 
@@ -113,8 +113,8 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
     return landId;
   }
 
-  public String getLandnaam() {
-    return landnaam;
+  public String getNaam() {
+    return naam;
   }
 
   public String getOfficieleNaam() {
@@ -131,22 +131,22 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
   }
 
   public void setHoofdstad(String hoofdstad) {
-    this.hoofdstad = hoofdstad;
+    this.hoofdstad      = hoofdstad;
   }
 
   public void setLandId(Long landId) {
-    this.landId = landId;
+    this.landId         = landId;
   }
 
-  public void setLandnaam(String landnaam) {
-    this.landnaam = landnaam;
+  public void setNaam(String naam) {
+    this.naam           = naam;
   }
 
   public void setOfficieleNaam(String officieleNaam) {
-    this.officieleNaam = officieleNaam;
+    this.officieleNaam  = officieleNaam;
   }
 
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal           = taal;
   }
 }

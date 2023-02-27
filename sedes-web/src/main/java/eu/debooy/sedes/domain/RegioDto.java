@@ -89,7 +89,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
   @Override
   public int compareTo(RegioDto regioDto) {
-    return new CompareToBuilder().append(regioId, regioDto.regioId)
+    return new CompareToBuilder().append(regiokode, regioDto.regiokode)
                                  .toComparison();
   }
 

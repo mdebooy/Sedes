@@ -102,7 +102,7 @@ public class WerelddeelnaamService {
       rijen.addAll(werelddeelnaamDao.getPerTaal(taal));
       for (WerelddeelnaamDto rij : rijen) {
         items.add(new SelectItem(rij.getWerelddeelId(),
-                                 rij.getWerelddeelnaam()));
+                                 rij.getNaam()));
       }
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.

@@ -18,7 +18,7 @@
               <h:commandLink action="#{sedesQuiz.startQuiz}" id="heleWereld" styleClass="button is-fullwidth">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
               <t:dataList var="quiz" value="#{sedesQuiz.quizzen}" rowIndexVar="idx">
                 <div>
-                  <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="button is-fullwidth">#{quiz.werelddeelnaam}</h:commandLink>
+                  <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="button is-fullwidth">#{quiz.naam}</h:commandLink>
                 </div>
               </t:dataList>
             </div>

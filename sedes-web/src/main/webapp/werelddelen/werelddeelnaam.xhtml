@@ -19,15 +19,15 @@
                 </div>
               </div>
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.werelddeelnaam')}" />
+                <d:label label="#{i18nTeksten.tekst('label.naam')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="werelddeelnaam" value="#{sedesWerelddeel.werelddeelnaam.werelddeelnaam}" maxlength="100" size="100" required="true" readonly="#{natuurTaxon.detailAktie.readonly}" />
+                  <d:inputText id="naam" value="#{sedesWerelddeel.werelddeelnaam.naam}" maxlength="100" size="100" required="true" readonly="#{natuurTaxon.detailAktie.readonly}" />
                 </div>
               </div>
             </div>
           </div>
 
-          <d:crudbuttonbar bean="#{sedesWerelddeel}" form="formWerelddeelnaam" detail="detail" returnto="#{sedes.path}/werelddelen/werelddeel.xhtml" tekst="#{sedesWerelddeel.werelddeelnaam.taal} - #{sedesWerelddeel.werelddeelnaam.werelddeelnaam}" />
+          <d:crudbuttonbar bean="#{sedesWerelddeel}" form="formWerelddeelnaam" detail="detail" returnto="#{sedes.path}/werelddelen/werelddeel.xhtml" tekst="#{sedesWerelddeel.werelddeelnaam.taal} - #{sedesWerelddeel.werelddeelnaam.naam}" />
         </h:form>
       </div>
     </div>

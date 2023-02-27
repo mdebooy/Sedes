@@ -128,7 +128,7 @@ public class LandController extends Sedes {
       if (getGebruikersTaal().equals(landnaam.getTaal())) {
         setSubTitel(getTekst(TIT_UPDATE,
                              landDto.getLandnaam(getGebruikersTaal())
-                                    .getLandnaam()));
+                                    .getNaam()));
       }
       landnaam  = new Landnaam();
       redirect(LAND_REDIRECT);
@@ -159,11 +159,11 @@ public class LandController extends Sedes {
 
   public String getNaam() {
     if (landDto.hasTaal(getGebruikersTaal())) {
-      return landDto.getLandnaam(getGebruikersTaal()).getLandnaam();
+      return landDto.getLandnaam(getGebruikersTaal()).getNaam();
     }
 
     if (landDto.hasTaal(getDefTaal())) {
-      return landDto.getLandnaam(getDefTaal()).getLandnaam();
+      return landDto.getLandnaam(getDefTaal()).getNaam();
     }
 
     return "??" + getGebruikersTaal() + "??";
@@ -172,10 +172,10 @@ public class LandController extends Sedes {
   public String i18nLandnaam(Long landId) {
     var i18nLandnaam  =
         getLandnaamService().landnaam(landId, getGebruikersTaal())
-                            .getLandnaam();
+                            .getNaam();
     if (DoosUtils.isBlankOrNull(i18nLandnaam)) {
       i18nLandnaam  = getLandnaamService().landnaam(landId, getDefTaal())
-                                          .getLandnaam();
+                                          .getNaam();
     }
 
     return i18nLandnaam;
@@ -206,14 +206,14 @@ public class LandController extends Sedes {
     groepen.addAll(getWerelddeelnaamService().werelddeelnamen(taal));
     for (Werelddeelnaam groep : groepen) {
       var werelddeelId    = groep.getWerelddeelId();
-      var werelddeelnaam  = groep.getWerelddeelnaam();
+      var werelddeelnaam  = groep.getNaam();
       Set<Landnaam> rijen           =
           new TreeSet<>(new Landnaam.NaamComparator());
       rijen.addAll(getLandnaamService()
                      .bestaandeLandnamenPerWerelddeel(taal, werelddeelId));
       for (Landnaam rij : rijen) {
         exportData.addData(new String[] {werelddeelnaam,
-                                         rij.getLandnaam(),
+                                         rij.getNaam(),
                                          rij.getHoofdstad()});
 
       }
@@ -250,7 +250,7 @@ public class LandController extends Sedes {
       landDto = getLandService().land(landId);
       land    = new Land(landDto);
       setAktie(PersistenceConstants.RETRIEVE);
-      setSubTitel(landDto.getLandnaam(getGebruikersTaal()).getLandnaam());
+      setSubTitel(landDto.getLandnaam(getGebruikersTaal()).getNaam());
       redirect(LAND_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, LBL_LAND);
@@ -271,8 +271,9 @@ public class LandController extends Sedes {
     }
 
     try {
-      landnaam  = new Landnaam(landDto.getLandnaam(ec.getRequestParameterMap()
-                                                     .get(LandnaamDto.COL_TAAL)));
+      landnaam  =
+          new Landnaam(landDto.getLandnaam(ec.getRequestParameterMap()
+                                             .get(LandnaamDto.COL_TAAL)));
       setDetailAktie(PersistenceConstants.UPDATE);
       setDetailSubTitel(getTekst(DTIT_UPDATE));
       redirect(LANDNAAM_REDIRECT);
@@ -352,7 +353,7 @@ public class LandController extends Sedes {
       if (landnaam.getTaal().equals(getGebruikersTaal())) {
         setSubTitel(getTekst(TIT_UPDATE,
                              landDto.getLandnaam(getGebruikersTaal())
-                                    .getLandnaam()));
+                                    .getNaam()));
       }
       redirect(LAND_REDIRECT);
     } catch (DuplicateObjectException e) {
@@ -378,6 +379,6 @@ public class LandController extends Sedes {
 
     setAktie(PersistenceConstants.UPDATE);
     setSubTitel(getTekst(TIT_UPDATE, landDto.getLandnaam(getGebruikersTaal())
-                                            .getLandnaam()));
+                                            .getNaam()));
   }
 }

@@ -42,9 +42,9 @@ public class WerelddeelnaamDto extends Dto
     implements Comparable<WerelddeelnaamDto> {
   private static final  long  serialVersionUID  = 1L;
 
-  public static final String  COL_TAAL            = "taal";
-  public static final String  COL_WERELDDEELID    = "werelddeelId";
-  public static final String  COL_WERELDDEELNAAM  = "werelddeelnaam";
+  public static final String  COL_NAAM          = "naam";
+  public static final String  COL_TAAL          = "taal";
+  public static final String  COL_WERELDDEELID  = "werelddeelId";
 
   public static final String  PAR_TAAL          = "taal";
   public static final String  PAR_WERELDDEELID  = "werelddeelId";
@@ -52,14 +52,14 @@ public class WerelddeelnaamDto extends Dto
   public static final String  QRY_PERTAAL       = "wereldeelnamenPerTaal";
   public static final String  QRY_PERWERELDDEEL = "wereldeelnamenPerWerelddeel";
 
+  @Column(name="NAAM", length=100, nullable=false)
+  private String  naam;
   @Id
   @Column(name="TAAL", length=2, nullable=false)
   private String  taal;
   @Id
   @Column(name="WERELDDEEL_ID", nullable=false)
   private Long    werelddeelId;
-  @Column(name="WERELDDEELNAAM", length=100, nullable=false)
-  private String  werelddeelnaam;
 
   public static class NaamComparator
       implements Comparator<WerelddeelnaamDto>, Serializable {
@@ -68,8 +68,7 @@ public class WerelddeelnaamDto extends Dto
     @Override
     public int compare(WerelddeelnaamDto werelddeelnaamDto1,
                        WerelddeelnaamDto werelddeelnaamDto2) {
-      return werelddeelnaamDto1.werelddeelnaam
-                               .compareTo(werelddeelnaamDto2.werelddeelnaam);
+      return werelddeelnaamDto1.naam.compareTo(werelddeelnaamDto2.naam);
     }
   }
 
@@ -97,6 +96,10 @@ public class WerelddeelnaamDto extends Dto
                               .isEquals();
   }
 
+  public String getNaam() {
+    return naam;
+  }
+
   public String getTaal() {
     return taal;
   }
@@ -105,24 +108,20 @@ public class WerelddeelnaamDto extends Dto
     return werelddeelId;
   }
 
-  public String getWerelddeelnaam() {
-    return werelddeelnaam;
-  }
-
   @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).append(taal).toHashCode();
   }
 
+  public void setNaam(String naam) {
+    this.naam         = naam;
+  }
+
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal         = taal;
   }
 
   public void setWerelddeelId(Long werelddeelId) {
     this.werelddeelId = werelddeelId;
-  }
-
-  public void setWerelddeelnaam(String werelddeelnaam) {
-    this.werelddeelnaam = werelddeelnaam;
   }
 }

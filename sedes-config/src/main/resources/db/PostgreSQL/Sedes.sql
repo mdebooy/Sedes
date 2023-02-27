@@ -97,7 +97,7 @@ CREATE TABLE SEDES.LANDEN (
 CREATE TABLE SEDES.LANDNAMEN (
   HOOFDSTAD                       VARCHAR(100),
   LAND_ID                         INTEGER         NOT NULL,
-  LANDNAAM                        VARCHAR(100)    NOT NULL,
+  NAAM                            VARCHAR(100)    NOT NULL,
   OFFICIELE_NAAM                  VARCHAR(225),
   TAAL                            CHAR(2)         NOT NULL,
   CONSTRAINT PK_LANDNAMEN PRIMARY KEY (LAND_ID, TAAL)
@@ -149,7 +149,7 @@ CREATE TABLE SEDES.REGIOS (
 );
 
 CREATE TABLE SEDES.WERELDDEELNAMEN (
-  WERELDDEELNAAM                  VARCHAR(100)    NOT NULL,
+  NAAM                            VARCHAR(100)    NOT NULL,
   TAAL                            CHAR(2)         NOT NULL,
   WERELDDEEL_ID                   INTEGER         NOT NULL,
   CONSTRAINT PK_WERELDDEELNAMEN PRIMARY KEY (WERELDDEEL_ID, TAAL)

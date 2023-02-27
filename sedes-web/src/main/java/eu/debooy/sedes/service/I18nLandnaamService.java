@@ -89,7 +89,7 @@ public class I18nLandnaamService implements II18nLandnaam {
     LandnaamDto landnaamDto;
     try {
       landnaamDto = getLandnaamService().landnaam(landId, taal);
-      landnamen.put(taal, landnaamDto.getLandnaam());
+      landnamen.put(taal, landnaamDto.getNaam());
       landnamenCache.put(landId, landnamen);
       return landnamen.get(taal);
     } catch (ObjectNotFoundException e) {
@@ -102,7 +102,7 @@ public class I18nLandnaamService implements II18nLandnaam {
 
     try {
       landnaamDto = getLandnaamService().landnaam(landId, getStandaardTaal());
-      landnamen.put(getStandaardTaal(), landnaamDto.getLandnaam());
+      landnamen.put(getStandaardTaal(), landnaamDto.getNaam());
       landnamenCache.put(landId, landnamen);
       return landnamen.get(taal);
     } catch (ObjectNotFoundException e) {

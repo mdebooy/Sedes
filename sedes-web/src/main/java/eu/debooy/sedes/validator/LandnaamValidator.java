@@ -29,8 +29,9 @@ import java.util.List;
  * @author Marco de Booij
  */
 public final class LandnaamValidator {
-  private LandnaamValidator() {
-  }
+  protected static final  String  LBL_LANDID  = "_I18N.label.land";
+  protected static final  String  LBL_NAAM    = "_I18N.label.landnaam";
+  protected static final  String  LBL_TAAL    = "_I18N.label.taal";
 
   public static List<Message> valideer(LandnaamDto landnaam) {
     return valideer(new Landnaam(landnaam));
@@ -39,30 +40,62 @@ public final class LandnaamValidator {
   public static List<Message> valideer(Landnaam landnaam) {
     List<Message> fouten  = new ArrayList<>();
 
-    valideerLandnaam(landnaam.getLandnaam(), fouten);
+    valideerLandId(landnaam.getLandId(), fouten);
+    valideerNaam(landnaam.getNaam(), fouten);
+    valideerTaal(landnaam.getTaal(), fouten);
 
     return fouten;
   }
 
-  private static void valideerLandnaam(String landnaam,
-                                       List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(landnaam)) {
+  private static void valideerLandId(Long landId, List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(landId)) {
       fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_LANDNAAM)
+                            .setAttribute(LandnaamDto.COL_LANDID)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{"_I18N.label.landnaam"})
+                            .setParams(new Object[]{LBL_LANDID})
+                            .build());
+    }
+  }
+
+  private static void valideerNaam(String naam, List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(naam)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(LandnaamDto.COL_NAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(new Object[]{LBL_NAAM})
                             .build());
       return;
     }
 
-    if (landnaam.length() > 100) {
+    if (naam.length() > 100) {
       fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_LANDNAAM)
+                            .setAttribute(LandnaamDto.COL_NAAM)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{"_I18N.label.landnaam",
-                                                    100})
+                            .setParams(new Object[]{LBL_NAAM, 100})
+                            .build());
+    }
+  }
+
+  private static void valideerTaal(String taal, List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(taal)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(LandnaamDto.COL_TAAL)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(new Object[]{LBL_TAAL})
+                            .build());
+      return;
+    }
+
+    if (taal.length() != 2) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(LandnaamDto.COL_TAAL)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.FIXLENGTH)
+                            .setParams(new Object[]{LBL_TAAL, 2})
                             .build());
     }
   }

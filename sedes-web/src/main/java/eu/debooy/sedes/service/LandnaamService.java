@@ -119,7 +119,7 @@ public class LandnaamService {
       try {
         var rijen = landnaamDao.getPerLand(landId);
         for (var rij: rijen) {
-          landnamen.put(rij.getTaal(), rij.getLandnaam());
+          landnamen.put(rij.getTaal(), rij.getNaam());
         }
         landnamenCache.put(landId, landnamen);
       } catch (ObjectNotFoundException e) {
@@ -188,7 +188,7 @@ public class LandnaamService {
     try {
       rijen.addAll(landnaamDao.getPerTaal(taal));
       for (LandnaamDto rij : rijen) {
-        items.add(new SelectItem(rij.getLandId(), rij.getLandnaam()));
+        items.add(new SelectItem(rij.getLandId(), rij.getNaam()));
       }
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.

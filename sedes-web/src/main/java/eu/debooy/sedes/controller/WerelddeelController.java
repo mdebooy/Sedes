@@ -154,13 +154,12 @@ public class WerelddeelController extends Sedes {
     try {
       i18nWerelddeelnaam  =
         getWerelddeelnaamService()
-            .werelddeelnaam(werelddeelId, getGebruikersTaal())
-            .getWerelddeelnaam();
+            .werelddeelnaam(werelddeelId, getGebruikersTaal()).getNaam();
     } catch(ObjectNotFoundException e) {
       try {
         i18nWerelddeelnaam  =
             getWerelddeelnaamService()
-                .werelddeelnaam(werelddeelId, getDefTaal()).getWerelddeelnaam();
+                .werelddeelnaam(werelddeelId, getDefTaal()).getNaam();
       } catch(ObjectNotFoundException ex) {
         i18nWerelddeelnaam  = DoosConstants.NA;
       }
@@ -192,7 +191,7 @@ public class WerelddeelController extends Sedes {
       werelddeel    = new Werelddeel(werelddeelDto);
       setAktie(PersistenceConstants.RETRIEVE);
       setSubTitel(werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
-                               .getWerelddeelnaam());
+                               .getNaam());
       redirect(WERELDDEEL_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, LBL_WERELDDEEL);
@@ -300,7 +299,7 @@ public class WerelddeelController extends Sedes {
       }
       setSubTitel(getTekst(TIT_UPDATE,
                            werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
-                                        .getWerelddeelnaam()));
+                                        .getNaam()));
       redirect(WERELDDEEL_REDIRECT);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, werelddeelnaam.getTaal());
@@ -327,6 +326,6 @@ public class WerelddeelController extends Sedes {
     setAktie(PersistenceConstants.UPDATE);
     setSubTitel(getTekst(TIT_UPDATE,
                          werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
-                                      .getWerelddeelnaam()));
+                                      .getNaam()));
   }
 }

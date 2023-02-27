@@ -36,7 +36,7 @@
                 }
             },
            columns: [
-            { data: 'landnaam', title: '#{i18nTeksten.tekst('label.landnaam')}', orderable: false },
+            { data: 'naam', title: '#{i18nTeksten.tekst('label.landnaam')}', orderable: false },
             { data: 'antwoord', title: '#{i18nTeksten.tekst('label.antwoord')}', orderable: false },
             { data: null, title: '#{i18nTeksten.tekst('label.hoofdstad')}', orderable: false, render: function ( data, type, row ) {
                 if (!data.goed) {
@@ -58,11 +58,11 @@
 
           <div class="columns is-centered">
             <div class="column">
-              <t:div rendered="#{! empty sedesQuiz.quizvraag.landnaam}">
+              <t:div rendered="#{! empty sedesQuiz.quizvraag.naam}">
                 <div class="field is-horizontal">
                   <d:label label="#{i18nTeksten.tekst('label.landnaam')}" />
                   <div class="field-body is-normal">
-                    <d:inputText id="landnaam" value="#{sedesQuiz.quizvraag.landnaam}" maxlength="255" size="100" readonly="true" />
+                    <d:inputText id="naam" value="#{sedesQuiz.quizvraag.naam}" maxlength="255" size="100" readonly="true" />
                   </div>
                 </div>
                 <div class="field is-horizontal">
@@ -82,7 +82,7 @@
               </t:div>
 
               <h3>#{sedesQuiz.quizResultaat}</h3>
-              <t:div rendered="#{empty sedesQuiz.quizvraag.landnaam}">
+              <t:div rendered="#{empty sedesQuiz.quizvraag.naam}">
                 <d:spacer aantal="2"/>
                 <d:cancel returnto="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
               </t:div>

@@ -29,8 +29,7 @@ import java.util.List;
  * @author Marco de Booij
  */
 public final class WerelddeelnaamValidator {
-  private WerelddeelnaamValidator() {
-  }
+  protected static final  String  LBL_NAAM  = "_I18N.label.werelddeelnaam";
 
   public static List<Message> valideer(WerelddeelnaamDto werelddeelnaam) {
     return valideer(new Werelddeelnaam(werelddeelnaam));
@@ -39,31 +38,30 @@ public final class WerelddeelnaamValidator {
   public static List<Message> valideer(Werelddeelnaam werelddeelnaam) {
     List<Message> fouten  = new ArrayList<>();
 
-    valideerWerelddeelnaam(werelddeelnaam.getWerelddeelnaam(), fouten);
+    valideerNaam(werelddeelnaam.getNaam(), fouten);
 
     return fouten;
   }
 
-  private static void valideerWerelddeelnaam(String werelddeelnaam,
+  private static void valideerNaam(String werelddeelnaam,
                                              List<Message> fouten) {
     if (DoosUtils.isBlankOrNull(werelddeelnaam)) {
       fouten.add(new Message.Builder()
-                            .setAttribute(WerelddeelnaamDto.COL_WERELDDEELNAAM)
+                            .setAttribute(WerelddeelnaamDto.COL_NAAM)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.REQUIRED)
                             .setParams(
-                                new Object[]{"_I18N.label.werelddeelnaam"})
+                                new Object[]{LBL_NAAM})
                             .build());
       return;
     }
 
     if (werelddeelnaam.length() > 100) {
       fouten.add(new Message.Builder()
-                            .setAttribute(WerelddeelnaamDto.COL_WERELDDEELNAAM)
+                            .setAttribute(WerelddeelnaamDto.COL_NAAM)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{"_I18N.label.werelddeelnaam",
-                                                    100})
+                            .setParams(new Object[]{LBL_NAAM, 100})
                             .build());
     }
   }

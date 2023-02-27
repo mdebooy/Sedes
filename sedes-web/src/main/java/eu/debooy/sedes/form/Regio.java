@@ -28,8 +28,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class Regio
-    extends Formulier implements Comparable<Regio>, Serializable {
+public class Regio extends Formulier
+                   implements Comparable<Regio>, Serializable {
   private Long    landId;
   private Long    regioId;
   private String  regiokode;
@@ -60,7 +60,7 @@ public class Regio
     }
 
     var andere  = (Regio) object;
-    return new EqualsBuilder().append(regiokode, andere.regiokode)
+    return new EqualsBuilder().append(regioId, andere.regioId)
                               .isEquals();
   }
 
@@ -82,7 +82,7 @@ public class Regio
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(regiokode).toHashCode();
+    return new HashCodeBuilder().append(regioId).toHashCode();
   }
 
   public void persist(RegioDto regioDto) {

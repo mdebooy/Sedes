@@ -82,7 +82,7 @@ public class QuizController extends Sedes {
       antwoord.put("antwoord", rij.getAntwoord());
       antwoord.put("goed", rij.isGoed());
       antwoord.put("hoofdstad", rij.getHoofdstad());
-      antwoord.put("landnaam", rij.getLandnaam());
+      antwoord.put("naam", rij.getNaam());
       antwoorden.add(antwoord);
     });
 
@@ -165,7 +165,7 @@ public class QuizController extends Sedes {
             .format(getTekst(TIT_QUIZ2),
                 getWerelddeelnaamService()
                     .werelddeelnaam(werelddeelId, getGebruikersTaal())
-                    .getWerelddeelnaam()));
+                    .getNaam()));
 
     List<Landnaam>  landnamen = new ArrayList<>();
     for (var  landnaam :

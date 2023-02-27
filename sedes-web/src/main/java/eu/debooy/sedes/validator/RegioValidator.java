@@ -45,20 +45,40 @@ public final class RegioValidator {
     List<Message> fouten  = new ArrayList<>();
 
     valideerLandId(regio.getLandId(), fouten);
-    valideerRegiokode(regio.getRegiokode(), fouten);
     valideerNaam(regio.getNaam(), fouten);
+    valideerRegiokode(regio.getRegiokode(), fouten);
 
     return fouten;
   }
 
-  private static void valideerLandId(Long landId,
-                                        List<Message> fouten) {
+  private static void valideerLandId(Long landId, List<Message> fouten) {
     if (DoosUtils.isBlankOrNull(landId)) {
       fouten.add(new Message.Builder()
                             .setAttribute(RegioDto.COL_LANDID)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.REQUIRED)
                             .setParams(new Object[]{LBL_LANDID})
+                            .build());
+    }
+  }
+
+  private static void valideerNaam(String naam, List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(naam)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(RegioDto.COL_NAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(new Object[]{LBL_NAAM})
+                            .build());
+      return;
+    }
+
+    if (naam.length() > 100) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(RegioDto.COL_NAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.MAXLENGTH)
+                            .setParams(new Object[]{LBL_NAAM, 100})
                             .build());
     }
   }
@@ -81,28 +101,6 @@ public final class RegioValidator {
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.MAXLENGTH)
                             .setParams(new Object[]{LBL_REGIOKODE, 5})
-                            .build());
-    }
-  }
-
-  private static void valideerNaam(String naam,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(naam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_NAAM})
-                            .build());
-      return;
-    }
-
-    if (naam.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_NAAM, 100})
                             .build());
     }
   }

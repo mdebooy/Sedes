@@ -32,16 +32,16 @@ public class Werelddeelnaam
     extends Formulier implements Comparable<Werelddeelnaam>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
+  private String    naam;
   private String    taal;
   private Long      werelddeelId;
-  private String    naam;
 
   public Werelddeelnaam() {}
 
   public Werelddeelnaam(WerelddeelnaamDto werelddeelnaamDto) {
     taal          = werelddeelnaamDto.getTaal();
     werelddeelId  = werelddeelnaamDto.getWerelddeelId();
-    naam          = werelddeelnaamDto.getWerelddeelnaam();
+    naam          = werelddeelnaamDto.getNaam();
   }
 
   public static class NaamComparator
@@ -76,6 +76,10 @@ public class Werelddeelnaam
                               .append(taal, andere.taal).isEquals();
   }
 
+  public String getNaam() {
+    return naam;
+  }
+
   public String getTaal() {
     return taal;
   }
@@ -84,19 +88,19 @@ public class Werelddeelnaam
     return werelddeelId;
   }
 
-  public String getWerelddeelnaam() {
-    return naam;
-  }
-
   @Override
   public int hashCode() {
     return new HashCodeBuilder().append(werelddeelId).append(taal).toHashCode();
   }
 
   public void persist(WerelddeelnaamDto parameter) {
+    parameter.setNaam(naam);
     parameter.setTaal(taal);
     parameter.setWerelddeelId(werelddeelId);
-    parameter.setWerelddeelnaam(naam);
+  }
+
+  public void setNaam(String naam) {
+    this.naam         = naam;
   }
 
   public void setTaal(String taal) {
@@ -105,9 +109,5 @@ public class Werelddeelnaam
 
   public void setWerelddeelId(Long werelddeelId) {
     this.werelddeelId = werelddeelId;
-  }
-
-  public void setWerelddeelnaam(String naam) {
-    this.naam         = naam;
   }
 }

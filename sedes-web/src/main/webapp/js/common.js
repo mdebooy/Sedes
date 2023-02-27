@@ -47,11 +47,11 @@ function getLandIdNaam(landId, taal) {
 
 function getLandnaam(land, taal) {
   var naam = land.landnamen.findIndex(i => i.taal === taal);
-  if (naam < 0 || !land.landnamen[naam].hasOwnProperty('landnaam')) {
+  if (naam < 0 || !land.landnamen[naam].hasOwnProperty('naam')) {
     return land.iso3;
   }
 
-  return land.landnamen[naam].landnaam;
+  return land.landnamen[naam].naam;
 }
 
 function getOfficielenaam(land, taal) {
@@ -87,5 +87,5 @@ function getWerelddeelnaam(werelddeelnamen, taal) {
     return '';
   }
 
-  return werelddeelnamen[naam].werelddeelnaam;
+  return werelddeelnamen[naam].naam;
 }

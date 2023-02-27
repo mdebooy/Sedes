@@ -24,6 +24,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+
 /**
  * @author Marco de Booij
  */
@@ -42,7 +43,7 @@ public class Landnaam
   public Landnaam(LandnaamDto landnaamDto) {
     hoofdstad     = landnaamDto.getHoofdstad();
     landId        = landnaamDto.getLandId();
-    naam          = landnaamDto.getLandnaam();
+    naam          = landnaamDto.getNaam();
     officieleNaam = landnaamDto.getOfficieleNaam();
     taal          = landnaamDto.getTaal();
   }
@@ -86,7 +87,7 @@ public class Landnaam
     return landId;
   }
 
-  public String getLandnaam() {
+  public String getNaam() {
     return naam;
   }
 
@@ -106,7 +107,7 @@ public class Landnaam
   public void persist(LandnaamDto parameter) {
     parameter.setHoofdstad(hoofdstad);
     parameter.setLandId(landId);
-    parameter.setLandnaam(naam);
+    parameter.setNaam(naam);
     parameter.setOfficieleNaam(officieleNaam);
     parameter.setTaal(taal);
   }
@@ -119,7 +120,7 @@ public class Landnaam
     this.landId = landId;
   }
 
-  public void setLandnaam(String naam) {
+  public void setNaam(String naam) {
     this.naam = naam;
   }
 

@@ -46,12 +46,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class WerelddeelDto extends Dto implements Comparable<WerelddeelDto> {
   private static final  long  serialVersionUID  = 1L;
 
+  public static final String  COL_WERELDDEELID  = "werelddeelId";
+
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="WERELDDEEL_ID", nullable=false)
   private Long  werelddeelId;
-
-  public static final String  COL_WERELDDEELID      = "werelddeelId";
 
   @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, targetEntity=WerelddeelnaamDto.class, orphanRemoval=true)
   @JoinColumn(name="WERELDDEEL_ID", nullable=false, updatable=false, insertable=true)

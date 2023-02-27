@@ -34,20 +34,20 @@ public class Quizvraag
   private String  antwoord;
   private String  hoofdstad;
   private Long    landId;
-  private String  landnaam;
+  private String  naam;
 
   public Quizvraag() {}
 
   public Quizvraag(Landnaam landnaam) {
-    hoofdstad     = landnaam.getHoofdstad();
-    landId        = landnaam.getLandId();
-    this.landnaam = landnaam.getLandnaam();
+    hoofdstad = landnaam.getHoofdstad();
+    landId    = landnaam.getLandId();
+    naam      = landnaam.getNaam();
   }
 
   public Quizvraag(LandnaamDto landnaam) {
-    hoofdstad     = landnaam.getHoofdstad();
-    landId        = landnaam.getLandId();
-    this.landnaam = landnaam.getLandnaam();
+    hoofdstad = landnaam.getHoofdstad();
+    landId    = landnaam.getLandId();
+    naam      = landnaam.getNaam();
   }
 
   @Override
@@ -81,8 +81,8 @@ public class Quizvraag
     return landId;
   }
 
-  public String getLandnaam() {
-    return landnaam;
+  public String getNaam() {
+    return naam;
   }
 
   @Override
@@ -98,18 +98,18 @@ public class Quizvraag
   }
 
   public void setAntwoord(String antwoord) {
-    this.antwoord = antwoord;
+    this.antwoord   = antwoord;
   }
 
   public void setHoofdstad(String hoofdstad) {
-    this.hoofdstad = hoofdstad;
+    this.hoofdstad  = hoofdstad;
   }
 
   public void setLandId(Long landId) {
-    this.landId = landId;
+    this.landId     = landId;
   }
 
-  public void setLandnaam(String landnaam) {
-    this.landnaam = landnaam;
+  public void setNaam(String naam) {
+    this.naam       = naam;
   }
 }
