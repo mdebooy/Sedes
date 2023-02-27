@@ -1,31 +1,30 @@
-<!DOCTYPE html>
-<html  lang="#{gebruiker.locale.language}"
-      xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:t="http://myfaces.apache.org/tomahawk"
-   xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="/WEB-INF/templates/template.xhtml">
-    <ui:param name="titel" value="#{i18nTeksten.tekst('sedes.titel')}" />
-    <ui:define name="head">
-    </ui:define>
-    <ui:define name="body">
-      <h:form id="formQuizzen">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="col-md-10">
-            <h2>#{i18nTeksten.tekst('sedes.titel.quizzen')}</h2>
-          </div>
-          <div class="col-md-10">
-            <h3>#{i18nTeksten.tekst('sedes.titel.quiz.landenquiz')}</h3>
-          </div>
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formQuizzen">
+          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.quizzen')}" />
+          <h3>#{i18nTeksten.tekst('sedes.titel.quiz.landenquiz')}</h3>
 
-          <div class="col-md-4">
-            <h:commandLink action="#{sedesQuiz.startQuiz}" id="heleWereld" styleClass="btn btn-default btn-block">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
-            <t:dataList var="quiz" value="#{sedesQuiz.quizzen}" rowIndexVar="idx">
-              <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="btn btn-default btn-block">#{quiz.werelddeelnaam}</h:commandLink>
-            </t:dataList>
+          <div class="columns is-centered">
+            <div class="column is-4">
+              <h:commandLink action="#{sedesQuiz.startQuiz}" id="heleWereld" styleClass="button is-fullwidth">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
+              <t:dataList var="quiz" value="#{sedesQuiz.quizzen}" rowIndexVar="idx">
+                <div>
+                  <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="button is-fullwidth">#{quiz.werelddeelnaam}</h:commandLink>
+                </div>
+              </t:dataList>
+            </div>
           </div>
-        </div>
-      </h:form>
-    </ui:define>
-  </ui:composition>
-</html>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>
