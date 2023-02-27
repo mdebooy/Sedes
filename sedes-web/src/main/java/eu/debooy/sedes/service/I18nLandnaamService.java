@@ -16,7 +16,9 @@
  */
 package eu.debooy.sedes.service;
 
+import eu.debooy.doos.component.Properties;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
+import eu.debooy.doosutils.service.CDI;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
@@ -32,6 +34,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,13 +45,22 @@ import org.json.simple.JSONObject;
 @Named("sedesI18nLandnaamService")
 @Lock(LockType.WRITE)
 public class I18nLandnaamService implements II18nLandnaam {
+  private static final  Logger  LOGGER  =
+      LoggerFactory.getLogger(I18nLandnaamService.class);
+
   private LandnaamService landnaamService;
+  private Properties      property;
   private RegioService    regioService;
 
   private final Map<Long, Map<String, String>>
-      landnamenCache  = new HashMap<>();
-  // TODO Ophalen uit database.
-  private static final  String  standaardTaal = "nl";
+                        landnamenCache  = new HashMap<>();
+
+  private final String  standaardTaal;
+
+  public I18nLandnaamService() {
+    standaardTaal = getProperty().getProperty("default.taal");
+    LOGGER.debug(String.format("Standaardtaal: %s", standaardTaal));
+  }
 
   @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -106,6 +119,14 @@ public class I18nLandnaamService implements II18nLandnaam {
     return landnaamService;
   }
 
+  private Properties getProperty() {
+    if (null == property) {
+      property  = CDI.getBean(Properties.class);
+    }
+
+    return property;
+  }
+
   @Override
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public JSONObject getRegio(Long regioId) {
@@ -114,9 +135,9 @@ public class I18nLandnaamService implements II18nLandnaam {
       var regio = getRegioService().regio(regioId);
 
       json.put(RegioDto.COL_LANDID, regio.getLandId());
-      json.put(RegioDto.COL_REGIO, regio.getRegio());
       json.put(RegioDto.COL_REGIOID, regio.getRegioId());
       json.put(RegioDto.COL_REGIOKODE, regio.getRegiokode());
+      json.put(RegioDto.COL_REGIONAAM, regio.getRegionaam());
     } catch (ObjectNotFoundException e) {
       // Geef een leeg JSONObject.
     }
