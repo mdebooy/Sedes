@@ -55,11 +55,10 @@ public class I18nLandnaamService implements II18nLandnaam {
   private final Map<Long, Map<String, String>>
                         landnamenCache  = new HashMap<>();
 
-  private final String  standaardTaal;
+  private final String  standaardTaal = "nl";
 
   public I18nLandnaamService() {
-    standaardTaal = getProperty().getProperty("default.taal");
-    LOGGER.debug(String.format("Standaardtaal: %s", standaardTaal));
+    LOGGER.debug("init I18nLandnaamService");
   }
 
   @Override
