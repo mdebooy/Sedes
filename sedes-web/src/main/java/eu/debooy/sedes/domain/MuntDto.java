@@ -42,8 +42,8 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
   public static final String  COL_DECIMALEN   = "decimalen";
   public static final String  COL_ISO3        = "iso3";
   public static final String  COL_MUNTID      = "muntId";
-  public static final String  COL_MUNTNAAM    = "muntnaam";
   public static final String  COL_MUNTTEKEN   = "muntteken";
+  public static final String  COL_NAAM        = "naam";
   public static final String  COL_SUBEENHEID  = "subeenheid";
 
   @Column(name="BESTAAT", length=1, nullable=false)
@@ -56,10 +56,10 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="MUNT_ID", nullable=false)
   private Long    muntId;
-  @Column(name="MUNTNAAM", length=100)
-  private String  muntnaam;
   @Column(name="MUNTTEKEN", length=3)
   private String  muntteken;
+  @Column(name="NAAM", length=100)
+  private String  naam;
   @Column(name="SUBEENHEID", length=100)
   private String  subeenheid;
 
@@ -89,12 +89,12 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
     return muntId;
   }
 
-  public String getMuntnaam() {
-    return muntnaam;
-  }
-
   public String getMuntteken() {
     return muntteken;
+  }
+
+  public String getNaam() {
+    return naam;
   }
 
   public String getSubeenheid() {
@@ -136,12 +136,12 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
     this.muntId = muntId;
   }
 
-  public void setMuntnaam(String muntnaam) {
-    this.muntnaam = muntnaam;
-  }
-
   public void setMuntteken(String muntteken) {
     this.muntteken = muntteken;
+  }
+
+  public void setNaam(String naam) {
+    this.naam     = naam;
   }
 
   public void setSubeenheid(String subeenheid) {

@@ -71,13 +71,13 @@ public class RegioController extends Sedes {
       return;
     }
 
-    var regionaam = regio.getRegionaam();
+    var naam  = regio.getNaam();
     try {
       getRegioService().delete(regio.getRegioId());
-      addInfo(PersistenceConstants.DELETED, regionaam);
+      addInfo(PersistenceConstants.DELETED, naam);
       redirect(REGIOS_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, regionaam);
+      addError(PersistenceConstants.NOTFOUND, naam);
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);
@@ -127,25 +127,26 @@ public class RegioController extends Sedes {
       return;
     }
 
+    var naam  = regio.getNaam();
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
           getRegioService().save(regio);
-          addInfo(PersistenceConstants.CREATED, regio.getRegionaam());
+          addInfo(PersistenceConstants.CREATED, naam);
           update();
           break;
         case PersistenceConstants.UPDATE:
           getRegioService().save(regio);
-          addInfo(PersistenceConstants.UPDATED, regio.getRegionaam());
+          addInfo(PersistenceConstants.UPDATED, naam);
           break;
         default:
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
           break;
       }
     } catch (DuplicateObjectException e) {
-      addError(PersistenceConstants.DUPLICATE, regio.getRegionaam());
+      addError(PersistenceConstants.DUPLICATE, naam);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, regio.getRegionaam());
+      addError(PersistenceConstants.NOTFOUND, naam);
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);

@@ -46,7 +46,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
   private static final  long  serialVersionUID  = 1L;
 
   public static final String  COL_LANDID    = "landId";
-  public static final String  COL_REGIONAAM = "regionaam";
+  public static final String  COL_NAAM      = "naam";
   public static final String  COL_REGIOKODE = "regiokode";
   public static final String  COL_REGIOID   = "regioId";
 
@@ -66,8 +66,8 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
   private Long    regioId;
   @Column(name="REGIOKODE", length=5, nullable=false)
   private String  regiokode;
-  @Column(name="REGIONAAM", length=100, nullable=false)
-  private String  regionaam;
+  @Column(name="NAAM", length=100, nullable=false)
+  private String  naam;
 
   /**
    * De regiokode is toegevoegd om dubbele namen niet te laten verdwijnen in een
@@ -79,8 +79,8 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
     @Override
     public int compare(RegioDto regioDto1, RegioDto regioDto2) {
-      return new CompareToBuilder().append(regioDto1.regionaam,
-                                           regioDto2.regionaam)
+      return new CompareToBuilder().append(regioDto1.naam,
+                                           regioDto2.naam)
                                    .append(regioDto1.regiokode,
                                            regioDto2.regiokode)
                                    .toComparison();
@@ -119,8 +119,8 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     return regiokode;
   }
 
-  public String getRegionaam() {
-    return regionaam;
+  public String getNaam() {
+    return naam;
   }
 
   @Override
@@ -140,7 +140,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     this.regiokode  = regiokode;
   }
 
-  public void setRegionaam(String regionaam) {
-    this.regionaam  = regionaam;
+  public void setNaam(String naam) {
+    this.naam       = naam;
   }
 }

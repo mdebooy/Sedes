@@ -137,7 +137,7 @@ public class I18nLandnaamService implements II18nLandnaam {
       json.put(RegioDto.COL_LANDID, regio.getLandId());
       json.put(RegioDto.COL_REGIOID, regio.getRegioId());
       json.put(RegioDto.COL_REGIOKODE, regio.getRegiokode());
-      json.put(RegioDto.COL_REGIONAAM, regio.getRegionaam());
+      json.put(RegioDto.COL_NAAM, regio.getNaam());
     } catch (ObjectNotFoundException e) {
       // Geef een leeg JSONObject.
     }

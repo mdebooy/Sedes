@@ -36,8 +36,8 @@ public class Munt
   private Integer decimalen;
   private String  iso3;
   private Long    muntId;
-  private String  muntnaam;
   private String  muntteken;
+  private String  naam;
   private String  subeenheid;
 
   public Munt() {}
@@ -47,8 +47,8 @@ public class Munt
     decimalen   = muntDto.getDecimalen();
     iso3        = muntDto.getIso3();
     muntId      = muntDto.getMuntId();
-    muntnaam    = muntDto.getMuntnaam();
     muntteken   = muntDto.getMuntteken();
+    naam        = muntDto.getNaam();
     subeenheid  = muntDto.getSubeenheid();
   }
 
@@ -91,12 +91,12 @@ public class Munt
     return muntId;
   }
 
-  public String getMuntnaam() {
-    return muntnaam;
-  }
-
   public String getMuntteken() {
     return muntteken;
+  }
+
+  public String getNaam() {
+    return naam;
   }
 
   public String getSubeenheid() {
@@ -117,33 +117,33 @@ public class Munt
     muntDto.setDecimalen(getDecimalen());
     muntDto.setIso3(getIso3());
     muntDto.setMuntId(getMuntId());
-    muntDto.setMuntnaam(getMuntnaam());
     muntDto.setMuntteken(getMuntteken());
+    muntDto.setNaam(getNaam());
     muntDto.setSubeenheid(getSubeenheid());
   }
 
   public void setBestaat(boolean bestaat) {
-    this.bestaat  = bestaat;
+    this.bestaat    = bestaat;
   }
 
   public void setDecimalen(Integer decimalen) {
-    this.decimalen = decimalen;
+    this.decimalen  = decimalen;
   }
 
   public void setIso3(String iso3) {
-    this.iso3 = iso3;
+    this.iso3       = iso3;
   }
 
   public void setMuntId(Long muntId) {
-    this.muntId = muntId;
-  }
-
-  public void setMuntnaam(String muntnaam) {
-    this.muntnaam = muntnaam;
+    this.muntId     = muntId;
   }
 
   public void setMuntteken(String muntteken) {
-    this.muntteken = muntteken;
+    this.muntteken  = muntteken;
+  }
+
+  public void setNaam(String naam) {
+    this.naam       = naam;
   }
 
   public void setSubeenheid(String subeenheid) {

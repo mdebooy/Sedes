@@ -33,7 +33,7 @@ public class Regio
   private Long    landId;
   private Long    regioId;
   private String  regiokode;
-  private String  regionaam;
+  private String  naam;
 
   public Regio() {}
 
@@ -41,7 +41,7 @@ public class Regio
     landId    = regioDto.getLandId();
     regioId   = regioDto.getRegioId();
     regiokode = regioDto.getRegiokode();
-    regionaam = regioDto.getRegionaam();
+    naam      = regioDto.getNaam();
   }
 
   @Override
@@ -76,8 +76,8 @@ public class Regio
     return regiokode;
   }
 
-  public String getRegionaam() {
-    return regionaam;
+  public String getNaam() {
+    return naam;
   }
 
   @Override
@@ -89,7 +89,7 @@ public class Regio
     regioDto.setLandId(getLandId());
     regioDto.setRegioId(getRegioId());
     regioDto.setRegiokode(getRegiokode());
-    regioDto.setRegionaam(getRegionaam());
+    regioDto.setNaam(getNaam());
   }
 
   public void setLandId(Long landId) {
@@ -104,7 +104,7 @@ public class Regio
     this.regiokode  = regiokode;
   }
 
-  public void setRegionaam(String regionaam) {
-    this.regionaam  = regionaam;
+  public void setNaam(String naam) {
+    this.naam       = naam;
   }
 }

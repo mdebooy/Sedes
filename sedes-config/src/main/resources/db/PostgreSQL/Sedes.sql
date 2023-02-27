@@ -108,8 +108,8 @@ CREATE TABLE SEDES.MUNTEN (
   DECIMALEN                       SMALLINT        NOT NULL  DEFAULT '2',
   ISO3                            CHAR(3)         NOT NULL,
   MUNT_ID                         INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
-  MUNTNAAM                        VARCHAR(100)    NOT NULL,
   MUNTTEKEN                       CHAR(3),
+  NAAM                            VARCHAR(100)    NOT NULL,
   SUBEENHEID                      VARCHAR(100),
   CONSTRAINT PK_MUNTEN PRIMARY KEY (MUNT_ID)
 );
@@ -142,7 +142,7 @@ CREATE TABLE SEDES.POSTLIJSTEN (
 
 CREATE TABLE SEDES.REGIOS (
   LAND_ID                         INTEGER         NOT NULL,
-  REGIONAAM                       VARCHAR(100)    NOT NULL,
+  NAAM                            VARCHAR(100)    NOT NULL,
   REGIOKODE                       VARCHAR(5)      NOT NULL,
   REGIO_ID                        INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
   CONSTRAINT PK_REGIOS PRIMARY KEY (REGIO_ID)

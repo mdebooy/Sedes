@@ -78,13 +78,13 @@ public class MuntController extends Sedes {
       return;
     }
 
-    var muntnaam  = munt.getMuntnaam();
+    var naam  = munt.getNaam();
     try {
       getMuntService().delete(munt.getMuntId());
-      addInfo(PersistenceConstants.DELETED, muntnaam);
+      addInfo(PersistenceConstants.DELETED, naam);
       redirect(MUNTEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, muntnaam);
+      addError(PersistenceConstants.NOTFOUND, naam);
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);
@@ -101,7 +101,7 @@ public class MuntController extends Sedes {
       return new Munt(getMuntService().munt(muntId));
     } catch (ObjectNotFoundException e) {
       var valuta  = new Munt();
-      valuta.setMuntnaam(getTekst(PersistenceConstants.NOTFOUND, muntId));
+      valuta.setNaam(getTekst(PersistenceConstants.NOTFOUND, muntId));
       return valuta;
     }
   }
@@ -144,25 +144,26 @@ public class MuntController extends Sedes {
       return;
     }
 
+    var naam  = munt.getNaam();
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
           getMuntService().save(munt);
-          addInfo(PersistenceConstants.CREATED, munt.getMuntnaam());
+          addInfo(PersistenceConstants.CREATED, naam);
           update();
           break;
         case PersistenceConstants.UPDATE:
           getMuntService().save(munt);
-          addInfo(PersistenceConstants.UPDATED, munt.getMuntnaam());
+          addInfo(PersistenceConstants.UPDATED, naam);
           break;
         default:
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
           break;
       }
     } catch (DuplicateObjectException e) {
-      addError(PersistenceConstants.DUPLICATE, munt.getMuntnaam());
+      addError(PersistenceConstants.DUPLICATE, naam);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, munt.getMuntnaam());
+      addError(PersistenceConstants.NOTFOUND, naam);
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);

@@ -195,7 +195,7 @@ public class RegioService {
     try {
       regioDao.getAll().forEach(
           regio -> items.add(new SelectItem(regio.getRegioId().toString(),
-                                            regio.getRegionaam())));
+                                            regio.getNaam())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }

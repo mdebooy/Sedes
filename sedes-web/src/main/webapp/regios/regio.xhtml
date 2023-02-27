@@ -23,7 +23,7 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="regionaam" value="#{sedesRegio.regio.regionaam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.aktie.readonly}" />
+                  <d:inputText id="naam" value="#{sedesRegio.regio.naam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.aktie.readonly}" />
                 </div>
               </div>
               <div class="field is-horizontal">
@@ -33,7 +33,7 @@
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesRegio}" form="formLand" returnto="#{sedes.path}/regios/regios.xhtml" tekst="#{sedesRegio.regio.regionaam}" />
+              <d:crudbuttonbar bean="#{sedesRegio}" form="formLand" returnto="#{sedes.path}/regios/regios.xhtml" tekst="#{sedesRegio.regio.naam}" />
             </div>
           </div>
         </h:form>

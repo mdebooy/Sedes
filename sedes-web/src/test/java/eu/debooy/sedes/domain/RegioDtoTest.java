@@ -40,7 +40,7 @@ public class RegioDtoTest {
     regioDto.setLandId(TestConstants.LANDID);
     regioDto.setRegioId(TestConstants.REGIOID);
     regioDto.setRegiokode(TestConstants.REGIOKODE);
-    regioDto.setRegionaam(TestConstants.REGIONAAM);
+    regioDto.setNaam(TestConstants.REGIONAAM);
   }
 
   @Test
@@ -77,8 +77,8 @@ public class RegioDtoTest {
   }
 
   @Test
-  public void testGetRegio() {
-    assertEquals(TestConstants.REGIONAAM, regioDto.getRegionaam());
+  public void testGetNaam() {
+    assertEquals(TestConstants.REGIONAAM, regioDto.getNaam());
   }
 
   @Test
@@ -101,8 +101,8 @@ public class RegioDtoTest {
     var groter  = new RegioDto();
     var kleiner = new RegioDto();
 
-    groter.setRegionaam(TestConstants.REGIONAAM_G);
-    kleiner.setRegionaam(TestConstants.REGIONAAM_K);
+    groter.setNaam(TestConstants.REGIONAAM_G);
+    kleiner.setNaam(TestConstants.REGIONAAM_K);
 
     var             comparator  = new RegioDto.NaamComparator();
     Set<RegioDto>   regios      = new TreeSet<>(comparator);
@@ -115,9 +115,9 @@ public class RegioDtoTest {
     var tabel = new RegioDto[regios.size()];
     System.arraycopy(regios.toArray(), 0, tabel, 0, regios.size());
 
-    assertEquals(kleiner.getRegionaam(), tabel[0].getRegionaam());
-    assertEquals(regioDto.getRegionaam(), tabel[1].getRegionaam());
-    assertEquals(groter.getRegionaam(), tabel[2].getRegionaam());
+      assertEquals(kleiner.getNaam(), tabel[0].getNaam());
+    assertEquals(regioDto.getNaam(), tabel[1].getNaam());
+    assertEquals(groter.getNaam(), tabel[2].getNaam());
   }
 
   @Test
@@ -129,6 +129,17 @@ public class RegioDtoTest {
     instance.setLandId(TestConstants.LANDID);
 
     assertEquals(TestConstants.LANDID, instance.getLandId());
+  }
+
+  @Test
+  public void testSetNaam() {
+    var instance  = new RegioDto();
+
+    assertNotEquals(TestConstants.REGIONAAM, instance.getNaam());
+
+    instance.setNaam(TestConstants.REGIONAAM);
+
+    assertEquals(TestConstants.REGIONAAM, instance.getNaam());
   }
 
   @Test
@@ -151,16 +162,5 @@ public class RegioDtoTest {
     instance.setRegiokode(TestConstants.REGIOKODE.toUpperCase());
 
     assertEquals(TestConstants.REGIOKODE, instance.getRegiokode());
-  }
-
-  @Test
-  public void testSetRegionaam() {
-    var instance  = new RegioDto();
-
-    assertNotEquals(TestConstants.REGIONAAM, instance.getRegionaam());
-
-    instance.setRegionaam(TestConstants.REGIONAAM);
-
-    assertEquals(TestConstants.REGIONAAM, instance.getRegionaam());
   }
 }

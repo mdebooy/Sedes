@@ -32,7 +32,7 @@ import java.util.List;
 public final class RegioValidator {
   protected static final  String  LBL_LANDID    = "_I18N.label.land";
   protected static final  String  LBL_REGIOKODE = "_I18N.label.regiokode";
-  protected static final  String  LBL_REGIONAAM = "_I18N.label.regionaam";
+  protected static final  String  LBL_NAAM      = "_I18N.label.regionaam";
 
   private RegioValidator() {
   }
@@ -46,7 +46,7 @@ public final class RegioValidator {
 
     valideerLandId(regio.getLandId(), fouten);
     valideerRegiokode(regio.getRegiokode(), fouten);
-    valideerRegionaam(regio.getRegionaam(), fouten);
+    valideerNaam(regio.getNaam(), fouten);
 
     return fouten;
   }
@@ -85,24 +85,24 @@ public final class RegioValidator {
     }
   }
 
-  private static void valideerRegionaam(String regionaam,
+  private static void valideerNaam(String naam,
                                         List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(regionaam)) {
+    if (DoosUtils.isBlankOrNull(naam)) {
       fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_REGIONAAM)
+                            .setAttribute(RegioDto.COL_NAAM)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_REGIONAAM})
+                            .setParams(new Object[]{LBL_NAAM})
                             .build());
       return;
     }
 
-    if (regionaam.length() > 100) {
+    if (naam.length() > 100) {
       fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_REGIONAAM)
+                            .setAttribute(RegioDto.COL_NAAM)
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_REGIONAAM, 100})
+                            .setParams(new Object[]{LBL_NAAM, 100})
                             .build());
     }
   }

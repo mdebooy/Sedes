@@ -32,8 +32,8 @@ import java.util.List;
 public final class MuntValidator {
   protected static final  String  LBL_DECIMALEN   = "_I18N.label.decimalen";
   protected static final  String  LBL_ISO3        = "_I18N.label.iso3";
-  protected static final  String  LBL_MUNTNAAM    = "_I18N.label.muntnaam";
   protected static final  String  LBL_MUNTTEKEN   = "_I18N.label.muntteken";
+  protected static final  String  LBL_NAAM        = "_I18N.label.muntnaam";
   protected static final  String  LBL_SUBEENHEID  = "_I18N.label.subeenheid";
 
   private MuntValidator() {
@@ -48,8 +48,8 @@ public final class MuntValidator {
 
     valideerDecimalen(munt.getDecimalen(), fouten);
     valideerIso3(munt.getIso3(), fouten);
-    valideerMuntnaam(munt.getMuntnaam(), fouten);
     valideerMuntteken(munt.getMuntteken(), fouten);
+    valideerNaam(munt.getNaam(), fouten);
     valideerSubeenheid(munt.getSubeenheid(), fouten);
 
     return fouten;
@@ -99,28 +99,6 @@ public final class MuntValidator {
     }
   }
 
-  private static void valideerMuntnaam(String muntnaam,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(muntnaam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_MUNTNAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_MUNTNAAM})
-                            .build());
-      return;
-    }
-
-    if (muntnaam.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_MUNTNAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_MUNTNAAM, 100})
-                            .build());
-    }
-  }
-
   private static void valideerMuntteken(String muntteken,
                                         List<Message> fouten) {
     if (DoosUtils.isBlankOrNull(muntteken)) {
@@ -133,6 +111,27 @@ public final class MuntValidator {
                             .setSeverity(Message.ERROR)
                             .setMessage(PersistenceConstants.MAXLENGTH)
                             .setParams(new Object[]{LBL_MUNTTEKEN, 3})
+                            .build());
+    }
+  }
+
+  private static void valideerNaam(String naam, List<Message> fouten) {
+    if (DoosUtils.isBlankOrNull(naam)) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(MuntDto.COL_NAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.REQUIRED)
+                            .setParams(new Object[]{LBL_NAAM})
+                            .build());
+      return;
+    }
+
+    if (naam.length() > 100) {
+      fouten.add(new Message.Builder()
+                            .setAttribute(MuntDto.COL_NAAM)
+                            .setSeverity(Message.ERROR)
+                            .setMessage(PersistenceConstants.MAXLENGTH)
+                            .setParams(new Object[]{LBL_NAAM, 100})
                             .build());
     }
   }

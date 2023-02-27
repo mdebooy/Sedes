@@ -132,7 +132,7 @@ public class MuntService {
     try {
       muntDao.getAll().forEach(
           munt -> items.add(new SelectItem(munt.getMuntId().toString(),
-                                           munt.getMuntnaam())));
+                                           munt.getNaam())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }

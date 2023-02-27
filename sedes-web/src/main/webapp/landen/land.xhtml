@@ -119,7 +119,7 @@
                 <div class="field-body is-normal">
                   <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" fullwidth="true" readonly="#{sedesLand.aktie.readonly}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" required="true" />
                   <d:label label="#{i18nTeksten.tekst('label.munt')}" />
-                  <d:listbox id="muntId" value="#{sedesLand.land.muntId}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{sedesMunt.selectMunten()}" textvalue="#{sedesMunt.munt(sedesLand.land.muntId).muntnaam}" />
+                  <d:listbox id="muntId" value="#{sedesLand.land.muntId}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{sedesMunt.selectMunten()}" textvalue="#{sedesMunt.munt(sedesLand.land.muntId).naam}" />
                 </div>
               </div>
 
