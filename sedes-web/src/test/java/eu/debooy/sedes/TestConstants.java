@@ -21,13 +21,17 @@ package eu.debooy.sedes;
  * @author Marco de Booij
  */
 public final class TestConstants {
-  public static final Long    LANDID      = 100L;
-  public static final String  REGIONAAM   = "Regio";
-  public static final String  REGIONAAM_G = "Z-Regio";
-  public static final String  REGIONAAM_K = "A-Regio";
-  public static final int     REGIO_HASH  = 829;
-  public static final Long    REGIOID     = 200L;
-  public static final String  REGIOKODE   = "RK123";
+  public static final Long    LANDID          = 100L;
+  public static final String  REGIONAAM       = "Regio";
+  public static final String  REGIONAAM_G     = "Z-Regio";
+  public static final String  REGIONAAM_K     = "A-Regio";
+  public static final int     REGIO_HASH      = 829;
+  public static final Long    REGIOID         = 200L;
+  public static final String  REGIOKODE       = "RK123";
+  public static final String  REGIOKODE_G     = "ZK123";
+  public static final String  REGIOKODE_K     = "AK123";
+  public static final Long    WERELDDEELID    = 200L;
+  public static final String  WERELDDEELNAAM  = "Werelddeelnaam";
 
   private TestConstants() {
     throw new IllegalStateException("Utility class");
