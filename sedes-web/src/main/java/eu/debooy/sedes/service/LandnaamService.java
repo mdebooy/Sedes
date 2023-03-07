@@ -168,14 +168,6 @@ public class LandnaamService {
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Landnaam landnaam) {
-    var dto = new LandnaamDto();
-    landnaam.persist(dto);
-
-    landnaamDao.update(dto);
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(LandnaamDto landnaam) {
     landnaamDao.update(landnaam);
   }

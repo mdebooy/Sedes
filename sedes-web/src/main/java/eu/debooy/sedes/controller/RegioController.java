@@ -51,7 +51,8 @@ public class RegioController extends Sedes {
   private static final  String  TIT_RETRIEVE  = "sedes.titel.regio.retrieve";
   private static final  String  TIT_UPDATE    = "sedes.titel.regio.update";
 
-  private Regio regio;
+  private Regio     regio;
+  private RegioDto  regioDto;
 
   public void create() {
     if (!isUser()) {
@@ -59,7 +60,8 @@ public class RegioController extends Sedes {
       return;
     }
 
-    regio = new Regio();
+    regio     = new Regio();
+    regioDto  = new RegioDto();
     setAktie(PersistenceConstants.CREATE);
     setSubTitel(getTekst(TIT_CREATE));
     redirect(REGIO_REDIRECT);
@@ -71,9 +73,11 @@ public class RegioController extends Sedes {
       return;
     }
 
-    var naam  = regio.getNaam();
+    var naam    = regio.getNaam();
     try {
       getRegioService().delete(regio.getRegioId());
+      regio     = new Regio();
+      regioDto  = new RegioDto();
       addInfo(PersistenceConstants.DELETED, naam);
       redirect(REGIOS_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -106,7 +110,8 @@ public class RegioController extends Sedes {
                                  .get(RegioDto.COL_REGIOID));
 
     try {
-      regio = new Regio(getRegioService().regio(regioId));
+      regioDto  = getRegioService().regio(regioId);
+      regio     = new Regio(regioDto);
       setAktie(PersistenceConstants.RETRIEVE);
       setSubTitel(getTekst(TIT_RETRIEVE));
       redirect(REGIO_REDIRECT);
@@ -131,12 +136,15 @@ public class RegioController extends Sedes {
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          getRegioService().save(regio);
+          regio.persist(regioDto);
+          getRegioService().save(regioDto);
+          regio.setRegioId(regioDto.getRegioId());
           addInfo(PersistenceConstants.CREATED, naam);
           update();
           break;
         case PersistenceConstants.UPDATE:
-          getRegioService().save(regio);
+          regio.persist(regioDto);
+          getRegioService().save(regioDto);
           addInfo(PersistenceConstants.UPDATED, naam);
           break;
         default:

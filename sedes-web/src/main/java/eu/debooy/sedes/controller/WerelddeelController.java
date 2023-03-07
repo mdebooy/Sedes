@@ -27,7 +27,6 @@ import eu.debooy.sedes.domain.WerelddeelDto;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import eu.debooy.sedes.form.Werelddeel;
 import eu.debooy.sedes.form.Werelddeelnaam;
-import eu.debooy.sedes.validator.WerelddeelValidator;
 import eu.debooy.sedes.validator.WerelddeelnaamValidator;
 import java.util.Collection;
 import javax.enterprise.context.SessionScoped;
@@ -70,8 +69,8 @@ public class WerelddeelController extends Sedes {
       return;
     }
 
-    werelddeelDto = new WerelddeelDto();
     werelddeel    = new Werelddeel();
+    werelddeelDto = new WerelddeelDto();
     setAktie(PersistenceConstants.CREATE);
     setSubTitel(getTekst(TIT_CREATE));
     redirect(WERELDDEEL_REDIRECT);
@@ -100,6 +99,8 @@ public class WerelddeelController extends Sedes {
 
     try {
       getWerelddeelService().delete(werelddeelId);
+      werelddeel      = new Werelddeel();
+      werelddeelDto   = new WerelddeelDto();
       addInfo(PersistenceConstants.DELETED, naam);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, naam);
@@ -116,10 +117,11 @@ public class WerelddeelController extends Sedes {
       return;
     }
 
-    var taalKode  = werelddeelnaam.getTaal();
+    var taalKode      = werelddeelnaam.getTaal();
     try {
       werelddeelDto.removeNaam(taalKode);
       getWerelddeelService().save(werelddeelDto);
+      werelddeelnaam  = new Werelddeelnaam();
       addInfo(PersistenceConstants.DELETED, "'" + taalKode + "'");
       werelddeelnaam  = new Werelddeelnaam();
       redirect(WERELDDEEL_REDIRECT);
@@ -230,18 +232,12 @@ public class WerelddeelController extends Sedes {
       return;
     }
 
-    var messages  = WerelddeelValidator.valideer(werelddeel);
-
-    if (!messages.isEmpty()) {
-      addMessage(messages);
-      return;
-    }
-
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          getWerelddeelService().save(werelddeel);
           werelddeel.persist(werelddeelDto);
+          getWerelddeelService().save(werelddeelDto);
+          werelddeel.setWerelddeelId(werelddeelDto.getWerelddeelId());
           addInfo(PersistenceConstants.CREATED, "");
           update();
           break;
@@ -280,15 +276,17 @@ public class WerelddeelController extends Sedes {
 
     try {
       var werelddeelnaamDto = new WerelddeelnaamDto();
-      werelddeelnaam.persist(werelddeelnaamDto);
-      werelddeelDto.addNaam(werelddeelnaamDto);
       switch (getDetailAktie().getAktie()) {
         case PersistenceConstants.CREATE:
+          werelddeelnaam.persist(werelddeelnaamDto);
+          werelddeelDto.addNaam(werelddeelnaamDto);
           getWerelddeelService().save(werelddeelDto);
           addInfo(PersistenceConstants.CREATED,
                   "'" + werelddeelnaam.getTaal() + "'");
           break;
         case PersistenceConstants.UPDATE:
+          werelddeelnaam.persist(werelddeelnaamDto);
+          werelddeelDto.addNaam(werelddeelnaamDto);
           getWerelddeelService().save(werelddeelDto);
           addInfo(PersistenceConstants.UPDATED,
                   "'" + werelddeelnaam.getTaal() + "'");

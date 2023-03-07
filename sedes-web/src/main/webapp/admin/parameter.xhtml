@@ -1,34 +1,39 @@
 <ui:composition
-     xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:c="http://java.sun.com/jsp/jstl/core"
-   xmlns:d="http://java.debooy.eu/jsf/facelets"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:t="http://myfaces.apache.org/tomahawk"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  template="/WEB-INF/templates/template.xhtml">
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-10">
         <h:form id="formParameter">
-          <d:titel titel="#{appParam.subTitel}" />
+          <d:titel titel="#{sedesAppParam.subTitel}" />
 
           <div class="columns is-centered">
             <div class="column">
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst(appParam.parameter)}" />
+                <d:label label="#{i18nTeksten.tekst(sedesAppParam.parameter)}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="waarde" value="#{appParam.waarde}" required="true" maxlength="255" size="100" />
+                  <t:div rendered="#{!sedesAppParam.isSpeciaal(sedesAppParam.sleutel)}">
+                    <d:inputText id="waarde" value="#{sedesAppParam.waarde}" required="true" maxlength="255" size="100" />
+                  </t:div>
+                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.default.landid'}">
+                    <d:listbox id="landId" value="#{sedesAppParam.landId}" items="#{i18nLandnaam.selectLandnamen()}" fullwidth="true" required="true" textvalue="" />
+                  </t:div>
                 </div>
               </div>
 
               <div class="field is-grouped">
-                <c:if test="${doos.administrator}">
+                <c:if test="${sedes.administrator}">
                   <p class="control">
-                    <h:commandLink id="save" action="#{appParam.save}" styleClass="button is-primary is-small">#{i18nTeksten.tekst('button.save')}</h:commandLink>
+                    <h:commandLink id="save" action="#{sedesAppParam.save}" styleClass="button is-primary is-small">#{i18nTeksten.tekst('button.save')}</h:commandLink>
                   </p>
                 </c:if>
                 <p class="control">
-                  <d:cancel returnto="#{sedes.path}/admin/parameters.xhtml" aktie="${appParam.aktie}"/>
+                  <d:cancel returnto="#{sedes.path}/admin/parameters.xhtml" aktie="${sedesAppParam.aktie}"/>
                 </p>
               </div>
             </div>

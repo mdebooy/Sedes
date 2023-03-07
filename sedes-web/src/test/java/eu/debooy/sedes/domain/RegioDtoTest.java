@@ -35,7 +35,7 @@ public class RegioDtoTest {
 
   @BeforeClass
   public static void setUpClass() {
-    regioDto = new RegioDto();
+    regioDto  = new RegioDto();
 
     regioDto.setLandId(TestConstants.LANDID);
     regioDto.setRegioId(TestConstants.REGIOID);

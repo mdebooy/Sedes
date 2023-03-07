@@ -22,7 +22,6 @@ import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.MuntDao;
 import eu.debooy.sedes.domain.MuntDto;
-import eu.debooy.sedes.form.Munt;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Lock;
@@ -101,18 +100,6 @@ public class MuntService {
       return muntDao.getByPrimaryKey(muntId);
     } catch (ObjectNotFoundException e) {
       return new MuntDto();
-    }
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Munt munt) {
-    var dto = new MuntDto();
-    munt.persist(dto);
-    if (null == munt.getMuntId()) {
-      muntDao.create(dto);
-      munt.setMuntId(dto.getMuntId());
-    } else {
-      muntDao.update(dto);
     }
   }
 

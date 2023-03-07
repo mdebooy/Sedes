@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Marco de Booij
+ * Copyright 2017 Marco de Booij
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,24 +14,31 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package eu.debooy.sedes.validator;
+package eu.debooy.sedes.controller;
 
-import eu.debooy.doosutils.components.Message;
-import eu.debooy.sedes.form.Werelddeel;
-import java.util.ArrayList;
-import java.util.List;
+import eu.debooy.doos.controller.AppParamController;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 
 /**
  * @author Marco de Booij
  */
-public final class WerelddeelValidator {
-  private WerelddeelValidator() {
+@Named("sedesAppParam")
+@SessionScoped
+public class SedesAppParamController extends AppParamController {
+  private static final  long  serialVersionUID  = 1L;
+
+  public SedesAppParamController() {
+    initSpeciaal();
+    addSpeciaal("sedes.default.landid");
   }
 
-  public static List<Message> valideer(Werelddeel werelddeel) {
-    List<Message> fouten  = new ArrayList<>();
+  public Long getLandId() {
+    return Long.valueOf(getWaarde());
+  }
 
-    return fouten;
+  public void setLandId(Long landId) {
+    setWaarde(String.valueOf(landId));
   }
 }

@@ -53,7 +53,8 @@ public class MuntController extends Sedes {
   private static final  String  TIT_RETRIEVE  = "sedes.titel.munt.retrieve";
   private static final  String  TIT_UPDATE    = "sedes.titel.munt.update";
 
-  private Munt  munt;
+  private Munt    munt;
+  private MuntDto muntDto;
 
   public void create() {
     if (!isUser()) {
@@ -61,9 +62,11 @@ public class MuntController extends Sedes {
       return;
     }
 
-    munt = new Munt();
+    munt    = new Munt();
+    muntDto = new MuntDto();
     try {
       munt.setDecimalen(Integer.valueOf(getParameter(PAR_DECIMALEN)));
+      munt.persist(muntDto);
     } catch (NumberFormatException e) {
       // Geen default waarde
     }
@@ -81,6 +84,8 @@ public class MuntController extends Sedes {
     var naam  = munt.getNaam();
     try {
       getMuntService().delete(munt.getMuntId());
+      munt    = new Munt();
+      muntDto = new MuntDto();
       addInfo(PersistenceConstants.DELETED, naam);
       redirect(MUNTEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -123,7 +128,8 @@ public class MuntController extends Sedes {
                                  .get(MuntDto.COL_MUNTID));
 
     try {
-      munt = new Munt(getMuntService().munt(muntId));
+      muntDto = getMuntService().munt(muntId);
+      munt    = new Munt(muntDto);
       setAktie(PersistenceConstants.RETRIEVE);
       setSubTitel(getTekst(TIT_RETRIEVE));
       redirect(MUNT_REDIRECT);
@@ -148,12 +154,15 @@ public class MuntController extends Sedes {
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          getMuntService().save(munt);
+          munt.persist(muntDto);
+          getMuntService().save(muntDto);
+          munt.setMuntId(muntDto.getMuntId());
           addInfo(PersistenceConstants.CREATED, naam);
           update();
           break;
         case PersistenceConstants.UPDATE:
-          getMuntService().save(munt);
+          munt.persist(muntDto);
+          getMuntService().save(muntDto);
           addInfo(PersistenceConstants.UPDATED, naam);
           break;
         default:

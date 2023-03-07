@@ -22,7 +22,6 @@ import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.RegioDao;
 import eu.debooy.sedes.domain.RegioDto;
-import eu.debooy.sedes.form.Regio;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Lock;
@@ -163,18 +162,6 @@ public class RegioService {
       return regioDao.getByPrimaryKey(regioId);
     } catch (ObjectNotFoundException e) {
       return new RegioDto();
-    }
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Regio regio) {
-    var dto = new RegioDto();
-    regio.persist(dto);
-    if (null == regio.getRegioId()) {
-      regioDao.create(dto);
-      regio.setRegioId(dto.getRegioId());
-    } else {
-      regioDao.update(dto);
     }
   }
 

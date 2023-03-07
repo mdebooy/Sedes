@@ -111,19 +111,6 @@ public class WerelddeelService {
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Werelddeel werelddeel) {
-    var dto = new WerelddeelDto();
-
-    werelddeel.persist(dto);
-    if (null == werelddeel.getWerelddeelId()) {
-      werelddeelDao.create(dto);
-      werelddeel.setWerelddeelId(dto.getWerelddeelId());
-    } else {
-      werelddeelDao.update(dto);
-    }
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(WerelddeelDto werelddeel) {
     if (null == werelddeel.getWerelddeelId()) {
       werelddeelDao.create(werelddeel);

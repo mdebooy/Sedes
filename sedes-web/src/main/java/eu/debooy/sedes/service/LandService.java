@@ -112,19 +112,6 @@ public class LandService {
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(Land land) {
-    var dto = new LandDto();
-
-    land.persist(dto);
-    if (null == land.getLandId()) {
-      landDao.create(dto);
-      land.setLandId(dto.getLandId());
-    } else {
-      landDao.update(dto);
-    }
-  }
-
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(LandDto land) {
     if (null == land.getLandId()) {
       landDao.create(land);

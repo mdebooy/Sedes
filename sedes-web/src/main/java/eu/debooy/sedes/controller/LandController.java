@@ -75,8 +75,8 @@ public class LandController extends Sedes {
       return;
     }
 
-    landDto = new LandDto();
     land    = new Land();
+    landDto = new LandDto();
     setAktie(PersistenceConstants.CREATE);
     setSubTitel(getTekst(TIT_CREATE));
     redirect(LAND_REDIRECT);
@@ -103,6 +103,8 @@ public class LandController extends Sedes {
     var landId  = land.getLandId();
     try {
       getLandService().delete(landId);
+      land      = new Land();
+      landDto   = new LandDto();
       addInfo(PersistenceConstants.DELETED,
               landDto.getLandnaam(getGebruikersTaal()));
       redirect(LANDEN_REDIRECT);
@@ -124,13 +126,13 @@ public class LandController extends Sedes {
     try {
       landDto.removeLandnaam(landnaam.getTaal());
       getLandService().save(landDto);
+      landnaam  = new Landnaam();
       addInfo(PersistenceConstants.DELETED, "'" + landnaam.getTaal() + "'");
       if (getGebruikersTaal().equals(landnaam.getTaal())) {
         setSubTitel(getTekst(TIT_UPDATE,
                              landDto.getLandnaam(getGebruikersTaal())
                                     .getNaam()));
       }
-      landnaam  = new Landnaam();
       redirect(LAND_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, landnaam.getTaal());
@@ -158,11 +160,11 @@ public class LandController extends Sedes {
   }
 
   public String getNaam() {
-    if (landDto.hasTaal(getGebruikersTaal())) {
+    if (landDto.hasLandnaam(getGebruikersTaal())) {
       return landDto.getLandnaam(getGebruikersTaal()).getNaam();
     }
 
-    if (landDto.hasTaal(getDefTaal())) {
+    if (landDto.hasLandnaam(getDefTaal())) {
       return landDto.getLandnaam(getDefTaal()).getNaam();
     }
 
@@ -297,8 +299,9 @@ public class LandController extends Sedes {
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          getLandService().save(land);
           land.persist(landDto);
+          getLandService().save(landDto);
+          land.setLandId(landDto.getLandId());
           addInfo(PersistenceConstants.CREATED, land.getIso3());
           update();
           break;
@@ -334,16 +337,25 @@ public class LandController extends Sedes {
       return;
     }
 
+    if (getDetailAktie().getAktie() == PersistenceConstants.CREATE
+        && landDto.hasLandnaam(landnaam.getTaal())) {
+      addError(PersistenceConstants.DUPLICATE, landnaam.getTaal());
+      return;
+    }
+
     try {
-      var nieuweLandnaamDto = new LandnaamDto();
-      landnaam.persist(nieuweLandnaamDto);
-      landDto.addLandnaam(nieuweLandnaamDto);
-      getLandService().save(landDto);
+      var landnaamDto = new LandnaamDto();
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
+          landnaam.persist(landnaamDto);
+          landDto.addLandnaam(landnaamDto);
+          getLandService().save(landDto);
           addInfo(PersistenceConstants.CREATED, "'" + landnaam.getTaal() + "'");
           break;
         case PersistenceConstants.UPDATE:
+          landnaam.persist(landnaamDto);
+          landDto.addLandnaam(landnaamDto);
+          getLandService().save(landDto);
           addInfo(PersistenceConstants.UPDATED, "'" + landnaam.getTaal() + "'");
           break;
         default:

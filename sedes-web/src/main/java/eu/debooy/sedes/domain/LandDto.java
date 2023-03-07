@@ -181,7 +181,7 @@ public class LandDto extends Dto implements Comparable<LandDto> {
     return new HashCodeBuilder().append(landId).toHashCode();
   }
 
-  public boolean hasTaal(String taal) {
+  public boolean hasLandnaam(String taal) {
     return landnamen.containsKey(taal);
   }
 
