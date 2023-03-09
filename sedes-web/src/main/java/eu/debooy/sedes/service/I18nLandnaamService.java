@@ -16,9 +16,7 @@
  */
 package eu.debooy.sedes.service;
 
-import eu.debooy.doos.component.Properties;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
-import eu.debooy.doosutils.service.CDI;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.II18nLandnaam;
 import eu.debooy.sedes.domain.LandnaamDto;
@@ -49,7 +47,6 @@ public class I18nLandnaamService implements II18nLandnaam {
       LoggerFactory.getLogger(I18nLandnaamService.class);
 
   private LandnaamService landnaamService;
-  private Properties      property;
   private RegioService    regioService;
 
   private final Map<Long, Map<String, String>>
@@ -116,14 +113,6 @@ public class I18nLandnaamService implements II18nLandnaam {
     }
 
     return landnaamService;
-  }
-
-  private Properties getProperty() {
-    if (null == property) {
-      property  = CDI.getBean(Properties.class);
-    }
-
-    return property;
   }
 
   @Override

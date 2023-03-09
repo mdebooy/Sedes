@@ -24,6 +24,8 @@ import eu.debooy.sedes.access.RegioDao;
 import eu.debooy.sedes.domain.RegioDto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -178,9 +180,12 @@ public class RegioService {
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public List<SelectItem> selectRegios() {
     List<SelectItem>  items = new ArrayList<>();
+    Set<RegioDto>     rijen =
+        new TreeSet<>(new RegioDto.NaamComparator());
 
     try {
-      regioDao.getAll().forEach(
+      rijen.addAll(regioDao.getAll());
+      rijen.forEach(
           regio -> items.add(new SelectItem(regio.getRegioId().toString(),
                                             regio.getNaam())));
     } catch (ObjectNotFoundException e) {
