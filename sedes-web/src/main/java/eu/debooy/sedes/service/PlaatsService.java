@@ -20,8 +20,8 @@ package eu.debooy.sedes.service;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
-import eu.debooy.sedes.access.RegioDao;
-import eu.debooy.sedes.domain.RegioDto;
+import eu.debooy.sedes.access.PlaatsDao;
+import eu.debooy.sedes.domain.PlaatsDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -49,92 +49,59 @@ import org.slf4j.LoggerFactory;
  * @author Marco de Booij
  */
 @Singleton
-@Named("sedesRegioService")
-@Path("/regios")
+@Named("sedesPlaatsService")
+@Path("/plaatsen")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Lock(LockType.WRITE)
-public class RegioService {
+public class PlaatsService {
   private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(RegioService.class);
+      LoggerFactory.getLogger(PlaatsService.class);
 
   @Inject
-  private RegioDao  regioDao;
+  private PlaatsDao plaatsDao;
 
-  public RegioService() {
-    LOGGER.debug("init RegioService");
+  public PlaatsService() {
+    LOGGER.debug("init PlaatsService");
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void delete(Long regioId) {
-    RegioDto regio  = regioDao.getByPrimaryKey(regioId);
-    regioDao.delete(regio);
-  }
-
-  @GET
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  @Path("/NUTS0")
-  public Response getNuts0() {
-    try {
-      return Response.ok().entity(regioDao.getNuts0()).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.ok().entity(new ArrayList<>()).build();
-    }
-  }
-
-  @GET
-  @Path("/NUTS1")
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getNuts1() {
-    try {
-      return Response.ok().entity(regioDao.getNuts1()).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.ok().entity(new ArrayList<>()).build();
-    }
-  }
-
-  @GET
-  @Path("/NUTS2")
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getNuts2() {
-    try {
-      return Response.ok().entity(regioDao.getNuts2()).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.ok().entity(new ArrayList<>()).build();
-    }
-  }
-
-  @GET
-  @Path("/NUTS3")
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getNuts3() {
-    try {
-      return Response.ok().entity(regioDao.getNuts3()).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.ok().entity(new ArrayList<>()).build();
-    }
+  public void delete(Long plaatsId) {
+    PlaatsDto plaats  = plaatsDao.getByPrimaryKey(plaatsId);
+    plaatsDao.delete(plaats);
   }
 
   @GET
   @Path("/land/{landId}")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getPerLand(@PathParam(RegioDto.COL_LANDID) Long landId) {
+  public Response getPerLand(@PathParam(PlaatsDto.COL_LANDID) Long landId) {
     try {
-      return Response.ok().entity(regioDao.getPerLand(landId)).build();
+      return Response.ok().entity(plaatsDao.getPerLand(landId)).build();
     } catch (ObjectNotFoundException e) {
       return Response.ok().entity(new ArrayList<>()).build();
     }
   }
 
   @GET
-  @Path("/{regioId}")
+  @Path("/regio/{regioId}")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getRegio(@PathParam(RegioDto.COL_REGIOID) Long regioId) {
+  public Response getPerRegio(@PathParam(PlaatsDto.COL_REGIOID) Long regioId) {
     try {
-      return Response.ok().entity(regioDao.getByPrimaryKey(regioId)).build();
+      return Response.ok().entity(plaatsDao.getPerRegio(regioId)).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/{plaatsId}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getPlaats(@PathParam(PlaatsDto.COL_PLAATSID) Long plaatsId) {
+    try {
+      return Response.ok().entity(plaatsDao.getByPrimaryKey(plaatsId)).build();
     } catch (ObjectNotFoundException e) {
       var message = new Message.Builder()
-                               .setAttribute(RegioDto.COL_REGIOID)
+                               .setAttribute(PlaatsDto.COL_PLAATSID)
                                .setMessage(PersistenceConstants.NOTFOUND)
                                .setSeverity(Message.ERROR).build();
       return Response.status(400).entity(message).build();
@@ -145,48 +112,40 @@ public class RegioService {
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Response getRegios() {
     try {
-      return Response.ok().entity(regioDao.getAll()).build();
+      return Response.ok().entity(plaatsDao.getAll()).build();
     } catch (ObjectNotFoundException e) {
       return Response.ok().entity(new ArrayList<>()).build();
     }
   }
 
-  @GET
-  @Path("/ddlb")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getSelectRegios() {
-    return Response.ok().entity(selectRegios()).build();
-  }
-
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public RegioDto regio(Long regioId) {
+  public PlaatsDto plaats(Long plaatsId) {
     try {
-      return regioDao.getByPrimaryKey(regioId);
+      return plaatsDao.getByPrimaryKey(plaatsId);
     } catch (ObjectNotFoundException e) {
-      return new RegioDto();
+      return new PlaatsDto();
     }
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void save(RegioDto regio) {
-    if (null == regio.getRegioId()) {
-      regioDao.create(regio);
+  public void save(PlaatsDto plaats) {
+    if (null == plaats.getRegioId()) {
+      plaatsDao.create(plaats);
     } else {
-      regioDao.update(regio);
+      plaatsDao.update(plaats);
     }
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public List<SelectItem> selectRegios() {
+  public List<SelectItem> selectPlaatsen() {
     List<SelectItem>  items = new ArrayList<>();
-    Set<RegioDto>     rijen =
-        new TreeSet<>(new RegioDto.NaamComparator());
+    Set<PlaatsDto>    rijen = new TreeSet<>();
 
     try {
-      rijen.addAll(regioDao.getAll());
+      rijen.addAll(plaatsDao.getAll());
       rijen.forEach(
-          regio -> items.add(new SelectItem(regio.getRegioId().toString(),
-                                            regio.getNaam())));
+          plaats -> items.add(new SelectItem(plaats.getPlaatsId().toString(),
+                                             plaats.getPlaatsnaam())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }

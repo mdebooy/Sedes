@@ -16,6 +16,7 @@
  */
 
 var landen = {};
+var regios = {};
 var werelddelen = {};
 
 function getHoofdstad(land, taal) {
@@ -61,6 +62,24 @@ function getOfficielenaam(land, taal) {
   }
 
   return land.landnamen[naam].officieleNaam;
+}
+
+function getRegioIdNaam(regioId) {
+  var regio = {};
+  if (regios.hasOwnProperty(regioId)) {
+    regio = regios[regioId];
+  } else {
+    $.ajax({ url: '/sedes/regios/'+regioId,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               regios[regioId] = data;
+               regio = data;
+             }
+    });
+  }
+
+  return regio.naam;
 }
 
 function getWerelddeelIdNaam(werelddeelId, taal) {

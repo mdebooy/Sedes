@@ -9,31 +9,31 @@
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-12">
-        <h:form id="formRegio">
-          <d:titel titel="#{sedesRegio.subTitel}" />
+        <h:form id="formPlaats">
+          <d:titel titel="#{sedesPlaats.subTitel}" />
 
           <div class="columns is-centered">
             <div class="column">
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.regiokode')}" />
+                <d:label label="#{i18nTeksten.tekst('label.plaatskode')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="regiokode" value="#{sedesRegio.regio.regiokode}" maxlength="5" size="5" required="true" readonly="#{sedesRegio.aktie.readonly}" />
+                  <d:inputText id="plaatskode" value="#{sedesPlaats.plaats.plaatskode}" maxlength="5" size="5" required="true" readonly="#{sedesPlaats.aktie.readonly}" />
                 </div>
               </div>
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
+                <d:label label="#{i18nTeksten.tekst('label.plaatsnaam')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="naam" value="#{sedesRegio.regio.naam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.aktie.readonly}" />
+                  <d:inputText id="naam" value="#{sedesPlaats.plaats.plaatsnaam}" maxlength="100" size="100" required="true" readonly="#{sedesPlaats.aktie.readonly}" />
                 </div>
               </div>
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesRegio.selectRegionamen()}" textvalue="#{sedesRegio.i18nRegionaam(sedesRegio.regio.landId)}" />
+                  <d:listbox id="landId" value="#{sedesPlaats.plaats.landId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesPlaats.selectPlaatsnamen()}" textvalue="#{sedesPlaats.i18nPlaatsnaam(sedesPlaats.plaats.landId)}" />
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesRegio}" form="formRegio" returnto="#{sedes.path}/regios/regios.xhtml" tekst="#{sedesRegio.regio.naam}" />
+              <d:crudbuttonbar bean="#{sedesPlaats}" form="formPlaats" returnto="#{sedes.path}/plaatsen/plaatsen.xhtml" tekst="#{sedesPlaats.plaats.plaatsnaam}" />
             </div>
           </div>
         </h:form>
@@ -42,6 +42,6 @@
   </ui:define>
 
   <ui:define name="modal">
-    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.regio.delete')}" />
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.plaats.delete')}" />
   </ui:define>
 </ui:composition>

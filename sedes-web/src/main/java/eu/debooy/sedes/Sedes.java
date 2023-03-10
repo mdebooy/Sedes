@@ -21,6 +21,7 @@ import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.service.LandService;
 import eu.debooy.sedes.service.LandnaamService;
 import eu.debooy.sedes.service.MuntService;
+import eu.debooy.sedes.service.PlaatsService;
 import eu.debooy.sedes.service.RegioService;
 import eu.debooy.sedes.service.WerelddeelService;
 import eu.debooy.sedes.service.WerelddeelnaamService;
@@ -43,6 +44,7 @@ public class Sedes extends DoosBean {
   private transient LandService           landService;
   private transient LandnaamService       landnaamService;
   private transient MuntService           muntService;
+  private transient PlaatsService         plaatsService;
   private transient RegioService          regioService;
   private transient WerelddeelService     werelddeelService;
   private transient WerelddeelnaamService werelddeelnaamService;
@@ -56,6 +58,10 @@ public class Sedes extends DoosBean {
       "/landen/landnaam.xhtml";
   public static final String  MUNT_REDIRECT           = "/munten/munt.xhtml";
   public static final String  MUNTEN_REDIRECT         = "/munten/munten.xhtml";
+  public static final String  PLAATS_REDIRECT         =
+      "/plaatsen/plaats.xhtml";
+  public static final String  PLAATSEN_REDIRECT       =
+      "/plaatsen/plaatsen.xhtml";
   public static final String  QUIZ_REDIRECT           = "/quiz/quiz.xhtml";
   public static final String  QUIZZEN_REDIRECT        = "/quiz/quizzen.xhtml";
   public static final String  REGIO_REDIRECT          = "/regios/regio.xhtml";
@@ -85,6 +91,7 @@ public class Sedes extends DoosBean {
     }
     addMenuitem("Dropdown.geo", "menu.geografie");
     addDropdownmenuitem(DD_GEO, LANDEN_REDIRECT,      "menu.landen");
+    addDropdownmenuitem(DD_GEO, PLAATSEN_REDIRECT,    "menu.plaatsen");
     addDropdownmenuitem(DD_GEO, REGIOS_REDIRECT,      "menu.regios");
     addDropdownmenuitem(DD_GEO, WERELDDELEN_REDIRECT, "menu.werelddelen");
     addMenuitem(MUNTEN_REDIRECT,  "menu.munten");
@@ -116,6 +123,15 @@ public class Sedes extends DoosBean {
     }
 
     return muntService;
+  }
+
+  protected PlaatsService getPlaatsService() {
+    if (null == plaatsService) {
+      plaatsService = (PlaatsService)
+          new JNDI.JNDINaam().metBean(PlaatsService.class).locate();
+    }
+
+    return plaatsService;
   }
 
   protected RegioService getRegioService() {
