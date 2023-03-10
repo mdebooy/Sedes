@@ -33,6 +33,10 @@ public final class LandnaamValidator {
   protected static final  String  LBL_NAAM    = "_I18N.label.landnaam";
   protected static final  String  LBL_TAAL    = "_I18N.label.taal";
 
+  private LandnaamValidator() {
+   throw new IllegalStateException("Utility class");
+  }
+
   public static List<Message> valideer(LandnaamDto landnaam) {
     return valideer(new Landnaam(landnaam));
   }

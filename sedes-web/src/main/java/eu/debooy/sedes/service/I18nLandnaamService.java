@@ -52,7 +52,7 @@ public class I18nLandnaamService implements II18nLandnaam {
   private final Map<Long, Map<String, String>>
                         landnamenCache  = new HashMap<>();
 
-  private final String  standaardTaal = "nl";
+  private static final  String  STANDAARDTAAL = "nl";
 
   public I18nLandnaamService() {
     LOGGER.debug("init I18nLandnaamService");
@@ -143,7 +143,7 @@ public class I18nLandnaamService implements II18nLandnaam {
   }
 
   private String getStandaardTaal() {
-    return standaardTaal;
+    return STANDAARDTAAL;
   }
 
   @Override

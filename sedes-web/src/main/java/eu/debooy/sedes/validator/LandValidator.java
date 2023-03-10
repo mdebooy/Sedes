@@ -27,6 +27,7 @@ import java.util.List;
  */
 public final class LandValidator {
   private LandValidator() {
+   throw new IllegalStateException("Utility class");
   }
 
   public static List<Message> valideer(Land land) {

@@ -37,6 +37,7 @@ public final class MuntValidator {
   protected static final  String  LBL_SUBEENHEID  = "_I18N.label.subeenheid";
 
   private MuntValidator() {
+   throw new IllegalStateException("Utility class");
   }
 
   public static List<Message> valideer(MuntDto munt) {

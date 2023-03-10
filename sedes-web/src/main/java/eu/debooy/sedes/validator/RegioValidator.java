@@ -35,6 +35,7 @@ public final class RegioValidator {
   protected static final  String  LBL_NAAM      = "_I18N.label.regionaam";
 
   private RegioValidator() {
+   throw new IllegalStateException("Utility class");
   }
 
   public static List<Message> valideer(RegioDto regio) {

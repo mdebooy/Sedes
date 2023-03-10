@@ -31,6 +31,10 @@ import java.util.List;
 public final class WerelddeelnaamValidator {
   protected static final  String  LBL_NAAM  = "_I18N.label.werelddeelnaam";
 
+  private WerelddeelnaamValidator() {
+   throw new IllegalStateException("Utility class");
+  }
+
   public static List<Message> valideer(WerelddeelnaamDto werelddeelnaam) {
     return valideer(new Werelddeelnaam(werelddeelnaam));
   }
