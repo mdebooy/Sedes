@@ -89,12 +89,14 @@ public class Sedes extends DoosBean {
       addDropdownmenuitem(DD_ADMIN, APP_PARAMS_REDIRECT,
           "menu.applicatieparameters");
     }
-    addMenuitem("Dropdown.geo", "menu.geografie");
-    addDropdownmenuitem(DD_GEO, LANDEN_REDIRECT,      "menu.landen");
-    addDropdownmenuitem(DD_GEO, PLAATSEN_REDIRECT,    "menu.plaatsen");
-    addDropdownmenuitem(DD_GEO, REGIOS_REDIRECT,      "menu.regios");
-    addDropdownmenuitem(DD_GEO, WERELDDELEN_REDIRECT, "menu.werelddelen");
-    addMenuitem(MUNTEN_REDIRECT,  "menu.munten");
+    if (isGerechtigd()) {
+      addMenuitem("Dropdown.geo", "menu.geografie");
+      addDropdownmenuitem(DD_GEO, LANDEN_REDIRECT,      "menu.landen");
+      addDropdownmenuitem(DD_GEO, PLAATSEN_REDIRECT,    "menu.plaatsen");
+      addDropdownmenuitem(DD_GEO, REGIOS_REDIRECT,      "menu.regios");
+      addDropdownmenuitem(DD_GEO, WERELDDELEN_REDIRECT, "menu.werelddelen");
+      addMenuitem(MUNTEN_REDIRECT,  "menu.munten");
+    }
     addMenuitem(QUIZZEN_REDIRECT, "menu.quizzen");
   }
 
