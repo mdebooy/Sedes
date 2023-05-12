@@ -29,7 +29,7 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesRegio.selectRegionamen()}" textvalue="#{sedesRegio.i18nRegionaam(sedesRegio.regio.landId)}" />
+                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesLand.selectLandnamen()}" textvalue="#{sedesLand.i18nLandnaam(sedesRegio.regio.landId)}" />
                 </div>
               </div>
 
