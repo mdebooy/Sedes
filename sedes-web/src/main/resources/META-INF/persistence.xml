@@ -6,6 +6,7 @@
   <persistence-unit name="sedes" transaction-type="JTA">
     <jta-data-source>jdbc/Sedes</jta-data-source>
 
+    <class>eu.debooy.sedes.domain.KontaktDto</class>
     <class>eu.debooy.sedes.domain.LandDto</class>
     <class>eu.debooy.sedes.domain.LandnaamDto</class>
     <class>eu.debooy.sedes.domain.MuntDto</class>
