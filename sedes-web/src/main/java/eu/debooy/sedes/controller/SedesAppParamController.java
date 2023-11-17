@@ -32,13 +32,31 @@ public class SedesAppParamController extends AppParamController {
   public SedesAppParamController() {
     initSpeciaal();
     addSpeciaal("sedes.default.landid");
+    addSpeciaal("sedes.default.taal");
+    addSpeciaal("sedes.kontakt.type");
   }
 
   public Long getLandId() {
     return Long.valueOf(getWaarde());
   }
 
+  public String getKontakttype() {
+    return getWaarde();
+  }
+
+  public String getTaal() {
+    return getWaarde();
+  }
+
   public void setLandId(Long landId) {
     setWaarde(String.valueOf(landId));
+  }
+
+  public void setKontakttype(String kontakttype) {
+    setWaarde(kontakttype);
+  }
+
+  public void setTaal(String taal) {
+    setWaarde(taal);
   }
 }

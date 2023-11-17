@@ -17,6 +17,7 @@
 package eu.debooy.sedes.form;
 
 import eu.debooy.doosutils.form.Formulier;
+import eu.debooy.sedes.SedesUtils;
 import eu.debooy.sedes.domain.KontaktDto;
 import java.io.Serializable;
 import java.util.Date;
@@ -42,8 +43,8 @@ public class Kontakt
   private String  opmerking;
   private String  pseudoniem;
   private String  roepnaam;
-  private String  soort;
   private String  taal;
+  private String  tussenvoegsel;
   private String  voornaam;
 
   public Kontakt() {}
@@ -59,8 +60,8 @@ public class Kontakt
     opmerking       = kontaktDto.getOpmerking();
     pseudoniem      = kontaktDto.getPseudoniem();
     roepnaam        = kontaktDto.getRoepnaam();
-    soort           = kontaktDto.getSoort();
     taal            = kontaktDto.getTaal();
+    tussenvoegsel   = kontaktDto.getTussenvoegsel();
     voornaam        = kontaktDto.getVoornaam();
   }
 
@@ -87,7 +88,16 @@ public class Kontakt
     return aanspreekId;
   }
 
+  public String getDisplaynaam() {
+    return SedesUtils.getKontaktnaam(kontakttype, naam, voornaam,
+                                     tussenvoegsel, roepnaam);
+  }
+
   public Date getGeboortedatum() {
+    if (null == geboortedatum) {
+      return null;
+    }
+
     return new Date(geboortedatum.getTime());
   }
 
@@ -123,12 +133,12 @@ public class Kontakt
     return roepnaam;
   }
 
-  public String getSoort() {
-    return soort;
-  }
-
   public String getTaal() {
     return taal;
+  }
+
+  public String getTussenvoegsel() {
+    return tussenvoegsel;
   }
 
   public String getVoornaam() {
@@ -151,8 +161,8 @@ public class Kontakt
     kontaktDto.setOpmerking(getOpmerking());
     kontaktDto.setPseudoniem(getPseudoniem());
     kontaktDto.setRoepnaam(getRoepnaam());
-    kontaktDto.setSoort(getSoort());
     kontaktDto.setTaal(getTaal());
+    kontaktDto.setTussenvoegsel(getTussenvoegsel());
     kontaktDto.setVoornaam(getVoornaam());
   }
 
@@ -161,7 +171,11 @@ public class Kontakt
   }
 
   public void setGeboortedatum(Date geboortedatum) {
-    this.geboortedatum  = new Date(geboortedatum.getTime());
+    if (null == geboortedatum) {
+      this.geboortedatum  = null;
+    } else {
+      this.geboortedatum  = new Date(geboortedatum.getTime());
+    }
   }
 
   public void setGebruikersnaam(String gebruikersnaam) {
@@ -196,12 +210,12 @@ public class Kontakt
     this.roepnaam       = roepnaam;
   }
 
-  public void setSoort(String soort) {
-    this.soort          = soort;
-  }
-
   public void setTaal(String taal) {
     this.taal           = taal;
+  }
+
+  public void setTussenvoegsel(String tussenvoegsel) {
+    this.tussenvoegsel  = tussenvoegsel;
   }
 
   public void setVoornaam(String voornaam) {

@@ -18,6 +18,7 @@
 package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.domain.Dto;
+import eu.debooy.sedes.SedesUtils;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,8 +50,8 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   public static final String  COL_OPMERKING       = "opmerking";
   public static final String  COL_PSEUDONIEM      = "pseudoniem";
   public static final String  COL_ROEPNAAM        = "roepnaam";
-  public static final String  COL_SOORT           = "soort";
   public static final String  COL_TAAL            = "taal";
+  public static final String  COL_TUSSENVOEGSEL   = "tussenvoegsel";
   public static final String  COL_VOORNAAM        = "voornaam";
 
   @Column(name="AANSPREEK_ID", length=10)
@@ -74,16 +76,21 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   private String  pseudoniem;
   @Column(name="ROEPNAAM", length=255)
   private String  roepnaam;
-  @Column(name="SOORT", length=10)
-  private String  soort;
-  @Column(name="TAAL", length=3)
+  @Column(name="TAAL", length=3, nullable=false)
   private String  taal;
+  @Column(name="TUSSENVOEGSEL", length=255)
+  private String  tussenvoegsel;
   @Column(name="VOORNAAM", length=255)
   private String  voornaam;
 
   @Override
   public int compareTo(KontaktDto kontaktDto) {
     return new CompareToBuilder().append(naam, kontaktDto.naam)
+                                 .append(voornaam, kontaktDto.voornaam)
+                                 .append(tussenvoegsel,
+                                         kontaktDto.tussenvoegsel)
+                                 .append(roepnaam, kontaktDto.roepnaam)
+                                 .append(kontaktId, kontaktDto.kontaktId)
                                  .toComparison();
   }
 
@@ -105,7 +112,17 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
     return aanspreekId;
   }
 
+  @Transient
+  public String getDisplaynaam() {
+    return SedesUtils.getKontaktnaam(kontakttype, naam, voornaam,
+                                     tussenvoegsel, roepnaam);
+  }
+
   public Date getGeboortedatum() {
+    if (null == geboortedatum) {
+      return null;
+    }
+
     return new Date(geboortedatum.getTime());
   }
 
@@ -141,12 +158,12 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
     return roepnaam;
   }
 
-  public String getSoort() {
-    return soort;
-  }
-
   public String getTaal() {
     return taal;
+  }
+
+  public String getTussenvoegsel() {
+    return tussenvoegsel;
   }
 
   @Override
@@ -163,15 +180,27 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   }
 
   public void setGeboortedatum(Date geboortedatum) {
-    this.geboortedatum  = new Date(geboortedatum.getTime());
+    if (null == geboortedatum) {
+      this.geboortedatum  = null;
+    } else {
+      this.geboortedatum  = new Date(geboortedatum.getTime());
+    }
   }
 
   public void setGebruikersnaam(String gebruikersnaam) {
-    this.gebruikersnaam   = gebruikersnaam;
+    if (null == gebruikersnaam) {
+      this.gebruikersnaam = null;
+    } else {
+      this.gebruikersnaam = gebruikersnaam.trim();
+    }
   }
 
   public void setInitialen(String initialen) {
-    this.initialen        = initialen;
+    if (null == initialen) {
+      this.initialen      = null;
+    } else {
+      this.initialen      = initialen.trim();
+    }
   }
 
   public void setKontaktId(Long kontaktId) {
@@ -183,30 +212,54 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   }
 
   public void setNaam(String naam) {
-    this.naam             = naam;
+    if (null == naam) {
+      this.naam           = null;
+    } else {
+      this.naam           = naam.trim();
+    }
   }
 
   public void setOpmerking(String opmerking) {
-    this.opmerking        = opmerking;
+    if (null  == opmerking) {
+      this.opmerking      = null;
+    } else {
+      this.opmerking      = opmerking.trim();
+    }
   }
 
   public void setPseudoniem(String pseudoniem) {
-    this.pseudoniem       = pseudoniem;
+    if (null == pseudoniem) {
+      this.pseudoniem     = null;
+    } else {
+      this.pseudoniem     = pseudoniem.trim();
+    }
   }
 
   public void setRoepnaam(String roepnaam) {
-    this.roepnaam         = roepnaam;
-  }
-
-  public void setSoort(String soort) {
-    this.soort            = soort;
+    if (null == roepnaam) {
+      this.roepnaam       = null;
+    } else {
+      this.roepnaam       = roepnaam.trim();
+    }
   }
 
   public void setTaal(String taal) {
     this.taal             = taal;
   }
 
+  public void setTussenvoegsel(String tussenvoegsel) {
+    if (null == tussenvoegsel) {
+      this.tussenvoegsel  = null;
+    } else {
+      this.tussenvoegsel  = tussenvoegsel.trim();
+    }
+  }
+
   public void setVoornaam(String voornaam) {
-    this.voornaam         = voornaam;
+    if (null == voornaam) {
+      this.voornaam       = null;
+    } else {
+      this.voornaam       = voornaam.trim();
+    }
   }
 }

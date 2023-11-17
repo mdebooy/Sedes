@@ -53,7 +53,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerFouteWerelddeelnaam() {
-    Werelddeelnaam  werelddeelnaam  = new Werelddeelnaam();
+    var             werelddeelnaam  = new Werelddeelnaam();
 
     werelddeelnaam.setNaam(
             DoosUtils.stringMetLengte(TestConstants.WERELDDEELNAAM, 101, "X"));
@@ -67,7 +67,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerGoedeWerelddeelnaam() {
-    Werelddeelnaam  werelddeelnaam  = new Werelddeelnaam();
+    var             werelddeelnaam  = new Werelddeelnaam();
 
     werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
     werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
@@ -79,7 +79,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerLegeWerelddeelnaam() {
-    Werelddeelnaam  werelddeelnaam  = new Werelddeelnaam();
+    var             werelddeelnaam  = new Werelddeelnaam();
     List<Message>   result          =
         WerelddeelnaamValidator.valideer(werelddeelnaam);
 
@@ -89,7 +89,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerFouteWerelddeelnaamDto() {
-    WerelddeelnaamDto werelddeelnaam  = new WerelddeelnaamDto();
+    var               werelddeelnaam  = new WerelddeelnaamDto();
 
     werelddeelnaam.setNaam(
             DoosUtils.stringMetLengte(TestConstants.WERELDDEELNAAM, 101, "X"));
@@ -103,7 +103,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerGoedeWerelddeelnaamDto() {
-    WerelddeelnaamDto werelddeelnaam  = new WerelddeelnaamDto();
+    var               werelddeelnaam  = new WerelddeelnaamDto();
 
     werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
     werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
@@ -115,7 +115,7 @@ public class WerelddeelnaamValidatorTest {
 
   @Test
   public void testValideerLegeWerelddeelnaamDto() {
-    WerelddeelnaamDto werelddeelnaam  = new WerelddeelnaamDto();
+    var               werelddeelnaam  = new WerelddeelnaamDto();
     List<Message>     result          =
         WerelddeelnaamValidator.valideer(werelddeelnaam);
 

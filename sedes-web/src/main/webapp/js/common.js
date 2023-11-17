@@ -15,9 +15,34 @@
  * limitations under the Licence.
  */
 
+var aanspreektitels = {};
+var kontakttypes = {};
 var landen = {};
 var regios = {};
 var werelddelen = {};
+
+function getAanspreektitel(aanspreekId, taal) {
+  var teksten = [];
+  if (aanspreektitels.hasOwnProperty(aanspreekId)) {
+    teksten = aanspreektitels[aanspreekId].teksten;
+  } else {
+    $.ajax({ url: '/doos/i18nCodes/sedes.aanspreektitel.'+aanspreekId,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               aanspreektitels[aanspreekId] = data;
+               teksten = data.teksten;
+             }
+    });
+  }
+
+  var naam = teksten.findIndex(i => i.taalKode === taal);
+  if (naam < 0) {
+    return aanspreekId;
+  }
+
+  return teksten[naam].tekst;
+}
 
 function getHoofdstad(land, taal) {
   var naam = land.landnamen.findIndex(i => i.taal === taal);
@@ -26,6 +51,29 @@ function getHoofdstad(land, taal) {
   }
 
   return land.landnamen[naam].hoofdstad;
+}
+
+function getKontakttype(kontakttype, taal) {
+  var teksten = [];
+  if (kontakttypes.hasOwnProperty(kontakttype)) {
+    teksten = kontakttypes[kontakttype].teksten;
+  } else {
+    $.ajax({ url: '/doos/i18nCodes/sedes.kontakt.type.'+kontakttype,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               kontakttypes[kontakttype] = data;
+               teksten = data.teksten;
+             }
+    });
+  }
+
+  var naam = teksten.findIndex(i => i.taalKode === taal);
+  if (naam < 0) {
+    return kontakttype;
+  }
+
+  return teksten[naam].tekst;
 }
 
 function getLandIdNaam(landId, taal) {

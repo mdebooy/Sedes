@@ -29,14 +29,17 @@ import java.util.List;
  * @author Marco de Booij
  */
 public final class LandValidator {
-  protected static final  String  LBL_BESTAAT           = "label.bestaat";
-  protected static final  String  LBL_ISO3              = "label.iso3";
+  protected static final  String  LBL_BESTAAT           = "_I18N.label.bestaat";
+  protected static final  String  LBL_ISO3              = "_I18N.label.iso3";
   protected static final  String  LBL_POSTKODESCHEIDING =
       "label.postkodeScheiding";
-  protected static final  String  LBL_POSTKODETYPE      = "label.postkodeType";
-  protected static final  String  LBL_POSTLANDKODE      = "label.postLandkode";
-  protected static final  String  LBL_TAAL              = "label.taal";
-  protected static final  String  LBL_WERELDDEELID      = "label.werelddeel";
+  protected static final  String  LBL_POSTKODETYPE      =
+      "_I18N.label.postkodeType";
+  protected static final  String  LBL_POSTLANDKODE      =
+      "_I18N.label.postLandkode";
+  protected static final  String  LBL_TAAL              = "_I18N.label.taal";
+  protected static final  String  LBL_WERELDDEELID      =
+      "_I18N.label.werelddeel";
 
   private LandValidator() {
    throw new IllegalStateException("Utility class");

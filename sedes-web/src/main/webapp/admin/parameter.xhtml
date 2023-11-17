@@ -23,6 +23,12 @@
                   <t:div rendered="#{sedesAppParam.sleutel=='sedes.default.landid'}">
                     <d:listbox id="landId" value="#{sedesAppParam.landId}" items="#{i18nLandnaam.selectLandnamen()}" fullwidth="true" required="true" textvalue="" />
                   </t:div>
+                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.default.taal'}">
+                    <d:listbox id="taal" value="#{sedesAppParam.taal}" items="#{i18nTeksten.talenIso6392t()}" fullwidth="true" required="true" textvalue="" />
+                  </t:div>
+                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.kontakt.type'}">
+                    <d:listbox id="kontakttype" value="#{sedesAppParam.kontakttype}" items="#{sedesKontakt.kontakttypes}" fullwidth="true" required="true" textvalue="" />
+                  </t:div>
                 </div>
               </div>
 

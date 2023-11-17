@@ -24,11 +24,13 @@ import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -119,5 +121,19 @@ public class KontaktService {
     } else {
       kontaktDao.update(kontakt);
     }
+  }
+
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<SelectItem> selectKontakten() {
+    List<SelectItem>  items = new ArrayList<>();
+
+    try {
+      kontaktDao.getAll().forEach(
+          kontakt -> items.add(new SelectItem(kontakt.getKontaktId().toString(),
+                                              kontakt.getDisplaynaam())));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+    return items;
   }
 }

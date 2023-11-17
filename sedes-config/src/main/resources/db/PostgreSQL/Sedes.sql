@@ -76,8 +76,8 @@ CREATE TABLE SEDES.KONTAKTEN (
   OPMERKING                       VARCHAR(2000),
   PSEUDONIEM                      VARCHAR(255),
   ROEPNAAM                        VARCHAR(255),
-  SOORT                           VARCHAR(10),
-  TAAL                            CHAR(3),
+  TAAL                            CHAR(3)         NOT NULL,
+  TUSSENVOEGSEL                   VARCHAR(10),
   VOORNAAM                        VARCHAR(255),
   CONSTRAINT PK_KONTAKTEN PRIMARY KEY (KONTAKT_ID)
 );
@@ -303,10 +303,19 @@ COMMENT ON COLUMN SEDES.KONTAKTEN.NAAM            IS 'De naam van het kontakt.';
 COMMENT ON COLUMN SEDES.KONTAKTEN.OPMERKING       IS 'Een opmerking voor dit kontakt.';
 COMMENT ON COLUMN SEDES.KONTAKTEN.PSEUDONIEM      IS 'De pseudoniem van het kontakt.';
 COMMENT ON COLUMN SEDES.KONTAKTEN.ROEPNAAM        IS 'De roepnaam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.SOORT           IS 'Het soort van het kontakt. Dit kan het geslacht zijn of de juridische vorm.';
 COMMENT ON COLUMN SEDES.KONTAKTEN.TAAL            IS 'De taal, ISO 639-2T, die dit kontakt gebruikt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM        IS 'Devoornaam van dit kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.TUSSENVOEGSEL   IS 'Eerste deel van achternaam die buiten de sortering valt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM        IS 'De voornaam van dit kontakt.';
+COMMENT ON TABLE  SEDES.MUNTEN                    IS 'Deze tabel bevat alle munten (valuta''s).';
+COMMENT ON COLUMN SEDES.MUNTEN.BESTAAT            IS 'Bestaat de munt nog (J/N)?';
+COMMENT ON COLUMN SEDES.MUNTEN.DECIMALEN          IS 'Aantal decimalen voor de subeenheid.';
+COMMENT ON COLUMN SEDES.MUNTEN.ISO3               IS 'De ISO3 code van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNT_ID            IS 'De sleutel van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN          IS 'Het teken van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.NAAM               IS 'De naam van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID         IS 'De naam van de subeenheid van de munt.';
 
+-- Default waardes
 INSERT INTO SEDES.WERELDDELEN VALUES (0);
 
 INSERT INTO SEDES.WERELDDEELNAMEN VALUES ('Aarde', 'nl', 0);
@@ -316,3 +325,11 @@ INSERT INTO SEDES.MUNTEN VALUES ('N', 2, 'Onbekend', 0, '-', NULL, NULL);
 INSERT INTO SEDES.LANDEN VALUES ('N', NULL, '-', 0, NULL, 0, NULL, '1', '-', '??', NULL, 0);
 
 INSERT INTO SEDES.LANDNAMEN VALUES (NULL, 0, 'Onbekend', NULL, 'nl');
+
+INSERT INTO DOOS.I18N_LIJSTEN
+        (CODE, OMSCHRIJVING)
+ VALUES ('sedes.kontakt.type', 'Lijst met de kontakttypes.');
+
+INSERT INTO DOOS.I18N_LIJSTEN
+        (CODE, OMSCHRIJVING)
+ VALUES ('sedes.aanspreektitel', 'Lijst met aanspreektitels.');

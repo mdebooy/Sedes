@@ -85,7 +85,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerFouteRegio() {
-    Regio         regio     = new Regio();
+    var           regio     = new Regio();
     List<Message> expResult = new ArrayList<>();
 
     regio.setNaam(DoosUtils.stringMetLengte(TestConstants.REGIONAAM, 101, "X"));
@@ -101,7 +101,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerGoedeRegio() {
-    Regio         regio     = new Regio();
+    var           regio     = new Regio();
 
     regio.setLandId(TestConstants.LANDID);
     regio.setNaam(TestConstants.REGIONAAM);
@@ -114,7 +114,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerLegeRegio() {
-    Regio         regio     = new Regio();
+    var           regio     = new Regio();
     List<Message> expResult = new ArrayList<>();
 
     setLeeg(expResult);
@@ -126,7 +126,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerFouteRegioDto() {
-    RegioDto      regio     = new RegioDto();
+    var           regio     = new RegioDto();
     List<Message> expResult = new ArrayList<>();
 
     regio.setNaam(DoosUtils.stringMetLengte(TestConstants.REGIONAAM, 101, "X"));
@@ -142,7 +142,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerGoedeRegioDto() {
-    RegioDto       regio      = new RegioDto();
+    var           regio      = new RegioDto();
 
     regio.setLandId(TestConstants.LANDID);
     regio.setNaam(TestConstants.REGIONAAM);
@@ -155,7 +155,7 @@ public class RegioValidatorTest {
 
   @Test
   public void testValideerLegeRegioDto() {
-    RegioDto      regio     = new RegioDto();
+    var           regio     = new RegioDto();
     List<Message> expResult = new ArrayList<>();
 
     setLeeg(expResult);

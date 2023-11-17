@@ -1,0 +1,109 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+     <script src="/sedes/js/kontakt.js"></script>
+     <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var kontakttype = '#{sedesKontakt.kontakt.kontakttype}';
+
+        $("#formKontakt\\:geboortedatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
+                                                      monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
+                                                      dateFormat: '#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}'});
+        setTaal(taal);
+        zetForm(kontakttype);
+        $('#formKontakt\\:kontakttype').on('change', function() {
+          zetForm(this.value);
+        } );
+      });
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formKontakt">
+          <d:titel titel="#{sedesKontakt.subTitel}" />
+
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.kontakttype')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="kontakttype" value="#{sedesKontakt.kontakt.kontakttype}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" items="#{sedesKontakt.kontakttypes}" textvalue="#{sedesKontakt.kontakttype(sedesKontakt.kontakt.kontakttype)}" />
+                  <d:label label="#{i18nTeksten.tekst('label.taal')}" />
+                  <div class="field-body is-normal">
+                    <d:listbox id="taal" value="#{sedesKontakt.kontakt.taal}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" items="#{i18nTeksten.talenIso6392t()}" textvalue="#{i18nTeksten.taalIso6392t(sedesKontakt.kontakt.taal)}" />
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.naam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="naam" value="#{sedesKontakt.kontakt.naam}" maxlength="255" size="100" required="true" readonly="#{sedesKontakt.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label id="lblVoornaam" label="#{i18nTeksten.tekst('label.voornaam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="voornaam" value="#{sedesKontakt.kontakt.voornaam}" maxlength="255" size="100" readonly="#{sedesKontakt.aktie.readonly}" />
+                </div>
+              </div>
+              <div id="vldPersoon" class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.tussenvoegsel')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="tussenvoegsel" value="#{sedesKontakt.kontakt.tussenvoegsel}" maxlength="10" size="10" readonly="#{sedesKontakt.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.initialen')}" />
+                  <d:inputText id="initialen" value="#{sedesKontakt.kontakt.initialen}" maxlength="20" size="20" readonly="#{sedesKontakt.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.aanspreektitel')}" />
+                  <div class="field-body is-normal">
+                    <d:listbox id="aanspreekId" value="#{sedesKontakt.kontakt.aanspreekId}" fullwidth="true" readonly="#{sedesKontakt.aktie.readonly}" items="#{sedesKontakt.aanspreektitels}" textvalue="#{sedesKontakt.aanspreektitel(sedesKontakt.kontakt.aanspreekId)}" />
+                  </div>
+                </div>
+              </div>
+              <div id="vldRoepnaam" class="field is-horizontal">
+                <d:label id="lblRoepnaam" label="#{i18nTeksten.tekst('label.roepnaam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="roepnaam" value="#{sedesKontakt.kontakt.roepnaam}" maxlength="255" size="100" readonly="#{sedesKontakt.aktie.readonly}" />
+                </div>
+              </div>
+              <div id="vldPseudoniem" class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.pseudoniem')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="pseudoniem" value="#{sedesKontakt.kontakt.pseudoniem}" maxlength="255" size="100" readonly="#{sedesKontakt.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label id="lblGebruikersnaam" label="#{i18nTeksten.tekst('label.gebruikersnaam')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="gebruikersnaam" value="#{sedesKontakt.kontakt.gebruikersnaam}" maxlength="20" size="20" readonly="#{sedesKontakt.aktie.readonly}" />
+                  <d:label id="lblGeboortedatum" label="#{i18nTeksten.tekst('label.geboortedatum')}" />
+                  <div class="field-body is-normal">
+                    <d:datum id="geboortedatum" value="#{sedesKontakt.kontakt.geboortedatum}" readonly="#{sedesKontakt.aktie.readonly}" />
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.opmerking')}" />
+                <div class="field-body is-normal">
+                  <d:inputTextarea id="opmerking" value="#{sedesKontakt.kontakt.opmerking}" readonly="#{sedesKontakt.aktie.readonly}" />
+                </div>
+              </div>
+
+              <d:crudbuttonbar bean="#{sedesKontakt}" form="formKontakt" returnto="#{sedes.path}/kontakten/kontakten.xhtml" tekst="#{sedesKontakt.kontakt.naam}" />
+            </div>
+          </div>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.kontakt.delete')}" />
+  </ui:define>
+</ui:composition>

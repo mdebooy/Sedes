@@ -18,6 +18,7 @@ package eu.debooy.sedes;
 
 import eu.debooy.doos.component.bean.DoosBean;
 import eu.debooy.doosutils.service.JNDI;
+import eu.debooy.sedes.service.KontaktService;
 import eu.debooy.sedes.service.LandService;
 import eu.debooy.sedes.service.LandnaamService;
 import eu.debooy.sedes.service.MuntService;
@@ -41,6 +42,7 @@ public class Sedes extends DoosBean {
   private static final  Logger  LOGGER            =
       LoggerFactory.getLogger(Sedes.class);
 
+  private transient KontaktService        kontaktService;
   private transient LandService           landService;
   private transient LandnaamService       landnaamService;
   private transient MuntService           muntService;
@@ -52,12 +54,19 @@ public class Sedes extends DoosBean {
   public static final String  ADMIN_ROLE              = "sedes-admin";
   public static final String  APPLICATIE_NAAM         = "Sedes";
   public static final String  DD_GEO                  = "geo";
+  public static final String  KONTAKT_REDIRECT        =
+      "/kontakten/kontakt.xhtml";
+  public static final String  KONTAKTEN_REDIRECT      =
+      "/kontakten/kontakten.xhtml";
   public static final String  LAND_REDIRECT           = "/landen/land.xhtml";
   public static final String  LANDEN_REDIRECT         = "/landen/landen.xhtml";
   public static final String  LANDNAAM_REDIRECT       =
       "/landen/landnaam.xhtml";
   public static final String  MUNT_REDIRECT           = "/munten/munt.xhtml";
   public static final String  MUNTEN_REDIRECT         = "/munten/munten.xhtml";
+  public static final String  PAR_DEFAULT_TAAL        = "sedes.default.taal";
+  public static final String  PAR_DEFAULT_TYPE        =
+      "sedes.kontakt.type";
   public static final String  PLAATS_REDIRECT         =
       "/plaatsen/plaats.xhtml";
   public static final String  PLAATSEN_REDIRECT       =
@@ -66,6 +75,9 @@ public class Sedes extends DoosBean {
   public static final String  QUIZZEN_REDIRECT        = "/quiz/quizzen.xhtml";
   public static final String  REGIO_REDIRECT          = "/regios/regio.xhtml";
   public static final String  REGIOS_REDIRECT         = "/regios/regios.xhtml";
+  public static final String  TYP_GROEP               = "G";
+  public static final String  TYP_PERSOON             = "P";
+  public static final String  TYP_RECHTSPERSOON       = "R";
   public static final String  USER_ROLE               = "sedes-user";
   public static final String  VIEW_ROLE               = "sedes-view";
   public static final String  WERELDDEEL_REDIRECT     =
@@ -90,7 +102,8 @@ public class Sedes extends DoosBean {
           "menu.applicatieparameters");
     }
     if (isGerechtigd()) {
-      addMenuitem("Dropdown.geo", "menu.geografie");
+      addMenuitem(KONTAKTEN_REDIRECT, "menu.kontakten");
+      addMenuitem("Dropdown.geo",     "menu.geografie");
       addDropdownmenuitem(DD_GEO, LANDEN_REDIRECT,      "menu.landen");
       addDropdownmenuitem(DD_GEO, PLAATSEN_REDIRECT,    "menu.plaatsen");
       addDropdownmenuitem(DD_GEO, REGIOS_REDIRECT,      "menu.regios");
@@ -98,6 +111,15 @@ public class Sedes extends DoosBean {
       addMenuitem(MUNTEN_REDIRECT,  "menu.munten");
     }
     addMenuitem(QUIZZEN_REDIRECT, "menu.quizzen");
+  }
+
+  protected KontaktService getKontaktService() {
+    if (null == kontaktService) {
+      kontaktService  = (KontaktService)
+          new JNDI.JNDINaam().metBean(KontaktService.class).locate();
+    }
+
+    return kontaktService;
   }
 
   protected LandnaamService getLandnaamService() {
