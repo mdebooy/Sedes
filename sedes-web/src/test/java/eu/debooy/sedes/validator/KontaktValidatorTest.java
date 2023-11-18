@@ -177,6 +177,24 @@ public class KontaktValidatorTest {
   }
 
   @Test
+  public void testNullKontakt() {
+    Kontakt       kontakt   = null;
+    List<Message> result    = KontaktValidator.valideer(kontakt);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+  }
+
+  @Test
+  public void testNullKontaktDto() {
+    KontaktDto    kontakt   = null;
+    List<Message> result    = KontaktValidator.valideer(kontakt);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+  }
+
+  @Test
   public void testValideerFoutKontakt1() {
     var           kontakt   = new Kontakt();
     List<Message> expResult = new ArrayList<>();

@@ -23,8 +23,6 @@ import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosRuntimeException;
 import eu.debooy.sedes.Sedes;
-import static eu.debooy.sedes.Sedes.REGIOS_REDIRECT;
-import static eu.debooy.sedes.Sedes.REGIO_REDIRECT;
 import eu.debooy.sedes.domain.PlaatsDto;
 import eu.debooy.sedes.form.Plaats;
 import eu.debooy.sedes.validator.PlaatsValidator;

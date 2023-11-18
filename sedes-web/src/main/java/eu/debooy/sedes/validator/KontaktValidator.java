@@ -61,7 +61,7 @@ public final class KontaktValidator extends SedesValidator {
 
   public static List<Message> valideer(KontaktDto kontakt) {
     if (null == kontakt) {
-      return null;
+      return objectIsNull("KontaktDto");
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
@@ -87,7 +87,7 @@ public final class KontaktValidator extends SedesValidator {
 
   public static List<Message> valideer(Kontakt kontakt) {
     if (null == kontakt) {
-      return null;
+      return objectIsNull("Kontakt");
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {

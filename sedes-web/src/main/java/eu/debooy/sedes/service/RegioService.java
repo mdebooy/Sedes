@@ -58,6 +58,7 @@ public class RegioService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(RegioService.class);
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private RegioDao  regioDao;
 
