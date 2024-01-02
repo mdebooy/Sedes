@@ -21,7 +21,6 @@ import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.domain.KontaktDto;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,18 +41,5 @@ public abstract class SedesValidator {
                             .setParams(new Object[]{LBL_OPMERKING, 2000})
                             .build());
     }
-  }
-
-  protected static List<Message> objectIsNull(String obj) {
-    List<Message> fouten  = new ArrayList<>();
-
-    fouten.add(new Message.Builder()
-                          .setAttribute(obj)
-                          .setSeverity(Message.ERROR)
-                          .setMessage(PersistenceConstants.NULL)
-                          .setParams(new Object[]{obj})
-                          .build());
-
-    return fouten;
   }
 }

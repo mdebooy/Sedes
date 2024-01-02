@@ -173,7 +173,7 @@ public class KontaktController extends Sedes {
       return;
     }
 
-    var naam  = kontakt.getNaam();
+    var naam  = kontakt.getDisplaynaam();
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
@@ -187,6 +187,7 @@ public class KontaktController extends Sedes {
           kontakt.persist(kontaktDto);
           getKontaktService().save(kontaktDto);
           addInfo(PersistenceConstants.UPDATED, naam);
+          update();
           break;
         default:
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
@@ -210,6 +211,6 @@ public class KontaktController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel(getTekst(TIT_UPDATE, kontaktDto.getNaam()));
+    setSubTitel(getTekst(TIT_UPDATE, kontaktDto.getDisplaynaam()));
   }
 }

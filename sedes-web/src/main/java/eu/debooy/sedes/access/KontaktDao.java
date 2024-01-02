@@ -19,6 +19,7 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.KontaktDto;
+import java.util.Collection;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -42,7 +43,11 @@ public class KontaktDao extends Dao<KontaktDto> {
     return em;
   }
 
-  public KontaktDto getKontakt(Long kontaktId) {
-    return getByPrimaryKey(kontaktId);
+  public Collection<KontaktDto> getPerKontakttype(String kontakttype) {
+    var query = getEntityManager().createNamedQuery(KontaktDto.QRY_PERTYPE)
+                                  .setParameter(KontaktDto.PAR_KONTAKTTYPE,
+                                                kontakttype);
+
+    return query.getResultList();
   }
 }

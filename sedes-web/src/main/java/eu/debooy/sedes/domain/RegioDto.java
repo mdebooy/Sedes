@@ -60,14 +60,14 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
   @Column(name="LAND_ID", nullable=false)
   private Long    landId;
+  @Column(name="NAAM", length=100, nullable=false)
+  private String  naam;
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="REGIO_ID", nullable=false)
   private Long    regioId;
   @Column(name="REGIOKODE", length=5, nullable=false)
   private String  regiokode;
-  @Column(name="NAAM", length=100, nullable=false)
-  private String  naam;
 
   /**
    * De regiokode is toegevoegd om dubbele namen niet te laten verdwijnen in een
@@ -111,16 +111,16 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     return landId;
   }
 
+  public String getNaam() {
+    return naam;
+  }
+
   public Long getRegioId() {
     return regioId;
   }
 
   public String getRegiokode() {
     return regiokode;
-  }
-
-  public String getNaam() {
-    return naam;
   }
 
   @Override
@@ -132,15 +132,15 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     this.landId     = landId;
   }
 
+  public void setNaam(String naam) {
+    this.naam       = naam;
+  }
+
   public void setRegioId(Long regioId) {
     this.regioId    = regioId;
   }
 
   public void setRegiokode(String regiokode) {
     this.regiokode  = regiokode;
-  }
-
-  public void setNaam(String naam) {
-    this.naam       = naam;
   }
 }

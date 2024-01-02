@@ -19,12 +19,15 @@ package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.sedes.SedesUtils;
+import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -37,8 +40,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="KONTAKTEN", schema="SEDES")
+@NamedQuery(name="kontaktPerType", query="select k from KontaktDto k where k.kontakttype=:kontakttype")
 public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   private static final  long  serialVersionUID  = 1L;
+
+  public static final String  PAR_KONTAKTTYPE     = "ouder";
+
+  public static final String  QRY_PERTYPE         = "kontaktPerType";
 
   public static final String  COL_AANSPREEKID     = "aanspreekId";
   public static final String  COL_GEBOORTEDATUM   = "geboortedatum";
@@ -53,6 +61,8 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   public static final String  COL_TAAL            = "taal";
   public static final String  COL_TUSSENVOEGSEL   = "tussenvoegsel";
   public static final String  COL_VOORNAAM        = "voornaam";
+
+  public static final String  VAR_DISPLAYNAAM     = "displaynaam";
 
   @Column(name="AANSPREEK_ID", length=10)
   private String  aanspreekId;
@@ -82,6 +92,17 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   private String  tussenvoegsel;
   @Column(name="VOORNAAM", length=255)
   private String  voornaam;
+
+  public static class DisplaynaamComparator
+      implements Comparator<KontaktDto>, Serializable {
+    private static final  long  serialVersionUID  = 1L;
+
+    @Override
+    public int compare(KontaktDto kontaktDto1, KontaktDto kontaktDto2) {
+      return kontaktDto1.getDisplaynaam().toLowerCase()
+                        .compareTo(kontaktDto2.getDisplaynaam().toLowerCase());
+    }
+  }
 
   @Override
   public int compareTo(KontaktDto kontaktDto) {

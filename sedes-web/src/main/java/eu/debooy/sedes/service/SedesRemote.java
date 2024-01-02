@@ -1,7 +1,7 @@
-/**
- * Copyright 2016 Marco de Booij
+/*
+ * Copyright (c) 2023 Marco de Booij
  *
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
  * you may not use this work except in compliance with the Licence. You may
  * obtain a copy of the Licence at:
@@ -14,13 +14,15 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
 package eu.debooy.sedes.service;
 
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.service.JNDI;
-import eu.debooy.sedes.component.business.II18nLandnaam;
+import eu.debooy.sedes.component.business.ISedesRemote;
+import eu.debooy.sedes.component.entity.Kontakt;
+import eu.debooy.sedes.component.entity.Regio;
 import eu.debooy.sedes.domain.LandnaamDto;
-import eu.debooy.sedes.domain.RegioDto;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,22 +41,23 @@ import org.slf4j.LoggerFactory;
  * @author Marco de Booij
  */
 @Singleton
-@Named("sedesI18nLandnaamService")
+@Named("sedesRemote")
 @Lock(LockType.WRITE)
-public class I18nLandnaamService implements II18nLandnaam {
+public class SedesRemote implements ISedesRemote {
   private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(I18nLandnaamService.class);
+      LoggerFactory.getLogger(SedesRemote.class);
 
+  private KontaktService  kontaktService;
   private LandnaamService landnaamService;
   private RegioService    regioService;
 
   private final Map<Long, Map<String, String>>
-                        landnamenCache  = new HashMap<>();
+                                landnamenCache  = new HashMap<>();
 
   private static final  String  STANDAARDTAAL = "nl";
 
-  public I18nLandnaamService() {
-    LOGGER.debug("init I18nLandnaamService");
+  public SedesRemote() {
+    LOGGER.debug("init SedesRemote");
   }
 
   @Override
@@ -106,6 +108,42 @@ public class I18nLandnaamService implements II18nLandnaam {
     }
   }
 
+  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Kontakt getKontakt(Long kontaktId) {
+    var kontakt = new Kontakt.Builder();
+    try {
+      var item  = getKontaktService().kontakt(kontaktId);
+
+      kontakt.setAanspreekId(item.getAanspreekId())
+             .setDisplaynaam(item.getDisplaynaam())
+             .setGeboortedatum(item.getGeboortedatum())
+             .setGebruikersnaam(item.getGebruikersnaam())
+             .setInitialen(item.getInitialen())
+             .setKontaktId(item.getKontaktId())
+             .setKontakttype(item.getKontakttype())
+             .setNaam(item.getNaam())
+             .setPseudoniem(item.getPseudoniem())
+             .setRoepnaam(item.getRoepnaam())
+             .setTaal(item.getTaal())
+             .setTussenvoegsel(item.getTussenvoegsel())
+             .setVoornaam(item.getVoornaam());
+    } catch (ObjectNotFoundException e) {
+      // Geef een lege Kontakt.
+    }
+
+    return kontakt.build();
+  }
+
+  private KontaktService getKontaktService() {
+    if (null == kontaktService) {
+      kontaktService = (KontaktService)
+          new JNDI.JNDINaam().metBean(KontaktService.class).locate();
+    }
+
+    return kontaktService;
+  }
+
   private LandnaamService getLandnaamService() {
     if (null == landnaamService) {
       landnaamService = (LandnaamService)
@@ -117,20 +155,20 @@ public class I18nLandnaamService implements II18nLandnaam {
 
   @Override
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public JSONObject getRegio(Long regioId) {
-    var json  = new JSONObject();
+  public Regio getRegio(Long regioId) {
+    var regio = new Regio.Builder();
     try {
-      var regio = getRegioService().regio(regioId);
+      var item  = getRegioService().regio(regioId);
 
-      json.put(RegioDto.COL_LANDID, regio.getLandId());
-      json.put(RegioDto.COL_REGIOID, regio.getRegioId());
-      json.put(RegioDto.COL_REGIOKODE, regio.getRegiokode());
-      json.put(RegioDto.COL_NAAM, regio.getNaam());
+      regio.setLandId(item.getLandId())
+           .setNaam(item.getNaam())
+           .setRegioId(item.getRegioId())
+           .setRegiokode(item.getRegiokode());
     } catch (ObjectNotFoundException e) {
-      // Geef een leeg JSONObject.
+      // Geef een lege Regio.
     }
 
-    return json;
+    return regio.build();
   }
 
   private RegioService getRegioService() {
@@ -144,6 +182,12 @@ public class I18nLandnaamService implements II18nLandnaam {
 
   private String getStandaardTaal() {
     return STANDAARDTAAL;
+  }
+
+  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<SelectItem> selectKontakten() {
+    return getKontaktService().selectKontakten();
   }
 
   @Override

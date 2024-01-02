@@ -46,7 +46,7 @@ public final class SedesUtils {
         return String.format("%s %s%s %s%s",
                              DoosUtils.nullToEmpty(tussenvoegsel).toUpperCase(),
                              naam.toUpperCase(),
-                             DoosUtils.isNotBlankOrNull(voornaam) ? ", " : "",
+                             DoosUtils.isNotBlankOrNull(voornaam) ? "," : "",
                              DoosUtils.nullToEmpty(voornaam),
                              DoosUtils.isNotBlankOrNull(roepnaam)
                                  ? " (" + roepnaam + ")" : "")

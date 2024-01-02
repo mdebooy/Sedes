@@ -25,6 +25,8 @@ import eu.debooy.sedes.form.Kontakt;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -76,7 +78,8 @@ public class KontaktService {
   public Response getKontakt(
       @PathParam(KontaktDto.COL_KONTAKTID) Long kontaktId) {
     try {
-      return Response.ok().entity(kontaktDao.getKontakt(kontaktId)).build();
+      return Response.ok().entity(kontaktDao.getByPrimaryKey(kontaktId))
+                          .build();
     } catch (ObjectNotFoundException e) {
       var message = new Message.Builder()
                                .setAttribute(KontaktDto.COL_KONTAKTID)
@@ -90,6 +93,18 @@ public class KontaktService {
   public Response getKontakten() {
     try {
       return Response.ok().entity(kontaktDao.getAll()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.ok().entity(new ArrayList<>()).build();
+    }
+  }
+
+  @GET
+  @Path("/type/{kontakttype}")
+  public Response getKontaktenPerType(
+      @PathParam(KontaktDto.COL_KONTAKTTYPE) String  kontakttype) {
+    try {
+      return Response.ok().entity(kontaktDao.getPerKontakttype(kontakttype))
+                     .build();
     } catch (ObjectNotFoundException e) {
       return Response.ok().entity(new ArrayList<>()).build();
     }
@@ -127,11 +142,14 @@ public class KontaktService {
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectKontakten() {
     List<SelectItem>  items = new ArrayList<>();
-
+    Set<KontaktDto>   rijen =
+        new TreeSet<>(new KontaktDto.DisplaynaamComparator());
     try {
-      kontaktDao.getAll().forEach(
-          kontakt -> items.add(new SelectItem(kontakt.getKontaktId().toString(),
-                                              kontakt.getDisplaynaam())));
+      rijen.addAll(kontaktDao.getAll());
+      for (var rij : rijen) {
+        items.add(new SelectItem(rij.getKontaktId().toString(),
+                                 rij.getDisplaynaam()));
+      }
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }

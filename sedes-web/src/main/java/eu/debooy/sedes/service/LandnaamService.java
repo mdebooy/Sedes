@@ -179,7 +179,7 @@ public class LandnaamService {
         new TreeSet<>(new LandnaamDto.NaamComparator());
     try {
       rijen.addAll(landnaamDao.getPerTaal(taal));
-      for (LandnaamDto rij : rijen) {
+      for (var rij : rijen) {
         items.add(new SelectItem(rij.getLandId(), rij.getNaam()));
       }
     } catch (ObjectNotFoundException e) {

@@ -177,48 +177,79 @@ public class Kontakt
       this.geboortedatum  = new Date(geboortedatum.getTime());
     }
   }
-
   public void setGebruikersnaam(String gebruikersnaam) {
-    this.gebruikersnaam = gebruikersnaam;
+    if (null == gebruikersnaam) {
+      this.gebruikersnaam = null;
+    } else {
+      this.gebruikersnaam = gebruikersnaam.trim();
+    }
   }
 
   public void setInitialen(String initialen) {
-    this.initialen      = initialen;
+    if (null == initialen) {
+      this.initialen      = null;
+    } else {
+      this.initialen      = initialen.trim();
+    }
   }
 
   public void setKontaktId(Long kontaktId) {
-    this.kontaktId      = kontaktId;
+    this.kontaktId        = kontaktId;
   }
 
   public void setKontakttype(String kontakttype) {
-    this.kontakttype    = kontakttype;
+    this.kontakttype      = kontakttype;
   }
 
   public void setNaam(String naam) {
-    this.naam           = naam;
+    if (null == naam) {
+      this.naam           = null;
+    } else {
+      this.naam           = naam.trim();
+    }
   }
 
   public void setOpmerking(String opmerking) {
-    this.opmerking      = opmerking;
+    if (null  == opmerking) {
+      this.opmerking      = null;
+    } else {
+      this.opmerking      = opmerking.trim();
+    }
   }
 
   public void setPseudoniem(String pseudoniem) {
-    this.pseudoniem     = pseudoniem;
+    if (null == pseudoniem) {
+      this.pseudoniem     = null;
+    } else {
+      this.pseudoniem     = pseudoniem.trim();
+    }
   }
 
   public void setRoepnaam(String roepnaam) {
-    this.roepnaam       = roepnaam;
+    if (null == roepnaam) {
+      this.roepnaam       = null;
+    } else {
+      this.roepnaam       = roepnaam.trim();
+    }
   }
 
   public void setTaal(String taal) {
-    this.taal           = taal;
+    this.taal             = taal;
   }
 
   public void setTussenvoegsel(String tussenvoegsel) {
-    this.tussenvoegsel  = tussenvoegsel;
+    if (null == tussenvoegsel) {
+      this.tussenvoegsel  = null;
+    } else {
+      this.tussenvoegsel  = tussenvoegsel.trim();
+    }
   }
 
   public void setVoornaam(String voornaam) {
-    this.voornaam       = voornaam;
+    if (null == voornaam) {
+      this.voornaam       = null;
+    } else {
+      this.voornaam       = voornaam.trim();
+    }
   }
 }

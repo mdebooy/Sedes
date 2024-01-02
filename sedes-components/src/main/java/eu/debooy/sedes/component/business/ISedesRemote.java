@@ -17,6 +17,8 @@
 
 package eu.debooy.sedes.component.business;
 
+import eu.debooy.sedes.component.entity.Kontakt;
+import eu.debooy.sedes.component.entity.Regio;
 import java.util.Collection;
 import javax.ejb.Remote;
 import javax.faces.model.SelectItem;
@@ -26,7 +28,16 @@ import javax.faces.model.SelectItem;
  * @author Marco de Booij
  */
 @Remote
-public interface ISedesComponent {
+public interface ISedesRemote {
+  void                    clear();
   // Voor iedereen
+  String                  getI18nLandnaam(Long landId);
+  String                  getI18nLandnaam(Long landId, String taal);
+  Kontakt                 getKontakt(Long kontaktId);
   Collection<SelectItem>  selectKontakten();
+  Collection<SelectItem>  selectLandnamen();
+  Collection<SelectItem>  selectLandnamen(String taal);
+  Collection<SelectItem>  getSelectRegios();
+  Regio                   getRegio(Long regioId);
+  int                     size();
 }

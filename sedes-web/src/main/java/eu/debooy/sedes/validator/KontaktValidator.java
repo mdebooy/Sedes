@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.validator;
 
+import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
@@ -61,7 +62,7 @@ public final class KontaktValidator extends SedesValidator {
 
   public static List<Message> valideer(KontaktDto kontakt) {
     if (null == kontakt) {
-      return objectIsNull("KontaktDto");
+      return ComponentsUtils.objectIsNull("KontaktDto");
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
@@ -87,7 +88,7 @@ public final class KontaktValidator extends SedesValidator {
 
   public static List<Message> valideer(Kontakt kontakt) {
     if (null == kontakt) {
-      return objectIsNull("Kontakt");
+      return ComponentsUtils.objectIsNull("Kontakt");
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
