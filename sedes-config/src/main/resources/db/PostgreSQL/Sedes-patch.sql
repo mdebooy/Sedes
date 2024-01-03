@@ -204,4 +204,12 @@ COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN          IS 'Het teken van de munt.';
 COMMENT ON COLUMN SEDES.MUNTEN.NAAM               IS 'De naam van de munt.';
 COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID         IS 'De naam van de subeenheid van de munt.';
 
+INSERT INTO DOOS.I18N_LIJSTEN
+        (CODE, OMSCHRIJVING)
+ VALUES ('sedes.kontakt.type', 'Lijst met de kontakttypes.');
+
+INSERT INTO DOOS.I18N_LIJSTEN
+        (CODE, OMSCHRIJVING)
+ VALUES ('sedes.aanspreektitel', 'Lijst met aanspreektitels.');
+
 COMMIT;
