@@ -121,6 +121,7 @@ public class QuizController extends Sedes {
     return MessageFormat.format(getTekst(LBL_SCORE), goedeAntwoorden, vraag);
   }
 
+  @SuppressWarnings("java:S5413")
   private void prepareerVragen(List<Landnaam> landnamen)
       throws NoSuchAlgorithmException {
     var random      = SecureRandom.getInstanceStrong();

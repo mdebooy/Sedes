@@ -90,7 +90,7 @@ public class Kontakt
 
   public String getDisplaynaam() {
     return SedesUtils.getKontaktnaam(kontakttype, naam, voornaam,
-                                     tussenvoegsel, roepnaam);
+                                     tussenvoegsel, initialen, roepnaam);
   }
 
   public Date getGeboortedatum() {

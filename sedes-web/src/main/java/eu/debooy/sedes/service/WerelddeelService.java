@@ -55,6 +55,7 @@ public class WerelddeelService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(WerelddeelService.class);
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private WerelddeelDao             werelddeelDao;
 

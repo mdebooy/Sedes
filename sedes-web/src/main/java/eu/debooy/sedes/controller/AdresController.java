@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Marco de Booij
+ * Copyright (c) 2024 Marco de Booij
  *
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -23,13 +23,11 @@ import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosRuntimeException;
 import eu.debooy.sedes.Sedes;
-import eu.debooy.sedes.domain.PlaatsDto;
-import eu.debooy.sedes.form.Plaats;
-import eu.debooy.sedes.validator.PlaatsValidator;
-import java.util.Collection;
+import eu.debooy.sedes.domain.AdresDto;
+import eu.debooy.sedes.form.Adres;
+import eu.debooy.sedes.validator.AdresValidator;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +36,20 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Marco de Booij
  */
-@Named("sedesPlaats")
+@Named("sedesAdres")
 @SessionScoped
-public class PlaatsController extends Sedes {
+public class AdresController extends Sedes {
   private static final  long    serialVersionUID  = 1L;
   private static final  Logger  LOGGER            =
-      LoggerFactory.getLogger(PlaatsController.class);
+      LoggerFactory.getLogger(AdresController.class);
 
-  private static final  String  LBL_PLAATS    = "label.plaats";
-  private static final  String  TIT_CREATE    = "sedes.titel.plaats.create";
-  private static final  String  TIT_RETRIEVE  = "sedes.titel.plaats.retrieve";
-  private static final  String  TIT_UPDATE    = "sedes.titel.plaats.update";
+  private static final  String  LBL_ADRES = "label.adres";
 
-  private Plaats     plaats;
-  private PlaatsDto  plaatsDto;
+  private static final  String  TIT_CREATE  = "sedes.titel.adres.create";
+  private static final  String  TIT_UPDATE  = "sedes.titel.adres.update";
+
+  private Adres     adres;
+  private AdresDto  adresDto;
 
   public void create() {
     if (!isUser()) {
@@ -59,11 +57,12 @@ public class PlaatsController extends Sedes {
       return;
     }
 
-    plaats    = new Plaats();
-    plaatsDto = new PlaatsDto();
+    adres     = new Adres();
+    adresDto  = new AdresDto();
+
     setAktie(PersistenceConstants.CREATE);
     setSubTitel(getTekst(TIT_CREATE));
-    redirect(REGIO_REDIRECT);
+    redirect(ADRES_REDIRECT);
   }
 
   public void delete() {
@@ -72,15 +71,14 @@ public class PlaatsController extends Sedes {
       return;
     }
 
-    var plaatsnaam  = plaats.getPlaatsnaam();
     try {
-      getPlaatsService().delete(plaats.getPlaatsId());
-      plaats        = new Plaats();
-      plaatsDto     = new PlaatsDto();
-      addInfo(PersistenceConstants.DELETED, plaatsnaam);
-      redirect(REGIOS_REDIRECT);
+      getAdresService().delete(adresDto);
+      adres      = new Adres();
+      adresDto   = new AdresDto();
+      addInfo(PersistenceConstants.DELETED, adresDto.getAdresdata());
+      redirect(ADRESSEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, plaatsnaam);
+      addError(PersistenceConstants.NOTFOUND, adresDto.getAdresdata());
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);
@@ -88,16 +86,8 @@ public class PlaatsController extends Sedes {
     }
   }
 
-  public Plaats getPlaats() {
-    return plaats;
-  }
-
-  public Plaats getPlaats(Long plaatsId) {
-    if (null == plaatsId) {
-      return new Plaats();
-    }
-
-    return new Plaats(getPlaatsService().plaats(plaatsId));
+  public Adres getAdres() {
+    return adres;
   }
 
   public void retrieve() {
@@ -108,22 +98,22 @@ public class PlaatsController extends Sedes {
 
     var ec      = FacesContext.getCurrentInstance().getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(PlaatsDto.COL_REGIOID)) {
-      addError(ComponentsConstants.GEENPARAMETER, PlaatsDto.COL_REGIOID);
+    if (!ec.getRequestParameterMap().containsKey(AdresDto.COL_ADRESID)) {
+      addError(ComponentsConstants.GEENPARAMETER, AdresDto.COL_ADRESID);
       return;
     }
 
-    var plaatsId  = Long.valueOf(ec.getRequestParameterMap()
-                                   .get(PlaatsDto.COL_REGIOID));
+    var adresId  = Long.valueOf(ec.getRequestParameterMap()
+                                  .get(AdresDto.COL_ADRESID));
 
     try {
-      plaatsDto  = getPlaatsService().plaats(plaatsId);
-      plaats     = new Plaats(plaatsDto);
+      adresDto = getAdresService().adres(adresId);
+      adres    = new Adres(adresDto);
       setAktie(PersistenceConstants.RETRIEVE);
-      setSubTitel(getTekst(TIT_RETRIEVE));
-      redirect(REGIO_REDIRECT);
+      setSubTitel(adres.getAdresdata());
+      redirect(ADRES_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, LBL_PLAATS);
+      addError(PersistenceConstants.NOTFOUND, LBL_ADRES);
     }
   }
 
@@ -133,48 +123,41 @@ public class PlaatsController extends Sedes {
       return;
     }
 
-    var messages  = PlaatsValidator.valideer(plaats);
+    var messages  = AdresValidator.valideer(adres);
     if (!messages.isEmpty()) {
       addMessage(messages);
       return;
     }
 
-    var plaatsnaam  = plaats.getPlaatsnaam();
+    var naam  = adres.getAdresdata();
     try {
       switch (getAktie().getAktie()) {
         case PersistenceConstants.CREATE:
-          plaats.persist(plaatsDto);
-          getPlaatsService().save(plaatsDto);
-          plaats.setPlaatsId(plaatsDto.getPlaatsId());
-          addInfo(PersistenceConstants.CREATED, plaatsnaam);
+          adres.persist(adresDto);
+          getAdresService().save(adresDto);
+          adres.setAdresId(adresDto.getAdresId());
+          addInfo(PersistenceConstants.CREATED, naam);
           update();
           break;
         case PersistenceConstants.UPDATE:
-          plaats.persist(plaatsDto);
-          getPlaatsService().save(plaatsDto);
-          addInfo(PersistenceConstants.UPDATED, plaatsnaam);
+          adres.persist(adresDto);
+          getAdresService().save(adresDto);
+          addInfo(PersistenceConstants.UPDATED, naam);
+          update();
           break;
         default:
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
           break;
       }
     } catch (DuplicateObjectException e) {
-      addError(PersistenceConstants.DUPLICATE, plaatsnaam);
+      addError(PersistenceConstants.DUPLICATE, naam);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, plaatsnaam);
+      addError(PersistenceConstants.NOTFOUND, naam);
     } catch (DoosRuntimeException e) {
       LOGGER.error(String.format(ComponentsConstants.ERR_RUNTIME,
                                  e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
-  }
-
-  public Collection<SelectItem> selectPlaatsen() {
-    return getPlaatsService().selectPlaatsen();
-  }
-
-  public Collection<SelectItem> selectPlaatsenMetNull() {
-    return getPlaatsService().selectPlaatsenMetNull();
   }
 
   public void update() {
@@ -184,6 +167,6 @@ public class PlaatsController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel(getTekst(TIT_UPDATE));
+    setSubTitel(getTekst(TIT_UPDATE, adresDto.getAdresdata()));
   }
 }

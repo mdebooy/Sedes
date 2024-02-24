@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * @author Marco de Booij
  */
@@ -216,7 +217,7 @@ public final class KontaktValidator extends SedesValidator {
       return;
     }
 
-    if (naam.length()> 255) {
+    if (naam.length() > 255) {
       fouten.add(new Message.Builder()
                             .setAttribute(KontaktDto.COL_NAAM)
                             .setSeverity(Message.ERROR)

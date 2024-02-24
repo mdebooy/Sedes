@@ -56,6 +56,7 @@ public class MuntService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(MuntService.class);
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private MuntDao muntDao;
 

@@ -67,6 +67,7 @@ public class LandnaamService {
     landnamenCache.clear();
   }
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private LandnaamDao   landnaamDao;
 

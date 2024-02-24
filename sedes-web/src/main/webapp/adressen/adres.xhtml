@@ -1,0 +1,159 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var kontaktadressenTabel = $('#kontaktadressenTabel').DataTable( {
+          ajax: { url: '/sedes/kontaktadressen/adres/#{sedesAdres.adres.adresId}',
+                  dataSrc: '' },
+          order: [[3, 'desc'], [4, 'desc'], [5, 'asc'], [6, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('byblos.pagelength')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('byblos.pager.first')}',
+              last: '#{properties.appValue('byblos.pager.last')}',
+              next: '#{properties.appValue('byblos.pager.next')}',
+              previous: '#{properties.appValue('byblos.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: null, visible: false, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('taal')) {
+                  return data.taal;
+                }
+                return null;
+              }
+            },
+            { data: 'startdatum', visible: false,  searchable: false },
+            { data: null, visible: false,  searchable: false, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('einddatum')) {
+                  return data.einddatum;
+                }
+                return null;
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.vandatum')}', width: '75px', orderData: 1, render: function ( data, type, row ) {
+                return formatDatum(data.startdatum, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.totdatum')}', width: '75px', orderData: 2, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('einddatum')) {
+                  return formatDatum(data.einddatum, taal);
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.kontaktadrestype')}', width: '125px', render: function ( data, type, row ) {
+                return getKontaktadrestype(data.kontaktadrestype, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.kontakt')}', render: function ( data, type, row ) {
+                return getKontakt(data.kontaktId).displaynaam;
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.subadres')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('subAdres')) {
+                  return data.subAdres;
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.taal')}', width: '50px', class: 'has-text-centered', orderData: 0, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('taal')) {
+                  return taalvlag(data.taal);
+                }
+                return '';
+              }
+            }
+          ]
+        } );
+        $( '#kontaktadressenTabel tbody').on('click', 'tr', function() {
+          if (kontaktadressenTabel.row(this).data() === undefined) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formAdres:linkKontaktadres');
+          alterParam(jsfCommandLink, kontaktadressenTabel.row(this).data().kontaktadresId);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesAdres.aktie.wijzig and sedesAdres.user}) {
+          addInsertButton('kontaktadressenTabel', 'formAdres', '#{i18nTeksten.tekst('img.nieuw')}');
+          var addCommandLink = document.getElementById('formAdres:addKontaktadressen');
+          var adresId = #{sedesAdres.adres.adresId};
+          alterParam(addCommandLink, adresId);
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-10">
+        <h:form id="formAdres">
+          <d:titel titel="#{sedesAdres.subTitel}" />
+
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.adres')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="adresdata" value="#{sedesAdres.adres.adresdata}" maxlength="255" size="100" required="true" readonly="#{sedesAdres.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.plaats')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="plaats" value="#{sedesAdres.adres.plaatsId}" readonly="#{sedesAdres.aktie.readonly}" items="#{sedesPlaats.selectPlaatsenMetNull()}" textvalue="#{sedesPlaats.getPlaats(sedesAdres.adres.plaatsId).plaatsnaam}" fullwidth="true" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.subpostkode')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="subPostkode" value="#{sedesAdres.adres.subPostkode}" maxlength="10" size="10" readonly="#{sedesAdres.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.opmerking')}" />
+                <div class="field-body is-normal">
+                  <d:inputTextarea id="opmerking" value="#{sedesAdres.adres.opmerking}" readonly="#{sedesAdres.aktie.readonly}" />
+                </div>
+              </div>
+
+              <d:crudbuttonbar bean="#{sedesAdres}" form="formAdres" returnto="#{sedes.path}/adressen/adressen.xhtml" tekst="#{sedesAdres.adres.adresdata}" />
+
+              <t:div rendered="#{!sedesAdres.aktie.nieuw}">
+                <table id="kontaktadressenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="kontaktadressenTabel" />
+                <h:commandLink id="linkKontaktadres" class="is-hidden" action="#{sedesKontaktadres.retrieve}">
+                  <f:param name="kontaktadresId" value="XX" />
+                  <f:param name="returnTo" value="/adressen/adres.xhtml" />
+                </h:commandLink>
+                <h:commandLink id="addKontaktadressen" class="is-hidden" action="#{sedesKontaktadres.create}">
+                  <f:param name="adresId" value="XX" />
+                  <f:param name="returnTo" value="/adressen/adres.xhtml" />
+                </h:commandLink>
+              </t:div>
+            </div>
+          </div>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="modal">
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.adres.delete')}" />
+  </ui:define>
+</ui:composition>

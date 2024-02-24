@@ -43,8 +43,8 @@ GRANT CONNECT ON DATABASE :DBNAME TO SEDES_APP;
 
 -- Tabellen
 CREATE TABLE SEDES.ADRESSEN (
-  ADRES                           VARCHAR(255)    NOT NULL,
   ADRES_ID                        INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
+  ADRESDATA                       VARCHAR(255)    NOT NULL,
   OPMERKING                       VARCHAR(2000),
   PLAATS_ID                       INTEGER,
   SUB_POSTKODE                    VARCHAR(10),
@@ -53,15 +53,14 @@ CREATE TABLE SEDES.ADRESSEN (
 
 CREATE TABLE SEDES.KONTAKTADRESSEN (
   ADRES_ID                        INTEGER         NOT NULL,
-  ADRESTYPE                       VARCHAR(10)     NOT NULL,
   EINDDATUM                       DATE,
   KONTAKTADRES_ID                 INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
+  KONTAKTADRESTYPE                VARCHAR(10)     NOT NULL,
   KONTAKT_ID                      INTEGER         NOT NULL,
-  KONTAKTTYPE                     VARCHAR(50)     NOT NULL,
   OPMERKING                       VARCHAR(2000),
   STARTDATUM                      DATE            NOT NULL,
   SUB_ADRES                       VARCHAR(255),
-  TAAL                            CHAR(2),
+  TAAL                            CHAR(3),
   CONSTRAINT PK_KONTAKTADRESSEN PRIMARY KEY (KONTAKTADRES_ID)
 );
 
@@ -190,11 +189,20 @@ ALTER TABLE SEDES.KONTAKTADRESSEN
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
+ALTER TABLE SEDES.KONTAKTADRESSEN
+  ADD CONSTRAINT CHK_KAD_TAAL  CHECK (TAAL = LOWER(TAAL));
+
+ALTER TABLE SEDES.KONTAKTADRESSEN
+  ADD CONSTRAINT UK_KAT_PER_KONTAKTADRESTYPE UNIQUE (KONTAKTADRESTYPE, ADRES_ID, KONTAKT_ID, STARTDATUM);
+
 ALTER TABLE SEDES.KONTAKTEN
-  ADD CONSTRAINT CHK_GEB_KONTAKTTYPE CHECK(KONTAKTTYPE = ANY (ARRAY['G', 'P', 'R']));
+  ADD CONSTRAINT CHK_KON_KONTAKTTYPE CHECK(KONTAKTTYPE = ANY (ARRAY['G', 'P', 'R']));
+
+ALTER TABLE SEDES.KONTAKTEN
+  ADD CONSTRAINT CHK_KON_TAAL  CHECK (TAAL = LOWER(TAAL));
 
 ALTER TABLE SEDES.KONTAKTKONTAKTEN
-  ADD CONSTRAINT FK_KON_CHILDKONTAKT FOREIGN KEY (CHILDKONTAKT)
+  ADD CONSTRAINT FK_KKO_CHILDKONTAKT FOREIGN KEY (CHILDKONTAKT)
   REFERENCES SEDES.KONTAKTEN (KONTAKT_ID)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
@@ -219,6 +227,9 @@ ALTER TABLE SEDES.LANDEN
   REFERENCES SEDES.WERELDDELEN (WERELDDEEL_ID)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
+
+ALTER TABLE SEDES.LANDNAMEN
+  ADD CONSTRAINT CHK_LNM_TAAL  CHECK (TAAL = LOWER(TAAL));
 
 ALTER TABLE SEDES.LANDNAMEN
   ADD CONSTRAINT FK_LNM_LAND_ID FOREIGN KEY (LAND_ID)
@@ -257,6 +268,9 @@ ALTER TABLE SEDES.REGIOS
   ON UPDATE RESTRICT;
 
 ALTER TABLE SEDES.WERELDDEELNAMEN
+  ADD CONSTRAINT CHK_WDM_TAAL  CHECK (TAAL = LOWER(TAAL));
+
+ALTER TABLE SEDES.WERELDDEELNAMEN
   ADD CONSTRAINT FK_WDN_WERELDDEEL_ID FOREIGN KEY (WERELDDEEL_ID)
   REFERENCES SEDES.WERELDDELEN (WERELDDEEL_ID)
   ON DELETE CASCADE
@@ -292,28 +306,44 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDEELNAMEN         TO S
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDELEN             TO SEDES_UPD;
 
 -- Commentaren
-COMMENT ON TABLE  SEDES.KONTAKTEN                 IS 'Deze tabel bevat alle kontakten. Dit zijn  personen, groepen of bedrijven. De betekenis van de velden kan veranderen per KONTAKTTYPE.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.AANSPREEK_ID    IS 'De code voor de aanspreektitel.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.GEBOORTEDATUM   IS 'De geboortedatum (of oprichtingsdatum) van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.GEBRUIKERSNAAM  IS 'De gebruikersnaam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.INITIALEN       IS 'De initialen van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKT_ID      IS 'De sleutel van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKTTYPE     IS 'Het type kontakt. Groep, Persoon of Rechtspersoon.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.NAAM            IS 'De naam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.OPMERKING       IS 'Een opmerking voor dit kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.PSEUDONIEM      IS 'De pseudoniem van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.ROEPNAAM        IS 'De roepnaam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.TAAL            IS 'De taal, ISO 639-2T, die dit kontakt gebruikt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.TUSSENVOEGSEL   IS 'Eerste deel van achternaam die buiten de sortering valt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM        IS 'De voornaam van dit kontakt.';
-COMMENT ON TABLE  SEDES.MUNTEN                    IS 'Deze tabel bevat alle munten (valuta''s).';
-COMMENT ON COLUMN SEDES.MUNTEN.BESTAAT            IS 'Bestaat de munt nog (J/N)?';
-COMMENT ON COLUMN SEDES.MUNTEN.DECIMALEN          IS 'Aantal decimalen voor de subeenheid.';
-COMMENT ON COLUMN SEDES.MUNTEN.ISO3               IS 'De ISO3 code van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.MUNT_ID            IS 'De sleutel van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN          IS 'Het teken van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.NAAM               IS 'De naam van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID         IS 'De naam van de subeenheid van de munt.';
+COMMENT ON TABLE  SEDES.ADRESSEN                          IS 'Deze tabel bevat alle adressenen. Dit kunnen fysieke adressen zijn maar ook telefoonnummers en e-mail adressen.';
+COMMENT ON COLUMN SEDES.ADRESSEN.ADRES_ID                 IS 'De sleutel van het adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.ADRESDATA                IS 'Het adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.OPMERKING                IS 'Een opmerking voor dit adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.PLAATS_ID                IS 'Voor een fysiek adres is dit de sleutel van de plaats.';
+COMMENT ON COLUMN SEDES.ADRESSEN.SUB_POSTKODE             IS 'Extra code bij de postkode.';
+COMMENT ON TABLE  SEDES.KONTAKTADRESSEN                   IS 'Deze tabel bevat de adressen van de kontakten.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.ADRES_ID          IS 'De sleutel van het adres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.EINDDATUM         IS 'De datum waarna dit kontaktadres niet meer geldig is.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRES_ID   IS 'De sleutel van het kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRESTYPE  IS 'Het type van het kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKT_ID        IS 'De sleutel van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.OPMERKING         IS 'Een opmerking voor dit kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.STARTDATUM        IS 'De datum waarop dit kontaktadres is ontstaan.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.SUB_ADRES         IS 'Extra adres informatie.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.TAAL              IS 'De taal, ISO 639-2T, die dit kontaktadres gebruikt.';
+COMMENT ON TABLE  SEDES.KONTAKTEN                         IS 'Deze tabel bevat alle kontakten. Dit zijn  personen, groepen of bedrijven. De betekenis van de velden kan veranderen per KONTAKTTYPE.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.AANSPREEK_ID            IS 'De code voor de aanspreektitel.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.GEBOORTEDATUM           IS 'De geboortedatum (of oprichtingsdatum) van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.GEBRUIKERSNAAM          IS 'De gebruikersnaam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.INITIALEN               IS 'De initialen van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKT_ID              IS 'De sleutel van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKTTYPE             IS 'Het type kontakt. Groep, Persoon of Rechtspersoon.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.NAAM                    IS 'De naam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.OPMERKING               IS 'Een opmerking voor dit kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.PSEUDONIEM              IS 'De pseudoniem van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.ROEPNAAM                IS 'De roepnaam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.TAAL                    IS 'De taal, ISO 639-2T, die dit kontakt gebruikt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.TUSSENVOEGSEL           IS 'Eerste deel van achternaam die buiten de sortering valt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM                IS 'De voornaam van dit kontakt.';
+COMMENT ON TABLE  SEDES.MUNTEN                            IS 'Deze tabel bevat alle munten (valuta''s).';
+COMMENT ON COLUMN SEDES.MUNTEN.BESTAAT                    IS 'Bestaat de munt nog (J/N)?';
+COMMENT ON COLUMN SEDES.MUNTEN.DECIMALEN                  IS 'Aantal decimalen voor de subeenheid.';
+COMMENT ON COLUMN SEDES.MUNTEN.ISO3                       IS 'De ISO3 code van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNT_ID                    IS 'De sleutel van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN                  IS 'Het teken van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.NAAM                       IS 'De naam van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID                 IS 'De naam van de subeenheid van de munt.';
 
 -- Default waardes
 INSERT INTO SEDES.WERELDDELEN VALUES (0);
@@ -329,6 +359,10 @@ INSERT INTO SEDES.LANDNAMEN VALUES (NULL, 0, 'Onbekend', NULL, 'nl');
 INSERT INTO DOOS.I18N_LIJSTEN
         (CODE, OMSCHRIJVING)
  VALUES ('sedes.kontakt.type', 'Lijst met de kontakttypes.');
+
+INSERT INTO DOOS.I18N_LIJSTEN
+        (CODE, OMSCHRIJVING)
+ VALUES ('sedes.kontaktadres.type', 'Lijst met de kontaktadrestypes.');
 
 INSERT INTO DOOS.I18N_LIJSTEN
         (CODE, OMSCHRIJVING)

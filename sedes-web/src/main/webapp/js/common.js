@@ -16,8 +16,12 @@
  */
 
 var aanspreektitels = {};
+var adressen = {};
+var kontakten = {};
+var kontaktadrestypes = {};
 var kontakttypes = {};
 var landen = {};
+var plaatsen = {};
 var regios = {};
 var werelddelen = {};
 
@@ -44,6 +48,33 @@ function getAanspreektitel(aanspreekId, taal) {
   return teksten[naam].tekst;
 }
 
+function getAdres(adresId) {
+  var adres = {};
+  if (adressen.hasOwnProperty(adresId)) {
+    adres = adressen[adresId];
+  } else {
+    $.ajax({ url: '/sedes/adressen/'+adresId,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               adressen[adresId] = data;
+               adres = data;
+             }
+    });
+  }
+
+  return adres;
+}
+
+function getAdresMetPlaats(adresId) {
+  var adres = getAdres(adresId);
+  if (adres.hasOwnProperty('plaatsId')) {
+    return adres.adresdata + ' - ' + getPlaatsnaam(adres.plaatsId);
+  }
+
+  return adres.adresdata;
+}
+
 function getHoofdstad(land, taal) {
   var naam = land.landnamen.findIndex(i => i.taal === taal);
   if (naam < 0 || !land.landnamen[naam].hasOwnProperty('hoofdstad')) {
@@ -51,6 +82,47 @@ function getHoofdstad(land, taal) {
   }
 
   return land.landnamen[naam].hoofdstad;
+}
+
+function getKontakt(kontaktId) {
+  var kontakt = {};
+  if (kontakten.hasOwnProperty(kontaktId)) {
+    kontakt = kontakten[kontaktId];
+  } else {
+    $.ajax({ url: '/sedes/kontakten/'+kontaktId,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               kontakten[kontaktId] = data;
+               kontakt = data;
+             }
+    });
+  }
+
+  return kontakt;
+}
+
+function getKontaktadrestype(kontaktadrestype, taal) {
+  var teksten = [];
+  if (kontaktadrestypes.hasOwnProperty(kontaktadrestype)) {
+    teksten = kontaktadrestypes[kontaktadrestype].teksten;
+  } else {
+    $.ajax({ url: '/doos/i18nCodes/sedes.kontaktadres.type.'+kontaktadrestype,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               kontaktadrestypes[kontaktadrestype] = data;
+               teksten = data.teksten;
+             }
+    });
+  }
+
+  var naam = teksten.findIndex(i => i.taalKode === taal);
+  if (naam < 0) {
+    return kontaktadrestype;
+  }
+
+  return teksten[naam].tekst;
 }
 
 function getKontakttype(kontakttype, taal) {
@@ -76,7 +148,7 @@ function getKontakttype(kontakttype, taal) {
   return teksten[naam].tekst;
 }
 
-function getLandIdNaam(landId, taal) {
+function getLand(landId) {
   var land = {};
   if (landen.hasOwnProperty(landId)) {
     land = landen[landId];
@@ -90,6 +162,12 @@ function getLandIdNaam(landId, taal) {
              }
     });
   }
+
+  return land;
+}
+
+function getLandIdNaam(landId, taal) {
+  var land = getLand(landId);
 
   return getLandnaam(land, taal);
 }
@@ -112,7 +190,39 @@ function getOfficielenaam(land, taal) {
   return land.landnamen[naam].officieleNaam;
 }
 
-function getRegioIdNaam(regioId) {
+function getPlaats(plaatsId) {
+  var plaats = {};
+  if (plaatsen.hasOwnProperty(plaatsId)) {
+    plaats = plaatsen[plaatsId];
+  } else {
+    $.ajax({ url: '/sedes/plaatsen/'+plaatsId,
+             dataType: 'json',
+             async: false,
+             success:  function(data) {
+               plaatsen[plaatsId] = data;
+               plaats = data;
+             }
+    });
+  }
+
+  return plaats;
+}
+
+function getPlaatsnaam(plaatsId) {
+  var plaats = getPlaats(plaatsId);
+  if (!plaats.hasOwnProperty('landId')) {
+    return plaats.naam;
+  }
+
+  var land = getLand(plaats.landId);
+  if (!land.hasOwnProperty('postLandkode')) {
+    return plaats.naam;
+  }
+
+  return plaats.plaatsnaam + ' (' + land.postLandkode.toString().trim() + ')';
+}
+
+function getRegionaam(regioId) {
   var regio = {};
   if (regios.hasOwnProperty(regioId)) {
     regio = regios[regioId];

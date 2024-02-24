@@ -16,6 +16,94 @@
         $("#formKontakt\\:geboortedatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
                                                       monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
                                                       dateFormat: '#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}'});
+        var taal = '#{gebruiker.locale.language}';
+        var kontaktadressenTabel = $('#kontaktadressenTabel').DataTable( {
+          ajax: { url: '/sedes/kontaktadressen/kontakt/#{sedesKontakt.kontakt.kontaktId}',
+                  dataSrc: '' },
+          order: [[3, 'desc'], [4, 'desc'], [5, 'asc'], [6, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('byblos.pagelength')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('byblos.pager.first')}',
+              last: '#{properties.appValue('byblos.pager.last')}',
+              next: '#{properties.appValue('byblos.pager.next')}',
+              previous: '#{properties.appValue('byblos.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: null, visible: false, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('taal')) {
+                  return data.taal;
+                }
+                return null;
+              }
+            },
+            { data: 'startdatum', visible: false,  searchable: false },
+            { data: null, visible: false,  searchable: false, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('einddatum')) {
+                  return data.einddatum;
+                }
+                return null;
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.vandatum')}', width: '75px', orderData: 1, render: function ( data, type, row ) {
+                return formatDatum(data.startdatum, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.totdatum')}', width: '75px', orderData: 2, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('einddatum')) {
+                  return formatDatum(data.einddatum, taal);
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.kontaktadrestype')}', width: '125px', render: function ( data, type, row ) {
+                return getKontaktadrestype(data.kontaktadrestype, taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.adres')}', render: function ( data, type, row ) {
+                return getAdresMetPlaats(data.adresId);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.subadres')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('subAdres')) {
+                  return data.subAdres;
+                }
+                return '';
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.taal')}', width: '50px', class: 'has-text-centered', orderData: 0, render: function ( data, type, row ) {
+                if (data.hasOwnProperty('taal')) {
+                  return taalvlag(data.taal);
+                }
+                return '';
+              }
+            }
+          ]
+        } );
+        $( '#kontaktadressenTabel tbody').on('click', 'tr', function() {
+          if (kontaktadressenTabel.row(this).data() === undefined) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formKontakt:linkKontaktadres');
+          alterParam(jsfCommandLink, kontaktadressenTabel.row(this).data().kontaktadresId);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesKontakt.aktie.wijzig and sedesKontakt.user}) {
+          addInsertButton('kontaktadressenTabel', 'formKontakt', '#{i18nTeksten.tekst('img.nieuw')}');
+          var addCommandLink = document.getElementById('formKontakt:addKontaktadressen');
+          var kontaktId = #{sedesKontakt.kontakt.kontaktId};
+          alterParam(addCommandLink, kontaktId);
+        }
         setTaal(taal);
         zetForm(kontakttype);
         $('#formKontakt\\:kontakttype').on('change', function() {
@@ -96,6 +184,18 @@
               </div>
 
               <d:crudbuttonbar bean="#{sedesKontakt}" form="formKontakt" returnto="#{sedes.path}/kontakten/kontakten.xhtml" tekst="#{sedesKontakt.kontakt.naam}" />
+
+              <t:div rendered="#{!sedesKontakt.aktie.nieuw}">
+                <table id="kontaktadressenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="kontaktadressenTabel" />
+                <h:commandLink id="linkKontaktadres" class="is-hidden" action="#{sedesKontaktadres.retrieve}">
+                  <f:param name="kontaktadresId" value="XX" />
+                  <f:param name="returnTo" value="/kontakten/kontakt.xhtml" />
+                </h:commandLink>
+                <h:commandLink id="addKontaktadressen" class="is-hidden" action="#{sedesKontaktadres.create}">
+                  <f:param name="kontaktId" value="XX" />
+                  <f:param name="returnTo" value="/kontakten/kontakt.xhtml" />
+                </h:commandLink>
+              </t:div>
             </div>
           </div>
         </h:form>

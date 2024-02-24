@@ -1,0 +1,92 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:d="http://java.debooy.eu/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:t="http://myfaces.apache.org/tomahawk"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        if (#{!sedesKontaktadres.aktie.readonly}) {
+          $("#formKontaktadres\\:einddatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
+                                                         monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
+                                                         dateFormat: "#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}"});
+          $("#formKontaktadres\\:startdatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
+                                                          monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
+                                                          dateFormat: "#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}"});
+        }
+      } );
+    </script>
+  </ui:define>
+  <ui:define name="body">
+    <div class="columns is-centered content">
+      <div class="column is-12">
+        <h:form id="formKontaktadres">
+          <d:titel titel="#{sedesKontaktadres.subTitel}" />
+
+          <div class="columns is-centered">
+            <div class="column">
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.kontaktadrestype')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="kontaktadrestype" value="#{sedesKontaktadres.kontaktadres.kontaktadrestype}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" items="#{sedesKontaktadres.kontaktadrestypes}" textvalue="#{sedesKontaktadres.kontaktadrestype(sedesKontaktadres.kontaktadres.kontaktadrestype)}" />
+                  <d:label label="#{i18nTeksten.tekst('label.taal')}" />
+                  <div class="field-body is-normal">
+                    <d:listbox id="taal" value="#{sedesKontaktadres.kontaktadres.taal}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" items="#{sedesKontaktadres.talenIso6392t}" textvalue="#{sedesKontaktadres.taal}" />
+                  </div>
+                </div>
+              </div>
+              <c:if test="${!sedesKontaktadres.adres}">
+                <div class="field is-horizontal">
+                  <d:label label="#{i18nTeksten.tekst('label.adres')}" />
+                  <div class="field-body is-normal">
+                    <d:listbox id="adresId" value="#{sedesKontaktadres.kontaktadres.adresId}" items="#{sedesRemote.selectAdressen()}" textvalue="#{sedesKontaktadres.getAdres().adresdata}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                  </div>
+                </div>
+              </c:if>
+              <c:if test="${!sedesKontaktadres.kontakt}">
+                <div class="field is-horizontal">
+                  <d:label label="#{i18nTeksten.tekst('label.kontakt')}" />
+                  <div class="field-body is-normal">
+                    <d:listbox id="kontaktId" value="#{sedesKontaktadres.kontaktadres.kontaktId}" items="#{sedesRemote.selectKontakten()}" textvalue="#{sedesKontaktadres.getKontakt().displaynaam}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                  </div>
+                </div>
+              </c:if>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.subadres')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="subadres" value="#{sedesKontaktadres.kontaktadres.subAdres}" maxlength="255" size="100" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.vandatum')}" />
+                <div class="field-body is-normal">
+                  <d:datum id="startdatum" value="#{sedesKontaktadres.kontaktadres.startdatum}" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.totdatum')}" />
+                  <div class="field-body is-normal">
+                    <d:datum id="einddatum" value="#{sedesKontaktadres.kontaktadres.einddatum}" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.opmerking')}" />
+                <div class="field-body is-normal">
+                  <d:inputTextarea id="opmerking" value="#{sedesKontaktadres.kontaktadres.opmerking}" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                </div>
+              </div>
+
+              <d:crudbuttonbar bean="#{sedesKontaktadres}" form="formKontaktadres" returnto="#{sedes.path}#{sedesKontaktadres.returnTo}" tekst="#{sedesKontaktadres.inOmschrijving}" />
+            </div>
+          </div>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="modal">
+    <d:confirmatie titel="#{sedesKontaktadres.deletetitel}" />
+  </ui:define>
+</ui:composition>

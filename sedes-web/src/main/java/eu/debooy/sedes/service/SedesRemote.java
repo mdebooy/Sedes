@@ -47,6 +47,7 @@ public class SedesRemote implements ISedesRemote {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(SedesRemote.class);
 
+  private AdresService    adresService;
   private KontaktService  kontaktService;
   private LandnaamService landnaamService;
   private RegioService    regioService;
@@ -64,6 +65,15 @@ public class SedesRemote implements ISedesRemote {
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void clear() {
     landnamenCache.clear();
+  }
+
+  private AdresService getAdresService() {
+    if (null == adresService) {
+      adresService  = (AdresService)
+          new JNDI.JNDINaam().metBean(AdresService.class).locate();
+    }
+
+    return adresService;
   }
 
   @Override
@@ -182,6 +192,12 @@ public class SedesRemote implements ISedesRemote {
 
   private String getStandaardTaal() {
     return STANDAARDTAAL;
+  }
+
+  @Override
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<SelectItem> selectAdressen() {
+    return getAdresService().selectAdressen();
   }
 
   @Override

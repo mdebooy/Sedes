@@ -146,6 +146,7 @@ public class KontaktService {
         new TreeSet<>(new KontaktDto.DisplaynaamComparator());
     try {
       rijen.addAll(kontaktDao.getAll());
+      items.add(new SelectItem("", "--"));
       for (var rij : rijen) {
         items.add(new SelectItem(rij.getKontaktId().toString(),
                                  rij.getDisplaynaam()));

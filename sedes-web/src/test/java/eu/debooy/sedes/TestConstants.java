@@ -27,6 +27,7 @@ import eu.debooy.sedes.validator.SedesValidator;
  */
 public final class TestConstants {
   public static final String  AANSPREEKID     = "Mr.";
+  public static final String  ADRESDATA       = "Adres 12";
   public static final String  GEBRUIKERSNAAM  = "login";
   public static final String  INITIALEN       = "SI";
   public static final String  KONTAKTTYPE     = "P";
@@ -46,6 +47,7 @@ public final class TestConstants {
   public static final String  REGIOKODE_G     = "ZK123";
   public static final String  REGIOKODE_K     = "AK123";
   public static final String  ROEPNAAM        = "Roepnaam";
+  public static final String  SUBPOSTKODE     = "1234 AB";
   public static final String  TUSSENVOEGSEL   = "van der";
   public static final String  VOORNAAM        = "Voornaam";
   public static final Long    WERELDDEELID    = 200L;

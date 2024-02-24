@@ -136,7 +136,7 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   @Transient
   public String getDisplaynaam() {
     return SedesUtils.getKontaktnaam(kontakttype, naam, voornaam,
-                                     tussenvoegsel, roepnaam);
+                                     tussenvoegsel, initialen, roepnaam);
   }
 
   public Date getGeboortedatum() {
@@ -241,7 +241,7 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   }
 
   public void setOpmerking(String opmerking) {
-    if (null  == opmerking) {
+    if (null == opmerking) {
       this.opmerking      = null;
     } else {
       this.opmerking      = opmerking.trim();

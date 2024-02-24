@@ -34,6 +34,7 @@ public interface ISedesRemote {
   String                  getI18nLandnaam(Long landId);
   String                  getI18nLandnaam(Long landId, String taal);
   Kontakt                 getKontakt(Long kontaktId);
+  Collection<SelectItem>  selectAdressen();
   Collection<SelectItem>  selectKontakten();
   Collection<SelectItem>  selectLandnamen();
   Collection<SelectItem>  selectLandnamen(String taal);

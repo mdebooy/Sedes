@@ -58,6 +58,7 @@ public class PlaatsService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(PlaatsService.class);
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private PlaatsDao plaatsDao;
 
@@ -140,6 +141,24 @@ public class PlaatsService {
   public List<SelectItem> selectPlaatsen() {
     List<SelectItem>  items = new ArrayList<>();
     Set<PlaatsDto>    rijen = new TreeSet<>();
+
+    try {
+      rijen.addAll(plaatsDao.getAll());
+      rijen.forEach(
+          plaats -> items.add(new SelectItem(plaats.getPlaatsId().toString(),
+                                             plaats.getPlaatsnaam())));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+    return items;
+  }
+
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public List<SelectItem> selectPlaatsenMetNull() {
+    List<SelectItem>  items = new ArrayList<>();
+    Set<PlaatsDto>    rijen = new TreeSet<>();
+
+    items.add(new SelectItem("", "--"));
 
     try {
       rijen.addAll(plaatsDao.getAll());

@@ -30,7 +30,12 @@ public final class SedesUtils {
 
   public static String getKontaktnaam(String kontakttype,
                                       String naam, String voornaam,
-                                      String tussenvoegsel, String roepnaam) {
+                                      String tussenvoegsel, String initialen,
+                                      String roepnaam) {
+    if (null == kontakttype) {
+      return "??";
+    }
+
     switch (kontakttype) {
       case Sedes.TYP_GROEP:
         return String.format("%s %s%s",
@@ -43,14 +48,33 @@ public final class SedesUtils {
                              DoosUtils.isNotBlankOrNull(voornaam) ? "- " : "",
                              DoosUtils.nullToEmpty(voornaam)).trim();
       default:
+        var tekst = voornaam;
+        if (DoosUtils.isBlankOrNull(tekst)) {
+          tekst   = initialen;
+        }
         return String.format("%s %s%s %s%s",
                              DoosUtils.nullToEmpty(tussenvoegsel).toUpperCase(),
                              naam.toUpperCase(),
-                             DoosUtils.isNotBlankOrNull(voornaam) ? "," : "",
-                             DoosUtils.nullToEmpty(voornaam),
+                             DoosUtils.isNotBlankOrNull(tekst) ? "," : "",
+                             DoosUtils.nullToEmpty(tekst),
                              DoosUtils.isNotBlankOrNull(roepnaam)
                                  ? " (" + roepnaam + ")" : "")
                      .trim();
     }
+  }
+
+  public static String getAdresMetPlaatsnaam(String adres, String plaatsnaam,
+                                             String postLandkode) {
+    var adresMetPlaatsnaam  = new StringBuilder();
+
+    adresMetPlaatsnaam.append(adres);
+    if (DoosUtils.isNotBlankOrNull(plaatsnaam)) {
+      adresMetPlaatsnaam.append(" - ").append(plaatsnaam);
+    }
+    if (DoosUtils.isNotBlankOrNull(postLandkode)) {
+      adresMetPlaatsnaam.append(" (").append(postLandkode.trim()).append(")");
+    }
+
+    return adresMetPlaatsnaam.toString().trim();
   }
 }

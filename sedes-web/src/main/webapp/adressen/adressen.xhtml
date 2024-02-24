@@ -9,10 +9,10 @@
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
         var taal = '#{gebruiker.locale.language}';
-        var plaatsenTabel = $('#plaatsenTabel').DataTable( {
-          ajax: { url: '/sedes/plaatsen',
+        var adressenTabel = $('#adressenTabel').DataTable( {
+          ajax: { url: '/sedes/adressen',
                   dataSrc: '' },
-          order: [[2, 'asc'], [0, 'asc'], [1, 'asc']],
+          order: [[0, 'asc']],
           pagingType: 'full_numbers',
           pageLength: #{properties.appValue('sedes.pagelength')},
           lengthChange: false,
@@ -32,44 +32,41 @@
             infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
           },
           columns: [
-            { data: null, title: '#{i18nTeksten.tekst('label.postkode')}', render: function ( data, type, row ) {
-                if (data.hasOwnProperty('postkode')) {
-                  return data.postkode;
+            { data: 'adresdata', title: '#{i18nTeksten.tekst('label.adres')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.subpostkode')}', width: '100px', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('subPostkode')) {
+                  return data.subPostkode;
                 }
                 return '';
               }
             },
-            { data: 'plaatsnaam', title: '#{i18nTeksten.tekst('label.plaatsnaam')}' },
+            { data: null, title: '#{i18nTeksten.tekst('label.plaats')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('plaatsId')) {
+                  return getPlaats(data.plaatsId).plaatsnaam;
+                }
+                return '';
+              }
+            },
             { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
-                return getLandIdNaam(data.landId, taal);
-              }
-            },
-            { data: null, title: '#{i18nTeksten.tekst('label.regio')}', render: function ( data, type, row ) {
-                if (data.hasOwnProperty('regioId')) {
-                  return getRegionaam(data.regioId);
-                }
-                return '';
-              }
-            },
-            { data: null, title: '#{i18nTeksten.tekst('label.zonenummer')}', render: function ( data, type, row ) {
-                if (data.hasOwnProperty('zonenummer')) {
-                  return data.zonenummer;
+                if (data.hasOwnProperty('plaatsId')) {
+                  var landId = getPlaats(data.plaatsId).landId;
+                  return getLandIdNaam(landId, taal);
                 }
                 return '';
               }
             }
           ]
         } );
-        $( '#plaatsenTabel tbody').on('click', 'tr', function() {
-          if (plaatsenTabel.row(this).data() === undefined) {
+        $('#adressenTabel tbody').on('click', 'tr', function() {
+          if (adressenTabel.row(this).data() === undefined) {
             return;
           }
-          var jsfCommandLink = document.getElementById('formPlaatsen:linkPlaats');
-          alterParam(jsfCommandLink, plaatsenTabel.row(this).data().plaatsId);
+          var jsfCommandLink = document.getElementById('formAdressen:linkAdres');
+          alterParam(jsfCommandLink, adressenTabel.row(this).data().adresId);
           jsfCommandLink.click();
         } );
-        if (#{sedesPlaats.user}) {
-          addInsertButton('plaatsenTabel', 'formPlaatsen', '#{i18nTeksten.tekst('img.nieuw')}');
+        if (#{sedesAdres.user}) {
+          addInsertButton('adressenTabel', 'formAdressen', '#{i18nTeksten.tekst('img.nieuw')}');
         }
       } );
     </script>
@@ -77,14 +74,14 @@
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-10">
-        <h:form id="formPlaatsen">
-          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.plaatsen')}" />
+        <h:form id="formAdressen">
+          <d:titel titel="#{i18nTeksten.tekst('sedes.titel.adressen')}" />
 
-          <table id="plaatsenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="plaatsenTabel" />
-          <h:commandLink id="linkPlaats" action="#{sedesPlaats.retrieve}" style="display:none">
-            <f:param name="plaatsId" value="XX" />
+          <table id="adressenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="adressenTabel" />
+          <h:commandLink id="linkAdres" action="#{sedesAdres.retrieve}" style="display:none">
+            <f:param name="adresId" value="XX" />
           </h:commandLink>
-          <h:commandLink id="addPlaatsen" class="is-hidden" action="#{sedesPlaats.create}" />
+          <h:commandLink id="addAdressen" class="is-hidden" action="#{sedesAdres.create}" />
         </h:form>
       </div>
     </div>

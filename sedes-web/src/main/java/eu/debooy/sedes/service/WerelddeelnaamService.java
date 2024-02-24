@@ -48,6 +48,7 @@ public class WerelddeelnaamService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(WerelddeelnaamService.class);
 
+  @SuppressWarnings("java:S6813")
   @Inject
   private WerelddeelnaamDao werelddeelnaamDao;
 
