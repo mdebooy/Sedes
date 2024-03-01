@@ -157,7 +157,7 @@ public class KontaktController extends Sedes {
       setSubTitel(kontakt.getDisplaynaam());
       redirect(KONTAKT_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, LBL_KONTAKT);
+      addError(PersistenceConstants.NOTFOUND, getTekst(LBL_KONTAKT));
     }
   }
 

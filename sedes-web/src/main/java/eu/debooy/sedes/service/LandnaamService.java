@@ -111,6 +111,7 @@ public class LandnaamService {
 
   @GET
   @Path("/{landId}/{taal}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Response getLandnaam(@PathParam(LandnaamDto.COL_LANDID) Long landId,
                                @PathParam(LandnaamDto.COL_TAAL) String taal) {
     Map<String, String> landnamen = new HashMap<>();
