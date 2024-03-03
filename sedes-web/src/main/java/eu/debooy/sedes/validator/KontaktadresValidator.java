@@ -23,7 +23,6 @@ import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.domain.KontaktadresDto;
 import eu.debooy.sedes.form.Kontaktadres;
-import static eu.debooy.sedes.validator.SedesValidator.valideerOpmerking;
 import java.util.ArrayList;
 import java.util.List;
 

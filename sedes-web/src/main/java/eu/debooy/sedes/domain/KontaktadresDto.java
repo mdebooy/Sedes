@@ -17,8 +17,9 @@
 
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.Datum;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
-import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -156,11 +156,7 @@ public class KontaktadresDto extends Dto implements Comparable<KontaktadresDto> 
   }
 
   public void setEinddatum(Date einddatum) {
-    if (null == einddatum) {
-      this.einddatum      = null;
-    } else {
-      this.einddatum      = DateUtils.truncate(einddatum, Calendar.DATE);
-    }
+    this.einddatum        = Datum.stripTime(einddatum);
   }
 
   public void setKontaktadresId(Long kontaktadresId) {
@@ -176,34 +172,18 @@ public class KontaktadresDto extends Dto implements Comparable<KontaktadresDto> 
   }
 
   public void setOpmerking(String opmerking) {
-    if (null == opmerking) {
-      this.opmerking      = null;
-    } else {
-      this.opmerking      = opmerking.trim();
-    }
+    this.opmerking        = DoosUtils.strip(opmerking);
   }
 
   public void setStartdatum(Date startdatum) {
-    if (null == startdatum) {
-      this.startdatum     = null;
-    } else {
-      this.startdatum     = DateUtils.truncate(startdatum, Calendar.DATE);
-    }
+    this.startdatum       = Datum.stripTime(startdatum);
   }
 
   public void setSubAdres(String subAdres) {
-    if (null == subAdres) {
-      this.subAdres       = null;
-    } else {
-      this.subAdres       = subAdres.trim();
-    }
+    this.subAdres         = DoosUtils.strip(subAdres);
   }
 
   public void setTaal(String taal) {
-    if (null == taal) {
-      this.taal           = null;
-    } else {
-      this.taal           = taal.toLowerCase();
-    }
+    this.taal             = DoosUtils.stripToLowerCase(subAdres);
   }
 }
