@@ -90,7 +90,7 @@ public class Kontaktadres
       return null;
     }
 
-    return einddatum;
+    return new Date(einddatum.getTime());
   }
 
   public Long getKontaktadresId() {
@@ -114,7 +114,7 @@ public class Kontaktadres
       return null;
     }
 
-    return startdatum;
+    return new Date(startdatum.getTime());
   }
 
   public String getSubAdres() {
@@ -175,6 +175,6 @@ public class Kontaktadres
   }
 
   public void setTaal(String taal) {
-    this.taal             = DoosUtils.stripToLowerCase(subAdres);
+    this.taal             = DoosUtils.stripToLowerCase(taal);
   }
 }

@@ -111,7 +111,7 @@ public class KontaktadresDto extends Dto implements Comparable<KontaktadresDto> 
       return null;
     }
 
-    return einddatum;
+    return new Date(einddatum.getTime());
   }
 
   public Long getKontaktadresId() {
@@ -135,7 +135,7 @@ public class KontaktadresDto extends Dto implements Comparable<KontaktadresDto> 
       return null;
     }
 
-    return startdatum;
+    return new Date(startdatum.getTime());
   }
 
   public String getSubAdres() {
@@ -184,6 +184,6 @@ public class KontaktadresDto extends Dto implements Comparable<KontaktadresDto> 
   }
 
   public void setTaal(String taal) {
-    this.taal             = DoosUtils.stripToLowerCase(subAdres);
+    this.taal             = DoosUtils.stripToLowerCase(taal);
   }
 }
