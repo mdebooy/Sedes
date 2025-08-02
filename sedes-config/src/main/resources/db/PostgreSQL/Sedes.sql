@@ -100,7 +100,7 @@ CREATE TABLE SEDES.LANDEN (
   POSTKODE_SCHEIDING              VARCHAR(10),
   POSTKODE_TYPE                   CHAR(1)         NOT NULL  DEFAULT '1',
   POST_LANDKODE                   CHAR(3)         NOT NULL,
-  TAAL                            CHAR(2)         NOT NULL,
+  TAAL                            CHAR(3)         NOT NULL,
   VLAG                            BYTEA,
   WERELDDEEL_ID                   INTEGER         NOT NULL,
   CONSTRAINT PK_LANDEN PRIMARY KEY (LAND_ID)
@@ -111,7 +111,7 @@ CREATE TABLE SEDES.LANDNAMEN (
   LAND_ID                         INTEGER         NOT NULL,
   NAAM                            VARCHAR(100)    NOT NULL,
   OFFICIELE_NAAM                  VARCHAR(225),
-  TAAL                            CHAR(2)         NOT NULL,
+  TAAL                            CHAR(3)         NOT NULL,
   CONSTRAINT PK_LANDNAMEN PRIMARY KEY (LAND_ID, TAAL)
 );
 
@@ -127,11 +127,9 @@ CREATE TABLE SEDES.MUNTEN (
 );
 
 CREATE TABLE SEDES.PLAATSEN (
-  BREEDTE                         CHAR(1),
-  BREEDTEGRAAD                    NUMERIC(4,2),
+  BREEDTEGRAAD                    NUMERIC(8,6),
   LAND_ID                         INTEGER         NOT NULL,
-  LENGTE                          CHAR(1),
-  LENGTEGRAAD                     NUMERIC(5,2),
+  LENGTEGRAAD                     NUMERIC(9,6),
   PLAATS_ID                       INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
   PLAATSNAAM                      VARCHAR(100)    NOT NULL,
   POSTKODE                        VARCHAR(15),
@@ -140,18 +138,18 @@ CREATE TABLE SEDES.PLAATSEN (
   CONSTRAINT PK_PLAATSEN PRIMARY KEY (PLAATS_ID)
 );
 
-CREATE TABLE SEDES.POSTLIJST_KONTAKTEN (
+CREATE TABLE SEDES.POSTLIJSTEN (
+  NAAM                            VARCHAR(100)    NOT NULL,
+  POSTLIJST_ID                    INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
+  CONSTRAINT PK_POSTLIJSTEN PRIMARY KEY (POSTLIJST_ID)
+);
+
+CREATE TABLE SEDES.POSTLIJSTKONTAKTEN (
   EINDDATUM                       DATE,
   KONTAKT_ID                      INTEGER         NOT NULL,
   POSTLIJST_ID                    INTEGER         NOT NULL,
   STARTDATUM                      DATE            NOT NULL,
-  CONSTRAINT PK_POSTLIJST_KONTAKTEN PRIMARY KEY (POSTLIJST_ID, KONTAKT_ID, STARTDATUM)
-);
-
-CREATE TABLE SEDES.POSTLIJSTEN (
-  POSTLIJST                       VARCHAR(100)    NOT NULL,
-  POSTLIJST_ID                    INTEGER         NOT NULL  GENERATED ALWAYS AS IDENTITY,
-  CONSTRAINT PK_POSTLIJSTEN PRIMARY KEY (POSTLIJST_ID)
+  CONSTRAINT PK_POSTLIJSTKONTAKTEN PRIMARY KEY (POSTLIJST_ID, KONTAKT_ID, STARTDATUM)
 );
 
 CREATE TABLE SEDES.REGIONAMEN (
@@ -171,7 +169,7 @@ CREATE TABLE SEDES.REGIOS (
 
 CREATE TABLE SEDES.WERELDDEELNAMEN (
   NAAM                            VARCHAR(100)    NOT NULL,
-  TAAL                            CHAR(2)         NOT NULL,
+  TAAL                            CHAR(3)         NOT NULL,
   WERELDDEEL_ID                   INTEGER         NOT NULL,
   CONSTRAINT PK_WERELDDEELNAMEN PRIMARY KEY (WERELDDEEL_ID, TAAL)
 );
@@ -224,6 +222,8 @@ ALTER TABLE SEDES.KONTAKTKONTAKTEN
   ADD CONSTRAINT UK_KKO_KONTAKTKONTAKT UNIQUE (PARENTKONTAKT, CHILDKONTAKT, STARTDATUM);
 
 ALTER TABLE SEDES.LANDEN
+  ADD CONSTRAINT CHK_LND_TAAL  CHECK (TAAL = LOWER(TAAL));
+ALTER TABLE SEDES.LANDEN
   ADD CONSTRAINT FK_LND_MUNT_ID FOREIGN KEY (MUNT_ID)
   REFERENCES SEDES.MUNTEN (MUNT_ID)
   ON DELETE RESTRICT
@@ -237,12 +237,17 @@ ALTER TABLE SEDES.LANDEN
 
 ALTER TABLE SEDES.LANDNAMEN
   ADD CONSTRAINT CHK_LNM_TAAL  CHECK (TAAL = LOWER(TAAL));
+ALTER TABLE SEDES.LANDNAMEN
+  ADD CONSTRAINT CHK_LNM_TAAL  CHECK (TAAL = LOWER(TAAL));
 
 ALTER TABLE SEDES.LANDNAMEN
   ADD CONSTRAINT FK_LNM_LAND_ID FOREIGN KEY (LAND_ID)
   REFERENCES SEDES.LANDEN (LAND_ID)
   ON DELETE CASCADE
   ON UPDATE RESTRICT;
+
+ALTER TABLE SEDES.MUNTEN
+  ADD CONSTRAINT CHK_MNT_ISO3 CHECK (ISO3 = UPPER(ISO3));
 
 ALTER TABLE SEDES.PLAATSEN
   ADD CONSTRAINT FK_PLA_LAND_ID FOREIGN KEY (LAND_ID)
@@ -256,7 +261,7 @@ ALTER TABLE SEDES.PLAATSEN
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
-ALTER TABLE SEDES.POSTLIJST_KONTAKTEN
+ALTER TABLE SEDES.POSTLIJSTKONTAKTEN
   ADD CONSTRAINT FK_PLK_KONTAKT_ID FOREIGN KEY (KONTAKT_ID)
   REFERENCES SEDES.KONTAKTEN (KONTAKT_ID)
   ON DELETE RESTRICT
@@ -268,8 +273,10 @@ ALTER TABLE SEDES.POSTLIJST_KONTAKTEN
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
-ALTER TABLE SEDES.REGIONAMEN
-  ADD CONSTRAINT CHK_RNM_TAAL  CHECK (TAAL = LOWER(TAAL));
+ALTER TABLE SEDES.REGIOS
+  ADD CONSTRAINT CHK_REG_REGIOKODE  CHECK (REGIOKODE = UPPER(REGIOKODE));
+ALTER TABLE SEDES.REGIOS
+  ADD CONSTRAINT CHK_REG_TAAL  CHECK (TAAL = LOWER(TAAL));
 
 ALTER TABLE SEDES.REGIONAMEN
   ADD CONSTRAINT FK_RNM_REGIO_ID FOREIGN KEY (REGIO_ID)
@@ -284,7 +291,7 @@ ALTER TABLE SEDES.REGIOS
   ON UPDATE RESTRICT;
 
 ALTER TABLE SEDES.WERELDDEELNAMEN
-  ADD CONSTRAINT CHK_WDM_TAAL  CHECK (TAAL = LOWER(TAAL));
+  ADD CONSTRAINT CHK_WDN_TAAL  CHECK (TAAL = LOWER(TAAL));
 
 ALTER TABLE SEDES.WERELDDEELNAMEN
   ADD CONSTRAINT FK_WDN_WERELDDEEL_ID FOREIGN KEY (WERELDDEEL_ID)
@@ -301,7 +308,7 @@ GRANT SELECT                         ON TABLE SEDES.LANDEN                  TO S
 GRANT SELECT                         ON TABLE SEDES.LANDNAMEN               TO SEDES_SEL;
 GRANT SELECT                         ON TABLE SEDES.MUNTEN                  TO SEDES_SEL;
 GRANT SELECT                         ON TABLE SEDES.PLAATSEN                TO SEDES_SEL;
-GRANT SELECT                         ON TABLE SEDES.POSTLIJST_KONTAKTEN     TO SEDES_SEL;
+GRANT SELECT                         ON TABLE SEDES.POSTLIJSTKONTAKTEN      TO SEDES_SEL;
 GRANT SELECT                         ON TABLE SEDES.POSTLIJSTEN             TO SEDES_SEL;
 GRANT SELECT                         ON TABLE SEDES.REGIONAMEN              TO SEDES_SEL;
 GRANT SELECT                         ON TABLE SEDES.REGIOS                  TO SEDES_SEL;
@@ -316,7 +323,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.LANDEN                  TO S
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.LANDNAMEN               TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.MUNTEN                  TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.PLAATSEN                TO SEDES_UPD;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.POSTLIJST_KONTAKTEN     TO SEDES_UPD;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.POSTLIJSTKONTAKTEN      TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.POSTLIJSTEN             TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.REGIONAMEN              TO SEDES_UPD;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.REGIOS                  TO SEDES_UPD;
@@ -324,71 +331,100 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDEELNAMEN         TO S
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE SEDES.WERELDDELEN             TO SEDES_UPD;
 
 -- Commentaren
-COMMENT ON TABLE  SEDES.ADRESSEN                          IS 'Deze tabel bevat alle adressenen. Dit kunnen fysieke adressen zijn maar ook telefoonnummers en e-mail adressen.';
-COMMENT ON COLUMN SEDES.ADRESSEN.ADRES_ID                 IS 'De sleutel van het adres.';
-COMMENT ON COLUMN SEDES.ADRESSEN.ADRESDATA                IS 'Het adres.';
-COMMENT ON COLUMN SEDES.ADRESSEN.OPMERKING                IS 'Een opmerking voor dit adres.';
-COMMENT ON COLUMN SEDES.ADRESSEN.PLAATS_ID                IS 'Voor een fysiek adres is dit de sleutel van de plaats.';
-COMMENT ON COLUMN SEDES.ADRESSEN.SUB_POSTKODE             IS 'Extra code bij de postkode.';
-COMMENT ON TABLE  SEDES.KONTAKTADRESSEN                   IS 'Deze tabel bevat de adressen van de kontakten.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.ADRES_ID          IS 'De sleutel van het adres.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.EINDDATUM         IS 'De datum waarna dit kontaktadres niet meer geldig is.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRES_ID   IS 'De sleutel van het kontaktadres.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRESTYPE  IS 'Het type van het kontaktadres.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKT_ID        IS 'De sleutel van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.OPMERKING         IS 'Een opmerking voor dit kontaktadres.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.STARTDATUM        IS 'De datum waarop dit kontaktadres is ontstaan.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.SUB_ADRES         IS 'Extra adres informatie.';
-COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.TAAL              IS 'De taal, ISO 639-2T, die dit kontaktadres gebruikt.';
-COMMENT ON TABLE  SEDES.KONTAKTEN                         IS 'Deze tabel bevat alle kontakten. Dit zijn  personen, groepen of bedrijven. De betekenis van de velden kan veranderen per KONTAKTTYPE.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.AANSPREEK_ID            IS 'De code voor de aanspreektitel.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.GEBOORTEDATUM           IS 'De geboortedatum (of oprichtingsdatum) van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.GEBRUIKERSNAAM          IS 'De gebruikersnaam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.INITIALEN               IS 'De initialen van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKT_ID              IS 'De sleutel van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKTTYPE             IS 'Het type kontakt. Groep, Persoon of Rechtspersoon.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.NAAM                    IS 'De naam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.OPMERKING               IS 'Een opmerking voor dit kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.PSEUDONIEM              IS 'De pseudoniem van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.ROEPNAAM                IS 'De roepnaam van het kontakt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.TAAL                    IS 'De taal, ISO 639-2T, die dit kontakt gebruikt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.TUSSENVOEGSEL           IS 'Eerste deel van achternaam die buiten de sortering valt.';
-COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM                IS 'De voornaam van dit kontakt.';
-COMMENT ON TABLE  SEDES.LANDEN                            IS 'Deze tabel bevat alle landen.';
-COMMENT ON COLUMN SEDES.LANDEN.BESTAAT                    IS 'Bestaat het land nog (J/N)?';
-COMMENT ON COLUMN SEDES.LANDEN.ISO2                       IS 'De ISO2 code van de munt.';
-COMMENT ON COLUMN SEDES.LANDEN.ISO3                       IS 'De ISO3 code van de munt.';
-COMMENT ON COLUMN SEDES.LANDEN.LAND_ID                    IS 'De sleutel van het land.';
-COMMENT ON COLUMN SEDES.LANDEN.LANDNUMMER                 IS 'Het telefoon landnummer van het land.';
-COMMENT ON COLUMN SEDES.LANDEN.MUNT_ID                    IS 'De sleutel van de munt.';
-COMMENT ON COLUMN SEDES.LANDEN.POSTKODE_SCHEIDING         IS 'Het scheidingsteken van de postkode.';
-COMMENT ON COLUMN SEDES.LANDEN.POSTKODE_TYPE              IS 'Het type postkode.';
-COMMENT ON COLUMN SEDES.LANDEN.POST_LANDKODE              IS 'Het postkode van het land.';
-COMMENT ON COLUMN SEDES.LANDEN.TAAL                       IS 'De officiële taal van het land.';
-COMMENT ON COLUMN SEDES.LANDEN.VLAG                       IS 'De vlag van het land.';
-COMMENT ON COLUMN SEDES.LANDEN.WERELDDEEL_ID              IS 'Het werelddeel waarin het land ligt.';
-COMMENT ON TABLE  SEDES.LANDNAMEN                         IS 'Deze tabel bevat alle landnamen.';
-COMMENT ON COLUMN SEDES.LANDNAMEN.HOOFDSTAD               IS 'De hoofdstad van het land.';
-COMMENT ON COLUMN SEDES.LANDNAMEN.LAND_ID                 IS 'De sleutel van het land.';
-COMMENT ON COLUMN SEDES.LANDNAMEN.NAAM                    IS 'De naam van het land.';
-COMMENT ON COLUMN SEDES.LANDNAMEN.OFFICIELE_NAAM          IS 'De officiële naam van het land.';
-COMMENT ON COLUMN SEDES.LANDNAMEN.TAAL                    IS 'De taal, ISO 639-2T, van deze naam.';
-COMMENT ON TABLE  SEDES.MUNTEN                            IS 'Deze tabel bevat alle munten (valuta''s).';
-COMMENT ON COLUMN SEDES.MUNTEN.BESTAAT                    IS 'Bestaat de munt nog (J/N)?';
-COMMENT ON COLUMN SEDES.MUNTEN.DECIMALEN                  IS 'Aantal decimalen voor de subeenheid.';
-COMMENT ON COLUMN SEDES.MUNTEN.ISO3                       IS 'De ISO3 code van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.MUNT_ID                    IS 'De sleutel van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN                  IS 'Het teken van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.NAAM                       IS 'De naam van de munt.';
-COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID                 IS 'De naam van de subeenheid van de munt.';
-COMMENT ON TABLE  SEDES.REGIONAMEN                        IS 'Deze tabel bevat alle regionamen.';
-COMMENT ON COLUMN SEDES.REGIONAMEN.NAAM                   IS 'De naam van de regio.';
-COMMENT ON COLUMN SEDES.REGIONAMEN.REGIO_ID               IS 'De sleutel van de regio.';
-COMMENT ON COLUMN SEDES.REGIONAMEN.TAAL                   IS 'De taal, ISO 639-2T, van deze naam..';
-COMMENT ON TABLE  SEDES.REGIOS                            IS 'Deze tabel bevat alle regios.';
-COMMENT ON COLUMN SEDES.REGIOS.LAND_ID                    IS 'De sleutel van het land.';
-COMMENT ON COLUMN SEDES.REGIOS.REGIO_ID                   IS 'De sleutel van de regio.';
-COMMENT ON COLUMN SEDES.REGIOS.REGIOKODE                  IS 'De NUTS code van de regio.';
+COMMENT ON TABLE  SEDES.ADRESSEN                            IS 'Deze tabel bevat alle adressenen. Dit kunnen fysieke adressen zijn maar ook telefoonnummers en e-mail adressen.';
+COMMENT ON COLUMN SEDES.ADRESSEN.ADRES_ID                   IS 'De sleutel van het adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.ADRESDATA                  IS 'Het adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.OPMERKING                  IS 'Een opmerking voor dit adres.';
+COMMENT ON COLUMN SEDES.ADRESSEN.PLAATS_ID                  IS 'Voor een fysiek adres is dit de sleutel van de plaats.';
+COMMENT ON COLUMN SEDES.ADRESSEN.SUB_POSTKODE               IS 'Extra code bij de postkode.';
+COMMENT ON TABLE  SEDES.KONTAKTADRESSEN                     IS 'Deze tabel bevat de adressen van de kontakten.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.ADRES_ID            IS 'De sleutel van het adres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.EINDDATUM           IS 'De datum waarna dit kontaktadres niet meer geldig is.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRES_ID     IS 'De sleutel van het kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKTADRESTYPE    IS 'Het type van het kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.KONTAKT_ID          IS 'De sleutel van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.OPMERKING           IS 'Een opmerking voor dit kontaktadres.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.STARTDATUM          IS 'De datum waarop dit kontaktadres is ontstaan.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.SUB_ADRES           IS 'Extra adres informatie.';
+COMMENT ON COLUMN SEDES.KONTAKTADRESSEN.TAAL                IS 'De taal, ISO 639-2T, die dit kontaktadres gebruikt.';
+COMMENT ON TABLE  SEDES.KONTAKTEN                           IS 'Deze tabel bevat alle kontakten. Dit zijn  personen, groepen of bedrijven. De betekenis van de velden kan veranderen per KONTAKTTYPE.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.AANSPREEK_ID              IS 'De code voor de aanspreektitel.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.GEBOORTEDATUM             IS 'De geboortedatum (of oprichtingsdatum) van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.GEBRUIKERSNAAM            IS 'De gebruikersnaam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.INITIALEN                 IS 'De initialen van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKT_ID                IS 'De sleutel van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.KONTAKTTYPE               IS 'Het type kontakt. Groep, Persoon of Rechtspersoon.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.NAAM                      IS 'De naam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.OPMERKING                 IS 'Een opmerking voor dit kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.PSEUDONIEM                IS 'De pseudoniem van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.ROEPNAAM                  IS 'De roepnaam van het kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.TAAL                      IS 'De taal, ISO 639-2T, die dit kontakt gebruikt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.TUSSENVOEGSEL             IS 'Eerste deel van achternaam die buiten de sortering valt.';
+COMMENT ON COLUMN SEDES.KONTAKTEN.VOORNAAM                  IS 'De voornaam van dit kontakt.';
+COMMENT ON TABLE  SEDES.KONTAKTKONTAKTEN                    IS 'Deze tabel bevat alle kontakten die in kontakt staat met een ander kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTKONTAKTEN.CHILDKONTAKT       IS 'De sleutel van het ´child´ kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTKONTAKTEN.EINDDATUM          IS 'De datum waarna dit kontaktkontakt niet meer geldig is.';
+COMMENT ON COLUMN SEDES.KONTAKTKONTAKTEN.KONTAKTKONTAKT_ID  IS 'De sleutel van het kontaktkontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTKONTAKTEN.PARENTKONTAKT      IS 'De sleutel van het ´parent´ kontakt.';
+COMMENT ON COLUMN SEDES.KONTAKTKONTAKTEN.STARTDATUM         IS 'De datum waarop dit kontaktkontakt is ontstaan.';
+COMMENT ON COLUMN SEDES.LANDEN                              IS 'Deze tabel bevat alle landen.';
+COMMENT ON COLUMN SEDES.LANDEN.BESTAAT                      IS 'Bestaat het land nog (J/N)?';
+COMMENT ON COLUMN SEDES.LANDEN.ISO2                         IS 'De ISO2 code van de munt.';
+COMMENT ON COLUMN SEDES.LANDEN.ISO3                         IS 'De ISO3 code van de munt.';
+COMMENT ON COLUMN SEDES.LANDEN.LAND_ID                      IS 'De sleutel van het land.';
+COMMENT ON COLUMN SEDES.LANDEN.LANDNUMMER                   IS 'Het telefoon landnummer van het land.';
+COMMENT ON COLUMN SEDES.LANDEN.MUNT_ID                      IS 'De sleutel van de munt.';
+COMMENT ON COLUMN SEDES.LANDEN.POSTKODE_SCHEIDING           IS 'Het scheidingsteken van de postkode.';
+COMMENT ON COLUMN SEDES.LANDEN.POSTKODE_TYPE                IS 'Het type postkode.';
+COMMENT ON COLUMN SEDES.LANDEN.POST_LANDKODE                IS 'Het postkode van het land.';
+COMMENT ON COLUMN SEDES.LANDEN.TAAL                         IS 'De officiële taal, ISO 639-2T, van het land.';
+COMMENT ON COLUMN SEDES.LANDEN.VLAG                         IS 'De vlag van het land.';
+COMMENT ON COLUMN SEDES.LANDEN.WERELDDEEL_ID                IS 'Het werelddeel waarin het land ligt.';
+COMMENT ON TABLE  SEDES.LANDNAMEN                           IS 'Deze tabel bevat alle landnamen.';
+COMMENT ON COLUMN SEDES.LANDNAMEN.HOOFDSTAD                 IS 'De hoofdstad van het land.';
+COMMENT ON COLUMN SEDES.LANDNAMEN.LAND_ID                   IS 'De sleutel van het land.';
+COMMENT ON COLUMN SEDES.LANDNAMEN.NAAM                      IS 'De naam van het land.';
+COMMENT ON COLUMN SEDES.LANDNAMEN.OFFICIELE_NAAM            IS 'De officiële naam van het land.';
+COMMENT ON COLUMN SEDES.LANDNAMEN.TAAL                      IS 'De taal, ISO 639-2T, van deze naam.';
+COMMENT ON TABLE  SEDES.MUNTEN                              IS 'Deze tabel bevat alle munten (valuta''s).';
+COMMENT ON COLUMN SEDES.MUNTEN.BESTAAT                      IS 'Bestaat de munt nog (J/N)?';
+COMMENT ON COLUMN SEDES.MUNTEN.DECIMALEN                    IS 'Aantal decimalen voor de subeenheid.';
+COMMENT ON COLUMN SEDES.MUNTEN.ISO3                         IS 'De ISO3 code van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNT_ID                      IS 'De sleutel van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.MUNTTEKEN                    IS 'Het teken van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.NAAM                         IS 'De naam van de munt.';
+COMMENT ON COLUMN SEDES.MUNTEN.SUBEENHEID                   IS 'De naam van de subeenheid van de munt.';
+COMMENT ON TABLE  SEDES.PLAATSEN                            IS 'Deze tabel bevat alle plaatsen.';
+COMMENT ON COLUMN SEDES.PLAATSEN.BREEDTEGRAAD               IS 'De breedtegraad waarop de plaats ligt.';
+COMMENT ON COLUMN SEDES.PLAATSEN.LAND_ID                    IS 'De sleutel van het land.';
+COMMENT ON COLUMN SEDES.PLAATSEN.LENGTEGRAAD                IS 'De lengtegraad waarop de plaats ligt.';
+COMMENT ON COLUMN SEDES.PLAATSEN.PLAATS_ID                  IS 'De sleutel van de plaat.';
+COMMENT ON COLUMN SEDES.PLAATSEN.PLAATSNAAM                 IS 'De naam van de plaats.';
+COMMENT ON COLUMN SEDES.PLAATSEN.POSTKODE                   IS 'De naam van de plaats.';
+COMMENT ON COLUMN SEDES.PLAATSEN.REGIO_ID                   IS 'De sleutel van de regio.';
+COMMENT ON COLUMN SEDES.PLAATSEN.ZONENUMMER                 IS 'Het zonenummer van de plaats.';
+COMMENT ON TABLE  SEDES.POSTLIJSTEN                         IS 'Deze tabel bevat alle postlijsten.';
+COMMENT ON COLUMN SEDES.POSTLIJSTEN.NAAM                    IS 'De naam van de postlijst.';
+COMMENT ON COLUMN SEDES.POSTLIJSTEN.POSTLIJST_ID            IS 'De sleutel van de postlijst.';
+COMMENT ON TABLE  SEDES.POSTLIJSTKONTAKTEN                  IS 'Deze tabel bevat alle kontakten op een postlijst.';
+COMMENT ON COLUMN SEDES.POSTLIJSTKONTAKTEN.EINDDATUM        IS 'De datum waarna dit postlijstkontakt niet meer geldig is.';
+COMMENT ON COLUMN SEDES.POSTLIJSTKONTAKTEN.KONTAKT_ID       IS 'De sleutel van het kontakt.';
+COMMENT ON COLUMN SEDES.POSTLIJSTKONTAKTEN.POSTLIJST_ID     IS 'De sleutel van de postlijst.';
+COMMENT ON COLUMN SEDES.POSTLIJSTKONTAKTEN.STARTDATUM       IS 'De datum waarop dit postlijstkontakt is ontstaan.';
+COMMENT ON TABLE  SEDES.REGIONAMEN                          IS 'Deze tabel bevat alle regionamen.';
+COMMENT ON COLUMN SEDES.REGIONAMEN.NAAM                     IS 'De naam van de regio.';
+COMMENT ON COLUMN SEDES.REGIONAMEN.REGIO_ID                 IS 'De sleutel van de regio.';
+COMMENT ON COLUMN SEDES.REGIONAMEN.TAAL                     IS 'De taal, ISO 639-2T, van deze naam.';
+COMMENT ON TABLE  SEDES.REGIOS                              IS 'Deze tabel bevat alle regios.';
+COMMENT ON COLUMN SEDES.REGIOS.LAND_ID                      IS 'De sleutel van het land.';
+COMMENT ON COLUMN SEDES.REGIOS.REGIO_ID                     IS 'De sleutel van de regio.';
+COMMENT ON COLUMN SEDES.REGIOS.REGIOKODE                    IS 'De NUTS code van de regio.';
+COMMENT ON TABLE  SEDES.WERELDDEELNAMEN                     IS 'Deze tabel bevat alle werelddelen.';
+COMMENT ON COLUMN SEDES.WERELDDEELNAMEN.NAAM                IS 'De naam van dit werelddeel.';
+COMMENT ON COLUMN SEDES.WERELDDEELNAMEN.TAAL                IS 'De taal, ISO 639-2T, van dit werelddeel.';
+COMMENT ON COLUMN SEDES.WERELDDEELNAMEN.WERELDDEEL_ID       IS 'De sleutel van het werelddeel.';
+COMMENT ON TABLE  SEDES.WERELDDELEN                         IS 'Deze tabel bevat alle werelddelen.';
+COMMENT ON COLUMN SEDES.WERELDDELEN.WERELDDEEL_ID           IS 'De sleutel van het werelddeel.';
 
 -- Default waardes
 INSERT INTO SEDES.WERELDDELEN
@@ -403,7 +439,7 @@ INSERT INTO SEDES.MUNTEN
 
 INSERT INTO SEDES.LANDEN
         (BESTAAT, ISO3, MUNT_ID, POST_LANDKODE, TAAL, WERELDDEEL_ID)
- VALUES ('N', '???', 1, '???', '??', 1);
+ VALUES ('N', '???', 1, '???', '???', 1);
 
 INSERT INTO SEDES.LANDNAMEN
  VALUES (NULL, 1, 'Onbekend', NULL, 'nl');

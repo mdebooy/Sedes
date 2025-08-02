@@ -19,11 +19,13 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.LandnaamDto;
+import jakarta.interceptor.Interceptors;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.util.Collection;
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -39,24 +41,20 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   public Collection<LandnaamDto> getBestaandeLandnamenPerTaal(String taal) {
-    var query =
-        getEntityManager().createNamedQuery(LandnaamDto.QRY_BESTPERTAAL)
-                          .setParameter(LandnaamDto.PAR_TAAL, taal);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(LandnaamDto.PAR_TAAL, taal);
 
-    return query.getResultList();
+    return namedQuery(LandnaamDto.QRY_BESTPERTAAL, params);
   }
 
   public Collection<LandnaamDto>
       getBestaandeLandnamenPerWerelddeelPerTaal(String taal,
                                                 Long werelddeelId) {
-    var query =
-        getEntityManager()
-            .createNamedQuery(LandnaamDto.QRY_BESTPERWERELDDEELTAAL)
-                          .setParameter(LandnaamDto.PAR_TAAL, taal)
-                          .setParameter(LandnaamDto.PAR_WERELDDEEL,
-                                        werelddeelId);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(LandnaamDto.PAR_TAAL, taal);
+    params.put(LandnaamDto.PAR_WERELDDEEL, werelddeelId);
 
-    return query.getResultList();
+    return namedQuery(LandnaamDto.QRY_BESTPERWERELDDEELTAAL, params);
   }
 
   @Override
@@ -65,18 +63,16 @@ public class LandnaamDao extends Dao<LandnaamDto> {
   }
 
   public Collection<LandnaamDto> getPerLand(Long landId) {
-    var query =
-        getEntityManager().createNamedQuery(LandnaamDto.QRY_PERLAND)
-                          .setParameter(LandnaamDto.PAR_LANDID, landId);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(LandnaamDto.PAR_LANDID, landId);
 
-    return query.getResultList();
+    return namedQuery(LandnaamDto.QRY_PERLAND, params);
   }
 
   public Collection<LandnaamDto> getPerTaal(String taal) {
-    var query =
-        getEntityManager().createNamedQuery(LandnaamDto.QRY_PERTAAL)
-                          .setParameter(LandnaamDto.PAR_TAAL, taal);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(LandnaamDto.PAR_TAAL, taal);
 
-    return query.getResultList();
+    return namedQuery(LandnaamDto.QRY_PERTAAL, params);
   }
 }

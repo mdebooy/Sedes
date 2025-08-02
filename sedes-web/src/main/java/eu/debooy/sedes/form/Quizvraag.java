@@ -98,7 +98,7 @@ public class Quizvraag
   }
 
   public void setAntwoord(String antwoord) {
-    this.antwoord   = antwoord;
+    this.antwoord   = DoosUtils.strip(antwoord);
   }
 
   public void setHoofdstad(String hoofdstad) {

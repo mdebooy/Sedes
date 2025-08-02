@@ -33,14 +33,14 @@ import eu.debooy.sedes.form.Landnaam;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.LandValidator;
 import eu.debooy.sedes.validator.LandnaamValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +106,7 @@ public class LandController extends Sedes {
       land      = new Land();
       landDto   = new LandDto();
       addInfo(PersistenceConstants.DELETED,
-              landDto.getLandnaam(getGebruikersTaal()));
+              landDto.getLandnaam(getGebruikersTaalInIso6392t()));
       redirect(LANDEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, landId);
@@ -128,9 +128,9 @@ public class LandController extends Sedes {
       getLandService().save(landDto);
       landnaam  = new Landnaam();
       addInfo(PersistenceConstants.DELETED, "'" + landnaam.getTaal() + "'");
-      if (getGebruikersTaal().equals(landnaam.getTaal())) {
+      if (getGebruikersTaalInIso6392t().equals(landnaam.getTaal())) {
         setSubTitel(getTekst(TIT_UPDATE,
-                             landDto.getLandnaam(getGebruikersTaal())
+                             landDto.getLandnaam(getGebruikersTaalInIso6392t())
                                     .getNaam()));
       }
       redirect(LAND_REDIRECT);
@@ -160,20 +160,24 @@ public class LandController extends Sedes {
   }
 
   public String getNaam() {
-    if (landDto.hasLandnaam(getGebruikersTaal())) {
-      return landDto.getLandnaam(getGebruikersTaal()).getNaam();
+    if (landDto.hasLandnaam(getGebruikersTaalInIso6392t())) {
+      return landDto.getLandnaam(getGebruikersTaalInIso6392t()).getNaam();
     }
 
     if (landDto.hasLandnaam(getDefTaal())) {
       return landDto.getLandnaam(getDefTaal()).getNaam();
     }
 
-    return "??" + getGebruikersTaal() + "??";
+    return "??" + getGebruikersTaalInIso6392t()+ "??";
+  }
+
+  public Collection<SelectItem> getSelectLandnamen() {
+    return getLandnaamService().selectLandnamen(getGebruikersTaalInIso6392t());
   }
 
   public String i18nLandnaam(Long landId) {
     var i18nLandnaam  =
-        getLandnaamService().landnaam(landId, getGebruikersTaal())
+        getLandnaamService().landnaam(landId, getGebruikersTaalInIso6392t())
                             .getNaam();
     if (DoosUtils.isBlankOrNull(i18nLandnaam)) {
       i18nLandnaam  = getLandnaamService().landnaam(landId, getDefTaal())
@@ -202,7 +206,7 @@ public class LandController extends Sedes {
     exportData.addVeld("ReportTitel",
                        getTekst("sedes.titel.landenlijst"));
 
-    var taal              = getGebruikersTaal();
+    var taal              = getGebruikersTaalInIso6392t();
     Set<Werelddeelnaam> groepen =
         new TreeSet<>(new Werelddeelnaam.NaamComparator());
     groepen.addAll(getWerelddeelnaamService().werelddeelnamen(taal));
@@ -252,7 +256,8 @@ public class LandController extends Sedes {
       landDto = getLandService().land(landId);
       land    = new Land(landDto);
       setAktie(PersistenceConstants.RETRIEVE);
-      setSubTitel(landDto.getLandnaam(getGebruikersTaal()).getNaam());
+      setDeletetekst(getNaam());
+      setSubTitel(landDto.getLandnaam(getGebruikersTaalInIso6392t()).getNaam());
       redirect(LAND_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, LBL_LAND);
@@ -277,6 +282,8 @@ public class LandController extends Sedes {
           new Landnaam(landDto.getLandnaam(ec.getRequestParameterMap()
                                              .get(LandnaamDto.COL_TAAL)));
       setDetailAktie(PersistenceConstants.UPDATE);
+      setDetailDeletetekst(String.format("%s %s", landnaam.getTaal(),
+                                                  landnaam.getNaam()));
       setDetailSubTitel(getTekst(DTIT_UPDATE));
       redirect(LANDNAAM_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -362,9 +369,9 @@ public class LandController extends Sedes {
           addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie()) ;
           break;
       }
-      if (landnaam.getTaal().equals(getGebruikersTaal())) {
+      if (landnaam.getTaal().equals(getGebruikersTaalInIso6392t())) {
         setSubTitel(getTekst(TIT_UPDATE,
-                             landDto.getLandnaam(getGebruikersTaal())
+                             landDto.getLandnaam(getGebruikersTaalInIso6392t())
                                     .getNaam()));
       }
       redirect(LAND_REDIRECT);
@@ -379,10 +386,6 @@ public class LandController extends Sedes {
     }
   }
 
-  public Collection<SelectItem> selectLandnamen() {
-    return getLandnaamService().selectLandnamen(getGebruikersTaal());
-  }
-
   public void update() {
     if (!isUser()) {
       addError(ComponentsConstants.GEENRECHTEN);
@@ -390,7 +393,9 @@ public class LandController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
-    setSubTitel(getTekst(TIT_UPDATE, landDto.getLandnaam(getGebruikersTaal())
-                                            .getNaam()));
+    setDeletetekst(landDto.getLandnaam(getGebruikersTaalInIso6392t()).getNaam());
+    setSubTitel(getTekst(TIT_UPDATE,
+                         landDto.getLandnaam(getGebruikersTaalInIso6392t())
+                                .getNaam()));
   }
 }

@@ -26,11 +26,11 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.PlaatsDto;
 import eu.debooy.sedes.form.Plaats;
 import eu.debooy.sedes.validator.PlaatsValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,10 @@ public class PlaatsController extends Sedes {
 
     plaats    = new Plaats();
     plaatsDto = new PlaatsDto();
+    plaats.setLandId(Long.valueOf(getParameter(Sedes.PAR_DEFAULT_LANDID)));
     setAktie(PersistenceConstants.CREATE);
     setSubTitel(getTekst(TIT_CREATE));
-    redirect(REGIO_REDIRECT);
+    redirect(PLAATS_REDIRECT);
   }
 
   public void delete() {
@@ -78,7 +79,7 @@ public class PlaatsController extends Sedes {
       plaats        = new Plaats();
       plaatsDto     = new PlaatsDto();
       addInfo(PersistenceConstants.DELETED, plaatsnaam);
-      redirect(REGIOS_REDIRECT);
+      redirect(PLAATSEN_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, plaatsnaam);
     } catch (DoosRuntimeException e) {
@@ -108,20 +109,21 @@ public class PlaatsController extends Sedes {
 
     var ec      = FacesContext.getCurrentInstance().getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(PlaatsDto.COL_REGIOID)) {
-      addError(ComponentsConstants.GEENPARAMETER, PlaatsDto.COL_REGIOID);
+    if (!ec.getRequestParameterMap().containsKey(PlaatsDto.COL_PLAATSID)) {
+      addError(ComponentsConstants.GEENPARAMETER, PlaatsDto.COL_PLAATSID);
       return;
     }
 
     var plaatsId  = Long.valueOf(ec.getRequestParameterMap()
-                                   .get(PlaatsDto.COL_REGIOID));
+                                   .get(PlaatsDto.COL_PLAATSID));
 
     try {
       plaatsDto  = getPlaatsService().plaats(plaatsId);
       plaats     = new Plaats(plaatsDto);
       setAktie(PersistenceConstants.RETRIEVE);
+      setDeletetekst(plaats.getPlaatsnaam());
       setSubTitel(getTekst(TIT_RETRIEVE));
-      redirect(REGIO_REDIRECT);
+      redirect(PLAATS_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, LBL_PLAATS);
     }
@@ -184,6 +186,7 @@ public class PlaatsController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(plaatsDto.getPlaatsnaam());
     setSubTitel(getTekst(TIT_UPDATE));
   }
 }

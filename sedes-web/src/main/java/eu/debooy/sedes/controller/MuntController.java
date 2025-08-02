@@ -26,11 +26,11 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.MuntDto;
 import eu.debooy.sedes.form.Munt;
 import eu.debooy.sedes.validator.MuntValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,6 +131,7 @@ public class MuntController extends Sedes {
       muntDto = getMuntService().munt(muntId);
       munt    = new Munt(muntDto);
       setAktie(PersistenceConstants.RETRIEVE);
+      setDeletetekst(munt.getNaam());
       setSubTitel(getTekst(TIT_RETRIEVE));
       redirect(MUNT_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -191,6 +192,7 @@ public class MuntController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(muntDto.getNaam());
     setSubTitel(getTekst(TIT_UPDATE));
   }
 }

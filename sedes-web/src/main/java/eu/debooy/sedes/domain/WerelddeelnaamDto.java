@@ -16,15 +16,16 @@
  */
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Comparator;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -55,7 +56,7 @@ public class WerelddeelnaamDto extends Dto
   @Column(name="NAAM", length=100, nullable=false)
   private String  naam;
   @Id
-  @Column(name="TAAL", length=2, nullable=false)
+  @Column(name="TAAL", length=3, nullable=false)
   private String  taal;
   @Id
   @Column(name="WERELDDEEL_ID", nullable=false)
@@ -114,11 +115,11 @@ public class WerelddeelnaamDto extends Dto
   }
 
   public void setNaam(String naam) {
-    this.naam         = naam;
+    this.naam         = DoosUtils.strip(naam);
   }
 
   public void setTaal(String taal) {
-    this.taal         = taal;
+    this.taal         = DoosUtils.stripToLowerCase(taal);
   }
 
   public void setWerelddeelId(Long werelddeelId) {

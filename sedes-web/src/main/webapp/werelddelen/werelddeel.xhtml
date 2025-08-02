@@ -1,11 +1,10 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
@@ -40,7 +39,7 @@
           ]
         } );
         $( '#werelddeelnamenTabel tbody').on('click', 'tr', function() {
-          if (werelddeelnamenTabel.row(this).data() === undefined || #{!sedesWerelddeel.user}) {
+          if (werelddeelnamenTabel.row(this).data() === undefined || #{!sedesWerelddeel.user} || #{!sedesWerelddeel.aktie.wijzig}) {
             return;
           }
           var jsfCommandLink = document.getElementById('formWerelddeel:linkWerelddeelnaam');
@@ -66,7 +65,7 @@
           <h:commandLink id="addWerelddeelnamen" class="is-hidden" action="#{sedesWerelddeel.createDetail}" />
 
           <d:spacer aantal="2"/>
-          <d:crudbuttonbar bean="#{sedesWerelddeel}" form="formWerelddeel" returnto="#{sedes.path}/werelddelen/werelddelen.xhtml" tekst="#{sedesWerelddeel.i18nWerelddeelnaam(sedesWerelddeel.werelddeel.werelddeelId)}" />
+          <d:crudbuttonbar bean="#{sedesWerelddeel}" form="formWerelddeel" returnto="#{sedes.path}/werelddelen/werelddelen.xhtml" />
         </h:form>
       </div>
     </div>

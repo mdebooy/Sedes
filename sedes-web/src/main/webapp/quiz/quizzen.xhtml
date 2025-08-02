@@ -1,11 +1,9 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-12">
@@ -16,11 +14,11 @@
           <div class="columns is-centered">
             <div class="column is-4">
               <h:commandLink action="#{sedesQuiz.startQuiz}" id="heleWereld" styleClass="button is-fullwidth">#{i18nTeksten.tekst('sedes.hele.wereld')}</h:commandLink>
-              <t:dataList var="quiz" value="#{sedesQuiz.quizzen}" rowIndexVar="idx">
-                <div>
+              <h:dataTable id="quizzenTabel" class="table" var="quiz" value="#{sedesQuiz.quizzen}">
+                <h:column>
                   <h:commandLink action="#{sedesQuiz.startQuiz(quiz.werelddeelId)}" id="id#{quiz.werelddeelId}" styleClass="button is-fullwidth">#{quiz.naam}</h:commandLink>
-                </div>
-              </t:dataList>
+                </h:column>
+              </h:dataTable>
             </div>
           </div>
         </h:form>

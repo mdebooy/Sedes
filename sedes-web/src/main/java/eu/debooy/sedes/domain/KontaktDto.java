@@ -17,19 +17,21 @@
 
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.Datum;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.sedes.SedesUtils;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -201,27 +203,15 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   }
 
   public void setGeboortedatum(Date geboortedatum) {
-    if (null == geboortedatum) {
-      this.geboortedatum  = null;
-    } else {
-      this.geboortedatum  = new Date(geboortedatum.getTime());
-    }
+    this.geboortedatum  = Datum.stripTime(geboortedatum);
   }
 
   public void setGebruikersnaam(String gebruikersnaam) {
-    if (null == gebruikersnaam) {
-      this.gebruikersnaam = null;
-    } else {
-      this.gebruikersnaam = gebruikersnaam.trim();
-    }
+    this.gebruikersnaam = DoosUtils.strip(gebruikersnaam);
   }
 
   public void setInitialen(String initialen) {
-    if (null == initialen) {
-      this.initialen      = null;
-    } else {
-      this.initialen      = initialen.trim();
-    }
+    this.initialen      = DoosUtils.strip(initialen);
   }
 
   public void setKontaktId(Long kontaktId) {
@@ -233,54 +223,30 @@ public class KontaktDto extends Dto implements Comparable<KontaktDto> {
   }
 
   public void setNaam(String naam) {
-    if (null == naam) {
-      this.naam           = null;
-    } else {
-      this.naam           = naam.trim();
-    }
+    this.naam           = DoosUtils.strip(naam);
   }
 
   public void setOpmerking(String opmerking) {
-    if (null == opmerking) {
-      this.opmerking      = null;
-    } else {
-      this.opmerking      = opmerking.trim();
-    }
+    this.opmerking      = DoosUtils.strip(opmerking);
   }
 
   public void setPseudoniem(String pseudoniem) {
-    if (null == pseudoniem) {
-      this.pseudoniem     = null;
-    } else {
-      this.pseudoniem     = pseudoniem.trim();
-    }
+    this.pseudoniem     = DoosUtils.strip(pseudoniem);
   }
 
   public void setRoepnaam(String roepnaam) {
-    if (null == roepnaam) {
-      this.roepnaam       = null;
-    } else {
-      this.roepnaam       = roepnaam.trim();
-    }
+    this.roepnaam       = DoosUtils.strip(roepnaam);
   }
 
   public void setTaal(String taal) {
-    this.taal             = taal;
+    this.taal             = DoosUtils.stripToLowerCase(taal);
   }
 
   public void setTussenvoegsel(String tussenvoegsel) {
-    if (null == tussenvoegsel) {
-      this.tussenvoegsel  = null;
-    } else {
-      this.tussenvoegsel  = tussenvoegsel.trim();
-    }
+    this.tussenvoegsel  = DoosUtils.strip(tussenvoegsel);
   }
 
   public void setVoornaam(String voornaam) {
-    if (null == voornaam) {
-      this.voornaam       = null;
-    } else {
-      this.voornaam       = voornaam.trim();
-    }
+    this.voornaam       = DoosUtils.strip(voornaam);
   }
 }

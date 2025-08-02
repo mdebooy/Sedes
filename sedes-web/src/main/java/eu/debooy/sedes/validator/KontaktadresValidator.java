@@ -18,11 +18,12 @@
 package eu.debooy.sedes.validator;
 
 import eu.debooy.doosutils.ComponentsUtils;
-import eu.debooy.doosutils.DoosUtils;
-import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
+import eu.debooy.doosutils.validator.ValidatorUtils;
 import eu.debooy.sedes.domain.KontaktadresDto;
 import eu.debooy.sedes.form.Kontaktadres;
+import static eu.debooy.sedes.validator.LandnaamValidator.LBL_NAAM;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,17 +31,20 @@ import java.util.List;
 /**
  * @author Marco de Booij
  */
-public class KontaktadresValidator extends SedesValidator {
-  protected static final  String  LBL_ADRESID           =
-      "_I18N.label.adres";
-  protected static final  String  LBL_KONTAKTID         =
-      "_I18N.label.kontakt";
+public class KontaktadresValidator {
+  protected static final  String  LBL_ADRESID           = "_I18N.label.adres";
+  protected static final  String  LBL_EINDDATUM         =
+      "_I18N.label.totdatum";
+  protected static final  String  LBL_KONTAKTID         = "_I18N.label.kontakt";
   protected static final  String  LBL_KONTAKTADRESTYPE  =
       "_I18N.label.kontaktadrestype";
+  protected static final  String  LBL_OPMERKING         =
+          "_I18N.label.opmerking";
+  protected static final  String  LBL_STARTDATUM        =
+      "_I18N.label.vandatum";
   protected static final  String  LBL_SUBADRES          =
       "_I18N.label.subadres";
-  protected static final  String  LBL_TAAL              =
-          "_I18N.label.taal";
+  protected static final  String  LBL_TAAL              = "_I18N.label.taal";
 
   private KontaktadresValidator() {
    throw new IllegalStateException("Utility class");
@@ -61,87 +65,52 @@ public class KontaktadresValidator extends SedesValidator {
 
     List<Message> fouten  = new ArrayList<>();
 
-    valideerAdresId(kontaktadres.getAdresId(), fouten);
-    valideerDatums(kontaktadres.getStartdatum(), kontaktadres.getEinddatum(),
-                   fouten);
-    valideerKontaktId(kontaktadres.getKontaktId(), fouten);
-    valideerKontaktadrestype(kontaktadres.getKontaktadrestype(), fouten);
-    valideerOpmerking(kontaktadres.getOpmerking(), fouten);
-    valideerSubAdres(kontaktadres.getSubAdres(), fouten);
-    valideerTaal(kontaktadres.getTaal(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getAdresId())
+                               .setAttribute(KontaktadresDto.COL_ADRESID)
+                               .setLabel(LBL_ADRESID)
+                               .setRequired()
+                               .valideer().getFouten());
+    ValidatorUtils.valideerDatums(kontaktadres.getStartdatum(),
+                                  kontaktadres.getEinddatum(),
+                                  fouten, KontaktadresDto.COL_STARTDATUM,
+                                  KontaktadresDto.COL_EINDDATUM, LBL_STARTDATUM,
+                                  LBL_EINDDATUM);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getKontaktId())
+                               .setAttribute(KontaktadresDto.COL_KONTAKTID)
+                               .setLabel(LBL_KONTAKTID)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getKontaktadrestype())
+                               .setAttribute(
+                                   KontaktadresDto.COL_KONTAKTADRESTYPE)
+                               .setLabel(LBL_KONTAKTADRESTYPE)
+                               .setMaxLengte(10)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getOpmerking())
+                               .setAttribute( KontaktadresDto.COL_OPMERKING)
+                               .setLabel(LBL_OPMERKING)
+                               .setMaxLengte(2000)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getSubAdres())
+                               .setAttribute( KontaktadresDto.COL_SUBADRES)
+                               .setLabel(LBL_SUBADRES)
+                               .setMaxLengte(255)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getTaal())
+                               .setAttribute(KontaktadresDto.COL_TAAL)
+                               .setLabel(LBL_NAAM)
+                               .setFixLengte(3)
+                               .setRequired()
+                               .setLowerCase()
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerAdresId(Long adresId, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(adresId)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_ADRESID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_ADRESID})
-                            .build());
-    }
-  }
-
-  private static void valideerKontaktId(Long kontaktId, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(kontaktId)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_KONTAKTID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_KONTAKTID})
-                            .build());
-    }
-  }
-
-  private static void valideerKontaktadrestype(String kontaktadrestype,
-                                               List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(kontaktadrestype)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_KONTAKTADRESTYPE)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_KONTAKTADRESTYPE})
-                            .build());
-
-      return;
-    }
-
-    if (kontaktadrestype.length() > 10) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_KONTAKTADRESTYPE)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_KONTAKTADRESTYPE, 10})
-                            .build());
-    }
-  }
-
-  private static void valideerSubAdres(String subAdres,
-                                        List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(subAdres).length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_SUBADRES)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_SUBADRES, 255})
-                            .build());
-    }
-  }
-
-  private static void valideerTaal(String taal,  List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(taal)) {
-      return;
-    }
-
-    if (taal.length() != 3) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktadresDto.COL_TAAL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.FIXLENGTH)
-                            .setParams(new Object[]{LBL_TAAL, 3})
-                            .build());
-    }
   }
 }

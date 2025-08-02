@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.AdresDto;
 import java.io.Serializable;
@@ -102,35 +103,22 @@ public class Adres
   }
 
   public void setAdresId(Long adresId) {
-    this.adresId        = adresId;
+    this.adresId      = adresId;
   }
 
   public void setAdresdata(String adresdata) {
-    if (null == adresdata) {
-      this.adresdata    = null;
-    } else {
-      this.adresdata    = adresdata.trim();
-    }
+    this.adresdata    = DoosUtils.strip(adresdata);
   }
 
   public void setOpmerking(String opmerking) {
-    if (null == opmerking) {
-      this.opmerking    = null;
-    } else {
-      this.opmerking    = opmerking.trim();
-    }
+    this.opmerking    = DoosUtils.strip(opmerking);
   }
 
   public void setPlaatsId(Long plaatsId) {
-    this.plaatsId       = plaatsId;
+    this.plaatsId     = plaatsId;
   }
 
   public void setSubPostkode(String subPostkode) {
-    if (null == subPostkode) {
-      this.subPostkode  = null;
-    } else {
-      this.subPostkode  = subPostkode.trim();
-    }
-    this.subPostkode  = subPostkode;
+    this.subPostkode  = DoosUtils.strip(subPostkode);
   }
 }

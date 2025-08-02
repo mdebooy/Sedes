@@ -1,11 +1,11 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
      <script src="/sedes/js/kontakt.js"></script>
      <script type="text/javascript" charset="utf-8">
@@ -13,9 +13,11 @@
         var taal = '#{gebruiker.locale.language}';
         var kontakttype = '#{sedesKontakt.kontakt.kontakttype}';
 
-        $("#formKontakt\\:geboortedatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
-                                                      monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
-                                                      dateFormat: '#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}'});
+        if (#{!sedesKontakt.aktie.readonly}) {
+          $("#formKontakt\\:geboortedatum").datepicker({dayNamesMin: [ #{i18nTeksten.tekst('kalender.dagen.kort')} ],
+                                                        monthNames: [ #{i18nTeksten.tekst('kalender.maanden')} ],
+                                                        dateFormat: '#{i18nTeksten.tekst('kalender.datum.formaat.datepicker')}'});
+        }
         var taal = '#{gebruiker.locale.language}';
         var kontaktadressenTabel = $('#kontaktadressenTabel').DataTable( {
           ajax: { url: '/sedes/kontaktadressen/kontakt/#{sedesKontakt.kontakt.kontaktId}',
@@ -123,10 +125,10 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.kontakttype')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="kontakttype" value="#{sedesKontakt.kontakt.kontakttype}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" items="#{sedesKontakt.kontakttypes}" textvalue="#{sedesKontakt.kontakttype(sedesKontakt.kontakt.kontakttype)}" />
+                  <d:listbox id="kontakttype" value="#{sedesKontakt.kontakt.kontakttype}" items="#{sedesKontakt.kontakttypes}" textvalue="#{sedesKontakt.kontakttype(sedesKontakt.kontakt.kontakttype)}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" />
                   <d:label label="#{i18nTeksten.tekst('label.taal')}" />
                   <div class="field-body is-normal">
-                    <d:listbox id="taal" value="#{sedesKontakt.kontakt.taal}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" items="#{i18nTeksten.talenIso6392t()}" textvalue="#{i18nTeksten.taalIso6392t(sedesKontakt.kontakt.taal)}" />
+                    <d:listbox id="taal" value="#{sedesKontakt.kontakt.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesKontakt.kontakt.taal)}" fullwidth="true" required="true" readonly="#{sedesKontakt.aktie.readonly}" />
                   </div>
                 </div>
               </div>
@@ -183,9 +185,9 @@
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesKontakt}" form="formKontakt" returnto="#{sedes.path}/kontakten/kontakten.xhtml" tekst="#{sedesKontakt.kontakt.naam}" />
+              <d:crudbuttonbar bean="#{sedesKontakt}" form="formKontakt" returnto="#{sedes.path}/kontakten/kontakten.xhtml" />
 
-              <t:div rendered="#{!sedesKontakt.aktie.nieuw}">
+              <c:if test="#{!sedesKontakt.aktie.nieuw}">
                 <table id="kontaktadressenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="kontaktadressenTabel" />
                 <h:commandLink id="linkKontaktadres" class="is-hidden" action="#{sedesKontaktadres.retrieve}">
                   <f:param name="kontaktadresId" value="XX" />
@@ -195,7 +197,7 @@
                   <f:param name="kontaktId" value="XX" />
                   <f:param name="returnTo" value="/kontakten/kontakt.xhtml" />
                 </h:commandLink>
-              </t:div>
+              </c:if>
             </div>
           </div>
         </h:form>

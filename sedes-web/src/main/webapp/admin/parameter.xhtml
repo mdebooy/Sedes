@@ -1,11 +1,10 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-10">
@@ -17,18 +16,18 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst(sedesAppParam.parameter)}" />
                 <div class="field-body is-normal">
-                  <t:div rendered="#{!sedesAppParam.isSpeciaal(sedesAppParam.sleutel)}">
+                  <c:if test="#{!sedesAppParam.isSpeciaal(sedesAppParam.sleutel)}">
                     <d:inputText id="waarde" value="#{sedesAppParam.waarde}" required="true" maxlength="255" size="100" />
-                  </t:div>
-                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.default.landid'}">
-                    <d:listbox id="landId" value="#{sedesAppParam.landId}" items="#{sedesLand.selectLandnamen()}" fullwidth="true" required="true" textvalue="" />
-                  </t:div>
-                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.default.taal'}">
-                    <d:listbox id="taal" value="#{sedesAppParam.taal}" items="#{i18nTeksten.talenIso6392t()}" fullwidth="true" required="true" textvalue="" />
-                  </t:div>
-                  <t:div rendered="#{sedesAppParam.sleutel=='sedes.kontakt.type'}">
-                    <d:listbox id="kontakttype" value="#{sedesAppParam.kontakttype}" items="#{sedesKontakt.kontakttypes}" fullwidth="true" required="true" textvalue="" />
-                  </t:div>
+                  </c:if>
+                  <c:if test="#{sedesAppParam.sleutel=='sedes.default.landid'}">
+                    <d:listbox id="landId" value="#{sedesAppParam.landId}" items="#{sedesLand.selectLandnamen}" textvalue="" fullwidth="true" required="true" />
+                  </c:if>
+                  <c:if test="#{sedesAppParam.sleutel=='sedes.default.taal'}">
+                    <d:listbox id="taal" value="#{sedesAppParam.taal}" items="#{doosRemote.talenIso6392t}" textvalue="" fullwidth="true" required="true" />
+                  </c:if>
+                  <c:if test="#{sedesAppParam.sleutel=='sedes.kontakt.type'}">
+                    <d:listbox id="kontakttype" value="#{sedesAppParam.kontakttype}" items="#{sedesKontakt.kontakttypes}" textvalue="" fullwidth="true" required="true" />
+                  </c:if>
                 </div>
               </div>
 

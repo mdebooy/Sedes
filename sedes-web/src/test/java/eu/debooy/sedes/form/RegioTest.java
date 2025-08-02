@@ -111,12 +111,10 @@ public class RegioTest {
     regioDto.setLandId(TestConstants.LANDID);
     regioDto.setRegioId(TestConstants.REGIOID);
     regioDto.setRegiokode(TestConstants.REGIOKODE);
-    regioDto.setNaam(TestConstants.REGIONAAM);
 
     var instance  = new Regio(regioDto);
 
     assertEquals(regioDto.getLandId(), instance.getLandId());
-    assertEquals(regioDto.getNaam(), instance.getNaam());
     assertEquals(regioDto.getRegioId(), instance.getRegioId());
     assertEquals(regioDto.getRegiokode(), instance.getRegiokode());
   }
@@ -128,7 +126,6 @@ public class RegioTest {
     regio.persist(parameter);
 
     assertEquals(regio.getLandId(), parameter.getLandId());
-    assertEquals(regio.getNaam(), parameter.getNaam());
     assertEquals(regio.getRegioId(), parameter.getRegioId());
     assertEquals(regio.getRegiokode(), parameter.getRegiokode());
   }

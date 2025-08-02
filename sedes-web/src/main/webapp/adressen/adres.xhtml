@@ -1,11 +1,11 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
@@ -133,9 +133,9 @@
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesAdres}" form="formAdres" returnto="#{sedes.path}/adressen/adressen.xhtml" tekst="#{sedesAdres.adres.adresdata}" />
+              <d:crudbuttonbar bean="#{sedesAdres}" form="formAdres" returnto="#{sedes.path}/adressen/adressen.xhtml" />
 
-              <t:div rendered="#{!sedesAdres.aktie.nieuw}">
+              <c:if test="#{!sedesAdres.aktie.nieuw}">
                 <table id="kontaktadressenTabel" class="table is-striped is-narrow is-hoverable" aria-describedby="kontaktadressenTabel" />
                 <h:commandLink id="linkKontaktadres" class="is-hidden" action="#{sedesKontaktadres.retrieve}">
                   <f:param name="kontaktadresId" value="XX" />
@@ -145,7 +145,7 @@
                   <f:param name="adresId" value="XX" />
                   <f:param name="returnTo" value="/adressen/adres.xhtml" />
                 </h:commandLink>
-              </t:div>
+              </c:if>
             </div>
           </div>
         </h:form>

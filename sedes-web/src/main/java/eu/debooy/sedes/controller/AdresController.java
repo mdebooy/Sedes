@@ -26,9 +26,9 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.AdresDto;
 import eu.debooy.sedes.form.Adres;
 import eu.debooy.sedes.validator.AdresValidator;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +110,7 @@ public class AdresController extends Sedes {
       adresDto = getAdresService().adres(adresId);
       adres    = new Adres(adresDto);
       setAktie(PersistenceConstants.RETRIEVE);
+      setDeletetekst(adres.getAdresdata());
       setSubTitel(adres.getAdresdata());
       redirect(ADRES_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -167,6 +168,7 @@ public class AdresController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(adresDto.getAdresdata());
     setSubTitel(getTekst(TIT_UPDATE, adresDto.getAdresdata()));
   }
 }

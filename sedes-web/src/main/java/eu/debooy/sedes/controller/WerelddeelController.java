@@ -28,11 +28,11 @@ import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import eu.debooy.sedes.form.Werelddeel;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.WerelddeelnaamValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +156,8 @@ public class WerelddeelController extends Sedes {
     try {
       i18nWerelddeelnaam  =
         getWerelddeelnaamService()
-            .werelddeelnaam(werelddeelId, getGebruikersTaal()).getNaam();
+            .werelddeelnaam(werelddeelId,
+                            getGebruikersTaalInIso6392t()).getNaam();
     } catch(ObjectNotFoundException e) {
       try {
         i18nWerelddeelnaam  =
@@ -192,7 +193,10 @@ public class WerelddeelController extends Sedes {
       werelddeelDto = getWerelddeelService().werelddeel(werelddeelId);
       werelddeel    = new Werelddeel(werelddeelDto);
       setAktie(PersistenceConstants.RETRIEVE);
-      setSubTitel(werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
+      setDeletetekst(
+          werelddeelDto.getWerelddeelnaam(getGebruikersTaalInIso6392t())
+                       .getNaam());
+      setSubTitel(werelddeelDto.getWerelddeelnaam(getGebruikersTaalInIso6392t())
                                .getNaam());
       redirect(WERELDDEEL_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -219,6 +223,8 @@ public class WerelddeelController extends Sedes {
             werelddeelDto.getWerelddeelnaam(
                 ec.getRequestParameterMap().get(WerelddeelnaamDto.COL_TAAL)));
       setDetailAktie(PersistenceConstants.UPDATE);
+      setDetailDeletetekst(String.format("%s - %s", werelddeelnaam.getTaal(),
+                                                    werelddeelnaam.getNaam()));
       setDetailSubTitel(getTekst(DTIT_UPDATE));
       redirect(WERELDDEELNAAM_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -296,8 +302,8 @@ public class WerelddeelController extends Sedes {
           break;
       }
       setSubTitel(getTekst(TIT_UPDATE,
-                           werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
-                                        .getNaam()));
+          werelddeelDto.getWerelddeelnaam(getGebruikersTaalInIso6392t())
+                       .getNaam()));
       redirect(WERELDDEEL_REDIRECT);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, werelddeelnaam.getTaal());
@@ -312,7 +318,7 @@ public class WerelddeelController extends Sedes {
 
   public Collection<SelectItem> selectWerelddeelnamen() {
     return getWerelddeelnaamService()
-              .selectWerelddeelnamen(getGebruikersTaal());
+              .selectWerelddeelnamen(getGebruikersTaalInIso6392t());
   }
 
   public void update() {
@@ -322,8 +328,12 @@ public class WerelddeelController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(werelddeelDto
+                      .getWerelddeelnaam(getGebruikersTaalInIso6392t())
+                      .getNaam());
     setSubTitel(getTekst(TIT_UPDATE,
-                         werelddeelDto.getWerelddeelnaam(getGebruikersTaal())
-                                      .getNaam()));
+                         werelddeelDto
+                            .getWerelddeelnaam(getGebruikersTaalInIso6392t())
+                            .getNaam()));
   }
 }

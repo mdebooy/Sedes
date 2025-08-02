@@ -1,19 +1,20 @@
-/**
- * Copyright 2015 Marco de Booij
- *
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by
+/*
+ * Copyright (c) 2025 Marco de Booij
+ *  
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by
  * the European Commission - subsequent versions of the EUPL (the "Licence");
  * you may not use this work except in compliance with the Licence. You may
  * obtain a copy of the Licence at:
- *
+ * 
  * https://joinup.ec.europa.eu/software/page/eupl
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
 package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.DoosUtils;
@@ -26,57 +27,54 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class LandnaamPK implements Comparable<LandnaamPK>, Serializable {
+public class RegionaamPK implements Comparable<RegionaamPK>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
-  private Long    landId;
+  private Long    regioId;
   private String  taal;
 
-  public LandnaamPK() {}
+  public RegionaamPK() {}
 
-  public LandnaamPK(Long landId, String taal) {
+  public RegionaamPK(Long regioId, String taal) {
     super();
-    this.landId = landId;
-    this.taal   = taal;
+    this.regioId  = regioId;
+    this.taal     = taal;
   }
 
   @Override
-  public int compareTo(LandnaamPK landnaamPK) {
-    return new CompareToBuilder().append(landId, landnaamPK.landId)
+  public int compareTo(RegionaamPK landnaamPK) {
+    return new CompareToBuilder().append(regioId, landnaamPK.regioId)
                                  .append(taal, landnaamPK.taal)
                                  .toComparison();
   }
 
   @Override
   public boolean equals(Object object) {
-    if (!(object instanceof LandnaamPK)) {
+    if (!(object instanceof RegionaamPK)) {
       return false;
     }
-    var landnaamPK = (LandnaamPK) object;
-    return new EqualsBuilder().append(landId, landnaamPK.landId)
+    var landnaamPK = (RegionaamPK) object;
+    return new EqualsBuilder().append(regioId, landnaamPK.regioId)
                               .append(taal, landnaamPK.taal)
                               .isEquals();
   }
 
-  public Long getLandId() {
-    return landId;
+  public Long getRegioId() {
+    return regioId;
   }
 
-  /**
-   * @return String de taal
-   */
   public String getTaal() {
     return taal;
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(landId)
+    return new HashCodeBuilder().append(regioId)
                                 .append(taal).toHashCode();
   }
 
-  public void setLandId(Long landId) {
-    this.landId  = landId;
+  public void setRegioId(Long regioId) {
+    this.regioId  = regioId;
   }
 
   public void setTaal(String taal) {
@@ -85,8 +83,8 @@ public class LandnaamPK implements Comparable<LandnaamPK>, Serializable {
 
   @Override
   public String toString() {
-    return new StringBuilder().append("LandnaamPK")
-                              .append(" (landId=").append(landId)
+    return new StringBuilder().append("RegionaamPK")
+                              .append(" (regioId=").append(regioId)
                               .append(", taal=").append(taal)
                               .append(")").toString();
   }

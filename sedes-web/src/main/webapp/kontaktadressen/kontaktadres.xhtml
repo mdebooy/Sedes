@@ -1,12 +1,10 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
@@ -32,10 +30,10 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.kontaktadrestype')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="kontaktadrestype" value="#{sedesKontaktadres.kontaktadres.kontaktadrestype}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" items="#{sedesKontaktadres.kontaktadrestypes}" textvalue="#{sedesKontaktadres.kontaktadrestype(sedesKontaktadres.kontaktadres.kontaktadrestype)}" />
+                  <d:listbox id="kontaktadrestype" value="#{sedesKontaktadres.kontaktadres.kontaktadrestype}" items="#{sedesKontaktadres.kontaktadrestypes}" textvalue="#{sedesKontaktadres.kontaktadrestype(sedesKontaktadres.kontaktadres.kontaktadrestype)}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
                   <d:label label="#{i18nTeksten.tekst('label.taal')}" />
                   <div class="field-body is-normal">
-                    <d:listbox id="taal" value="#{sedesKontaktadres.kontaktadres.taal}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" items="#{sedesKontaktadres.talenIso6392t}" textvalue="#{sedesKontaktadres.taal}" />
+                    <d:listbox id="taal" value="#{sedesKontaktadres.kontaktadres.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesKontaktadres.kontaktadres.taal)}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
                   </div>
                 </div>
               </div>
@@ -78,7 +76,7 @@
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesKontaktadres}" form="formKontaktadres" returnto="#{sedes.path}#{sedesKontaktadres.returnTo}" tekst="#{sedesKontaktadres.inOmschrijving}" />
+              <d:crudbuttonbar bean="#{sedesKontaktadres}" form="formKontaktadres" returnto="#{sedes.path}#{sedesKontaktadres.returnTo}" />
             </div>
           </div>
         </h:form>

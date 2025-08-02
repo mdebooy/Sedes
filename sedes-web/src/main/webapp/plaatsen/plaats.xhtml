@@ -1,25 +1,17 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-12">
         <h:form id="formPlaats">
-          <d:titel titel="#{sedesPlaats.subTitel}" />
+          <d:titel titel="#{sedesPlaats.subTitel} - #{gebruiker.locale}" />
 
           <div class="columns is-centered">
             <div class="column">
-              <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.plaatskode')}" />
-                <div class="field-body is-normal">
-                  <d:inputText id="plaatskode" value="#{sedesPlaats.plaats.plaatskode}" maxlength="5" size="5" required="true" readonly="#{sedesPlaats.aktie.readonly}" />
-                </div>
-              </div>
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.plaatsnaam')}" />
                 <div class="field-body is-normal">
@@ -29,11 +21,37 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="landId" value="#{sedesPlaats.plaats.landId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesPlaats.selectPlaatsnamen()}" textvalue="#{sedesPlaats.i18nPlaatsnaam(sedesPlaats.plaats.landId)}" />
+                  <d:listbox id="landId" value="#{sedesPlaats.plaats.landId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesLand.selectLandnamen()}" textvalue="#{sedesLand.i18nLandnaam(sedesPlaats.plaats.landId)}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
+                <div class="field-body is-normal">
+                  <d:listbox id="regioId" value="#{sedesPlaats.plaats.regioId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesRegio.selectRegios()}" textvalue="#{sedesRegio.getRegio(sedesPlaats.plaats.regioId).naam}" />
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.postkode')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="postkode" value="#{sedesPlaats.plaats.postkode}" maxlength="5" size="10" readonly="#{sedesPlaats.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.zonenummer')}" />
+                  <div class="field-body is-normal">
+                    <d:inputText id="zonenummer" value="#{sedesPlaats.plaats.zonenummer}" maxlength="6" size="11" readonly="#{sedesPlaats.aktie.readonly}" />
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <d:label label="#{i18nTeksten.tekst('label.breedtegraad')}" />
+                <div class="field-body is-normal">
+                  <d:inputText id="breedtegraad" value="#{sedesPlaats.plaats.breedtegraad}" pattern="#0.000000" maxlength="10" size="10" readonly="#{sedesPlaats.aktie.readonly}" />
+                  <d:label label="#{i18nTeksten.tekst('label.lengtegraad')}" />
+                  <div class="field-body is-normal">
+                    <d:inputText id="lengtegraad" value="#{sedesPlaats.plaats.lengtegraad}" pattern="##0.000000" maxlength="11" size="11" readonly="#{sedesPlaats.aktie.readonly}" />
+                  </div>
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesPlaats}" form="formPlaats" returnto="#{sedes.path}/plaatsen/plaatsen.xhtml" tekst="#{sedesPlaats.plaats.plaatsnaam}" />
+              <d:crudbuttonbar bean="#{sedesPlaats}" form="formPlaats" returnto="#{sedes.path}/plaatsen/plaatsen.xhtml" />
             </div>
           </div>
         </h:form>

@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandnaamDto;
 import java.io.Serializable;
@@ -113,22 +114,22 @@ public class Landnaam
   }
 
   public void setHoofdstad(String hoofdstad) {
-    this.hoofdstad  = hoofdstad;
+    this.hoofdstad      = DoosUtils.strip(hoofdstad);
   }
 
   public void setLandId(Long landId) {
-    this.landId = landId;
+    this.landId         = landId;
   }
 
   public void setNaam(String naam) {
-    this.naam = naam;
+    this.naam           = DoosUtils.strip(naam);
   }
 
   public void setOfficieleNaam(String officieleNaam) {
-    this.officieleNaam  = officieleNaam;
+    this.officieleNaam  = DoosUtils.strip(officieleNaam);
   }
 
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal           = DoosUtils.stripToLowerCase(taal);
   }
 }

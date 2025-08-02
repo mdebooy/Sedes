@@ -21,30 +21,30 @@ import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 
 /**
  * @author Marco de Booij
  */
-public final class KontaktValidator extends SedesValidator {
+public final class KontaktValidator {
   protected static final  String  LBL_AANSPREEKID     =
       "_I18N.label.aanspreektitel";
   protected static final  String  LBL_GEBOORTEDATUM   =
       "_I18N.label.geboortedatum";
   protected static final  String  LBL_GEBRUIKERSNAAM  =
       "_I18N.label.gebruikersnaam";
-  protected static final  String  LBL_INITIALEN       =
-      "_I18N.label.initialen";
+  protected static final  String  LBL_INITIALEN       = "_I18N.label.initialen";
   protected static final  String  LBL_KONTAKTTYPE     =
       "_I18N.label.kontakttype";
   protected static final  String  LBL_NAAM            = "_I18N.label.naam";
+  protected static final  String  LBL_OPMERKING       = "_I18N.label.opmerking";
   protected static final  String  LBL_PSEUDONIEM      =
       "_I18N.label.pseudoniem";
   protected static final  String  LBL_ROEPNAAM        = "_I18N.label.roepnaam";
@@ -67,21 +67,21 @@ public final class KontaktValidator extends SedesValidator {
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
-      case Sedes.TYP_GROEP:
+      case Sedes.TYP_GROEP -> {
         kontakt.setAanspreekId(null);
         kontakt.setInitialen(null);
         kontakt.setPseudoniem(null);
         kontakt.setRoepnaam(null);
         kontakt.setTussenvoegsel(null);
-        break;
-      case Sedes.TYP_RECHTSPERSOON:
+      }
+      case Sedes.TYP_RECHTSPERSOON -> {
         kontakt.setAanspreekId(null);
         kontakt.setInitialen(null);
         kontakt.setPseudoniem(null);
         kontakt.setTussenvoegsel(null);
-        break;
-      default:
-        break;
+      }
+      default -> {
+      }
     }
 
     return valideer(new Kontakt(kontakt));
@@ -93,91 +93,97 @@ public final class KontaktValidator extends SedesValidator {
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
-      case Sedes.TYP_GROEP:
+      case Sedes.TYP_GROEP -> {
         kontakt.setAanspreekId(null);
         kontakt.setInitialen(null);
         kontakt.setPseudoniem(null);
         kontakt.setRoepnaam(null);
         kontakt.setTussenvoegsel(null);
-        break;
-      case Sedes.TYP_RECHTSPERSOON:
+      }
+      case Sedes.TYP_RECHTSPERSOON -> {
         kontakt.setAanspreekId(null);
         kontakt.setInitialen(null);
         kontakt.setPseudoniem(null);
         kontakt.setTussenvoegsel(null);
-        break;
-      default:
-        break;
+      }
+      default -> {
+      }
     }
 
     List<Message> fouten  = new ArrayList<>();
 
-    valideerAanspreekId(kontakt.getAanspreekId(), fouten);
-    valideerGeboortedatum(kontakt.getGeboortedatum(), fouten);
-    valideerGebruikersnaam(kontakt.getGebruikersnaam(), fouten);
-    valideerInitialen(kontakt.getInitialen(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getAanspreekId())
+                               .setAttribute(KontaktDto.COL_AANSPREEKID)
+                               .setLabel(LBL_AANSPREEKID)
+                               .setMaxLengte(10)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getGeboortedatum())
+                               .setAttribute(KontaktDto.COL_GEBOORTEDATUM)
+                               .setLabel(LBL_GEBOORTEDATUM)
+                               .setVerleden()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getGebruikersnaam())
+                               .setAttribute(KontaktDto.COL_GEBRUIKERSNAAM)
+                               .setLabel(LBL_GEBRUIKERSNAAM)
+                               .setMaxLengte(20)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getInitialen())
+                               .setAttribute(KontaktDto.COL_INITIALEN)
+                               .setLabel(LBL_INITIALEN)
+                               .setMaxLengte(20)
+                               .valideer().getFouten());
     valideerKontakttype(kontakt.getKontakttype(), fouten);
-    valideerNaam(kontakt.getNaam(), fouten);
-    valideerOpmerking(kontakt.getOpmerking(), fouten);
-    valideerPseudoniem(kontakt.getPseudoniem(), fouten);
-    valideerRoepnaam(kontakt.getRoepnaam(), fouten);
-    valideerTaal(kontakt.getTaal(), fouten);
-    valideerTussenvoegsel(kontakt.getTussenvoegsel(), fouten);
-    valideerVoornaam(kontakt.getVoornaam(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getNaam())
+                               .setAttribute(KontaktDto.COL_NAAM)
+                               .setLabel(LBL_NAAM)
+                               .setMaxLengte(255)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getOpmerking())
+                               .setAttribute(KontaktDto.COL_OPMERKING)
+                               .setLabel(LBL_OPMERKING)
+                               .setMaxLengte(2000)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getPseudoniem())
+                               .setAttribute(KontaktDto.COL_PSEUDONIEM)
+                               .setLabel(LBL_PSEUDONIEM)
+                               .setMaxLengte(255)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getRoepnaam())
+                               .setAttribute(KontaktDto.COL_ROEPNAAM)
+                               .setLabel(LBL_ROEPNAAM)
+                               .setMaxLengte(255)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getTaal())
+                               .setAttribute(KontaktDto.COL_TAAL)
+                               .setLabel(LBL_TAAL)
+                               .setFixLengte(3)
+                               .setLowerCase()
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getTussenvoegsel())
+                               .setAttribute(KontaktDto.COL_TUSSENVOEGSEL)
+                               .setLabel(LBL_TUSSENVOEGSEL)
+                               .setMaxLengte(10)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontakt.getVoornaam())
+                               .setAttribute(KontaktDto.COL_VOORNAAM)
+                               .setLabel(LBL_VOORNAAM)
+                               .setMaxLengte(255)
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerAanspreekId(String aanspreekId,
-                                          List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(aanspreekId).length() > 10) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_AANSPREEKID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_AANSPREEKID, 10})
-                            .build());
-    }
-  }
-
-  private static void valideerGeboortedatum(Date geboortedatum,
-                                            List<Message> fouten) {
-    if (null == geboortedatum) {
-      return;
-    }
-
-    if (geboortedatum.after(new Date())) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_GEBOORTEDATUM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.FUTURE)
-                            .setParams(new Object[]{LBL_GEBOORTEDATUM})
-                            .build());
-    }
-  }
-
-  private static void valideerGebruikersnaam(String gebruikersnaam,
-                                             List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(gebruikersnaam).length() > 20) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_GEBRUIKERSNAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_GEBRUIKERSNAAM, 20})
-                            .build());
-    }
-  }
-
-  private static void valideerInitialen(String initialen,
-                                        List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(initialen).length() > 20) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_INITIALEN)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_INITIALEN, 20})
-                            .build());
-    }
   }
 
   private static void valideerKontakttype(String kontakttype,
@@ -202,96 +208,6 @@ public final class KontaktValidator extends SedesValidator {
                                                             Sedes.TYP_GROEP,
                                                             Sedes.TYP_PERSOON),
                                                     Sedes.TYP_RECHTSPERSOON})
-                            .build());
-    }
-  }
-
-  private static void valideerNaam(String naam, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(naam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_NAAM})
-                            .build());
-      return;
-    }
-
-    if (naam.length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_NAAM, 255})
-                            .build());
-    }
-  }
-
-  private static void valideerPseudoniem(String pseudoniem,
-                                         List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(pseudoniem).length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_PSEUDONIEM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_PSEUDONIEM, 255})
-                            .build());
-    }
-  }
-
-  private static void valideerRoepnaam(String roepnaam,
-                                       List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(roepnaam).length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_ROEPNAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_ROEPNAAM, 255})
-                            .build());
-    }
-  }
-
-  private static void valideerTaal(String taal, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(taal)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_TAAL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_TAAL})
-                            .build());
-      return;
-    }
-
-    if (taal.length() != 3) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_TAAL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.FIXLENGTH)
-                            .setParams(new Object[]{LBL_TAAL, 3})
-                            .build());
-    }
-  }
-
-  private static void valideerTussenvoegsel(String tussenvoegsel,
-                                            List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(tussenvoegsel).length() > 10) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_TUSSENVOEGSEL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_TUSSENVOEGSEL, 10})
-                            .build());
-    }
-  }
-
-  private static void valideerVoornaam(String voornaam,
-                                       List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(voornaam).length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(KontaktDto.COL_VOORNAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_VOORNAAM, 255})
                             .build());
     }
   }

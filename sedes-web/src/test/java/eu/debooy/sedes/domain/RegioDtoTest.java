@@ -17,8 +17,6 @@
 package eu.debooy.sedes.domain;
 
 import eu.debooy.sedes.TestConstants;
-import java.util.Set;
-import java.util.TreeSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +38,6 @@ public class RegioDtoTest {
     regioDto.setLandId(TestConstants.LANDID);
     regioDto.setRegioId(TestConstants.REGIOID);
     regioDto.setRegiokode(TestConstants.REGIOKODE);
-    regioDto.setNaam(TestConstants.REGIONAAM);
   }
 
   @Test
@@ -77,11 +74,6 @@ public class RegioDtoTest {
   }
 
   @Test
-  public void testGetNaam() {
-    assertEquals(TestConstants.REGIONAAM, regioDto.getNaam());
-  }
-
-  @Test
   public void testGetRegioId() {
     assertEquals(TestConstants.REGIOID, regioDto.getRegioId());
   }
@@ -97,30 +89,6 @@ public class RegioDtoTest {
   }
 
   @Test
-  public void testNaamComparator() {
-    var groter  = new RegioDto();
-    var kleiner = new RegioDto();
-
-    groter.setNaam(TestConstants.REGIONAAM_G);
-    kleiner.setNaam(TestConstants.REGIONAAM_K);
-
-    var             comparator  = new RegioDto.NaamComparator();
-    Set<RegioDto>   regios      = new TreeSet<>(comparator);
-    regios.add(groter);
-    regios.add(regioDto);
-    regios.add(kleiner);
-
-    assertEquals(3, regios.size());
-
-    var tabel = new RegioDto[regios.size()];
-    System.arraycopy(regios.toArray(), 0, tabel, 0, regios.size());
-
-      assertEquals(kleiner.getNaam(), tabel[0].getNaam());
-    assertEquals(regioDto.getNaam(), tabel[1].getNaam());
-    assertEquals(groter.getNaam(), tabel[2].getNaam());
-  }
-
-  @Test
   public void testSetLandId() {
     var instance  = new RegioDto();
 
@@ -129,17 +97,6 @@ public class RegioDtoTest {
     instance.setLandId(TestConstants.LANDID);
 
     assertEquals(TestConstants.LANDID, instance.getLandId());
-  }
-
-  @Test
-  public void testSetNaam() {
-    var instance  = new RegioDto();
-
-    assertNotEquals(TestConstants.REGIONAAM, instance.getNaam());
-
-    instance.setNaam(TestConstants.REGIONAAM);
-
-    assertEquals(TestConstants.REGIONAAM, instance.getNaam());
   }
 
   @Test

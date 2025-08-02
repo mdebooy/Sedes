@@ -222,7 +222,7 @@ function getPlaatsnaam(plaatsId) {
   return plaats.plaatsnaam + ' (' + land.postLandkode.toString().trim() + ')';
 }
 
-function getRegionaam(regioId) {
+function getRegio(regioId) {
   var regio = {};
   if (regios.hasOwnProperty(regioId)) {
     regio = regios[regioId];
@@ -237,10 +237,25 @@ function getRegionaam(regioId) {
     });
   }
 
-  return regio.naam;
+  return regio;
 }
 
-function getWerelddeelIdNaam(werelddeelId, taal) {
+function getRegioIdNaam(regioId, taal) {
+  var regio = getRegio(regioId);
+
+  return getRegionaam(regio, taal);
+}
+
+function getRegionaam(regio, taal) {
+  var naam = regio.regionamen.findIndex(i => i.taal === taal);
+  if (naam < 0 || !regio.regionamen[naam].hasOwnProperty('naam')) {
+    return regio.regiokode;
+  }
+
+  return regio.regionamen[naam].naam;
+}
+
+function getWerelddeel(werelddeelId) {
   var werelddeel = {};
   if (werelddelen.hasOwnProperty(werelddeelId)) {
     werelddeel = werelddelen[werelddeelId];
@@ -255,14 +270,20 @@ function getWerelddeelIdNaam(werelddeelId, taal) {
     });
   }
 
-  return getWerelddeelnaam(werelddeel.werelddeelnamen, taal);
+  return werelddeel;
 }
 
-function getWerelddeelnaam(werelddeelnamen, taal) {
-  var naam = werelddeelnamen.findIndex(i => i.taal === taal);
-  if (naam < 0) {
+function getWerelddeelIdNaam(werelddeelId, taal) {
+  var werelddeel = getWerelddeel(werelddeelId);
+
+  return getWerelddeelnaam(werelddeel, taal);
+}
+
+function getWerelddeelnaam(werelddeel, taal) {
+  var naam = werelddeel.werelddeelnamen.findIndex(i => i.taal === taal);
+  if (naam < 0 || !werelddeel.werelddeelnamen[naam].hasOwnProperty('naam')) {
     return '';
   }
 
-  return werelddeelnamen[naam].naam;
+  return werelddeel.werelddeelnamen[naam].naam;
 }

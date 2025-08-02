@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.LandDto;
 import java.io.Serializable;
@@ -146,27 +147,27 @@ public class Land
   }
 
   public void setBestaat(boolean bestaat) {
-    this.bestaat  = bestaat;
+    this.bestaat            = bestaat;
   }
 
   public void setIso2(String iso2) {
-    this.iso2 = iso2;
+    this.iso2               = DoosUtils.stripToUpperCase(iso2);
   }
 
   public void setIso3(String iso3) {
-    this.iso3 = iso3;
+    this.iso3               = DoosUtils.stripToUpperCase(iso3);
   }
 
   public void setLandId(Long landId) {
-    this.landId = landId;
+    this.landId             = landId;
   }
 
   public void setLandnummer(Long landnummer) {
-    this.landnummer = landnummer;
+    this.landnummer         = landnummer;
   }
 
   public void setMuntId(Long muntId) {
-        this.muntId = muntId;
+    this.muntId             = muntId;
   }
 
   public void setPostkodeScheiding(String postkodeScheiding) {
@@ -174,18 +175,18 @@ public class Land
   }
 
   public void setPostkodeType(String postkodeType) {
-    this.postkodeType = postkodeType;
+    this.postkodeType       = DoosUtils.strip(postkodeType);
   }
 
   public void setPostLandkode(String postLandkode) {
-    this.postLandkode = postLandkode;
+    this.postLandkode       = DoosUtils.stripToUpperCase(postLandkode);
   }
 
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal               = DoosUtils.stripToLowerCase(taal);
   }
 
   public void setWerelddeelId(Long werelddeelId) {
-    this.werelddeelId = werelddeelId;
+    this.werelddeelId       = werelddeelId;
   }
 }

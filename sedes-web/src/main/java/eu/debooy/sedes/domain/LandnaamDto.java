@@ -16,15 +16,16 @@
  */
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Comparator;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -70,7 +71,7 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
   @Column(name="OFFICIELE_NAAM", length=255)
   private String    officieleNaam;
   @Id
-  @Column(name="TAAL", length=2, nullable=false)
+  @Column(name="TAAL", length=3, nullable=false)
   private String    taal;
 
   public static class NaamComparator
@@ -131,7 +132,7 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
   }
 
   public void setHoofdstad(String hoofdstad) {
-    this.hoofdstad      = hoofdstad;
+    this.hoofdstad      = DoosUtils.strip(hoofdstad);
   }
 
   public void setLandId(Long landId) {
@@ -139,14 +140,14 @@ public class LandnaamDto extends Dto implements Comparable<LandnaamDto> {
   }
 
   public void setNaam(String naam) {
-    this.naam           = naam;
+    this.naam           = DoosUtils.strip(naam);
   }
 
   public void setOfficieleNaam(String officieleNaam) {
-    this.officieleNaam  = officieleNaam;
+    this.officieleNaam  = DoosUtils.strip(officieleNaam);
   }
 
   public void setTaal(String taal) {
-    this.taal           = taal;
+    this.taal           = DoosUtils.stripToLowerCase(taal);
   }
 }

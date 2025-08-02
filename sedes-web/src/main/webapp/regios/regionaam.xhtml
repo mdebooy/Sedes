@@ -15,11 +15,11 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.taal')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="taal" value="#{sedesLand.landnaam.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesLand.landnaam.taal)}" fullwidth="true" required="true" readonly="#{!sedesLand.detailAktie.nieuw}" />
+                  <d:listbox id="taal" value="#{sedesRegio.regionaam.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesRegio.regionaam.taal)}" fullwidth="true" required="true" readonly="#{!sedesLand.detailAktie.nieuw}" />
                 </div>
               </div>
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.landnaam')}" />
+                <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
                 <div class="field-body is-normal">
                   <d:inputText id="naam" value="#{sedesLand.landnaam.naam}" maxlength="100" size="100" required="true" readonly="#{natuurTaxon.detailAktie.readonly}" />
                 </div>

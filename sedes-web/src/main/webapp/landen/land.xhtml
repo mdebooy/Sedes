@@ -1,11 +1,10 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
@@ -111,27 +110,27 @@
                 <div class="field-body is-normal">
                   <d:inputText id="postkodeScheiding" value="#{sedesLand.land.postkodeScheiding}" maxlength="10" size="10" readonly="#{sedesLand.aktie.readonly}" />
                   <d:label label="#{i18nTeksten.tekst('label.taal')}" />
-                  <d:listbox id="taal" value="#{sedesLand.land.taal}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{i18nTeksten.talen()}" textvalue="#{i18nTeksten.taal(sedesLand.land.taal)}" />
+                  <d:listbox id="taal" value="#{sedesLand.land.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesLand.land.taal)}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" />
                 </div>
               </div>
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.werelddeel')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" fullwidth="true" readonly="#{sedesLand.aktie.readonly}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" required="true" />
+                  <d:listbox id="werelddeelId" value="#{sedesLand.land.werelddeelId}" items="#{sedesWerelddeel.selectWerelddeelnamen()}" textvalue="#{sedesWerelddeel.i18nWerelddeelnaam(sedesLand.land.werelddeelId)}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.readonly}" />
                   <d:label label="#{i18nTeksten.tekst('label.munt')}" />
-                  <d:listbox id="muntId" value="#{sedesLand.land.muntId}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" items="#{sedesMunt.selectMunten()}" textvalue="#{sedesMunt.munt(sedesLand.land.muntId).naam}" />
+                  <d:listbox id="muntId" value="#{sedesLand.land.muntId}" items="#{sedesMunt.selectMunten()}" textvalue="#{sedesMunt.munt(sedesLand.land.muntId).naam}" fullwidth="true" required="true" readonly="#{sedesLand.aktie.bekijk}" />
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesLand}" form="formLand" returnto="#{sedes.path}/landen/landen.xhtml" tekst="#{sedesLand.naam}" />
+              <d:crudbuttonbar bean="#{sedesLand}" form="formLand" returnto="#{sedes.path}/landen/landen.xhtml" />
 
-              <t:div rendered="#{!sedesLand.aktie.nieuw}">
+              <h:panelGroup rendered="#{!sedesLand.aktie.nieuw}">
                 <table id="landnamenTabel" class="table is-striped is-narrow #{sedesLand.user ? 'is-hoverable' : ''}" aria-describedby="landnamenTabel" />
                 <h:commandLink id="linkLandnaam" class="is-hidden" action="#{sedesLand.retrieveDetail}">
                   <f:param name="taal" value="XX" />
                 </h:commandLink>
                 <h:commandLink id="addLandnamen" class="is-hidden" action="#{sedesLand.createDetail}" />
-              </t:div>
+              </h:panelGroup>
             </div>
           </div>
         </h:form>

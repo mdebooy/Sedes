@@ -18,9 +18,8 @@
 package eu.debooy.sedes.validator;
 
 import eu.debooy.doosutils.ComponentsUtils;
-import eu.debooy.doosutils.DoosUtils;
-import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.AdresDto;
 import eu.debooy.sedes.form.Adres;
 import java.util.ArrayList;
@@ -30,11 +29,10 @@ import java.util.List;
 /**
  * @author Marco de Booij
  */
-public class AdresValidator extends SedesValidator {
-  protected static final  String  LBL_ADRESDATA   =
-      "_I18N.label.adres";
-  protected static final  String  LBL_SUBPOSTKODE =
-      "_I18N.label.subpostkode";
+public class AdresValidator {
+  protected static final  String  LBL_ADRESDATA   = "_I18N.label.adres";
+  protected static final  String  LBL_OPMERKING   = "_I18N.label.opmerking";
+  protected static final  String  LBL_SUBPOSTKODE = "_I18N.label.subpostkode";
 
   private AdresValidator() {
    throw new IllegalStateException("Utility class");
@@ -55,44 +53,26 @@ public class AdresValidator extends SedesValidator {
 
     List<Message> fouten  = new ArrayList<>();
 
-    valideerAdresdata(adres.getAdresdata(), fouten);
-    valideerOpmerking(adres.getOpmerking(), fouten);
-    valideerSubPostkode(adres.getSubPostkode(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(adres.getAdresdata())
+                               .setAttribute(AdresDto.COL_ADRESDATA)
+                               .setLabel(LBL_ADRESDATA)
+                               .setMaxLengte(255)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(adres.getOpmerking())
+                               .setAttribute(AdresDto.COL_OPMERKING)
+                               .setLabel(LBL_OPMERKING)
+                               .setMaxLengte(2000)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(adres.getSubPostkode())
+                               .setAttribute(AdresDto.COL_SUBPOSTKODE)
+                               .setLabel(LBL_SUBPOSTKODE)
+                               .setMaxLengte(10)
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerAdresdata(String adresdata,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(adresdata)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(AdresDto.COL_ADRESDATA)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_ADRESDATA})
-                            .build());
-      return;
-    }
-
-    if (adresdata.length() > 255) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(AdresDto.COL_ADRESDATA)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_ADRESDATA, 255})
-                            .build());
-    }
-  }
-
-  private static void valideerSubPostkode(String subPostkode,
-                                                 List<Message> fouten) {
-    if (DoosUtils.nullToEmpty(subPostkode).length() > 10) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(AdresDto.COL_SUBPOSTKODE)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_SUBPOSTKODE, 10})
-                            .build());
-    }
   }
 }

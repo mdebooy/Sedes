@@ -28,12 +28,12 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
 import eu.debooy.sedes.validator.KontaktValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
 import java.util.LinkedList;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +124,7 @@ public class KontaktController extends Sedes {
 
   public Collection<SelectItem> getSelectitems(String parameter) {
     Collection<SelectItem>  items = new LinkedList<>();
-    items.addAll(getI18nLijst(parameter, getGebruikersTaal(),
+    items.addAll(getI18nLijst(parameter, getGebruikersTaalInIso6392t(),
                               new I18nSelectItem.WaardeComparator()));
 
     return items;
@@ -154,6 +154,7 @@ public class KontaktController extends Sedes {
       kontaktDto = getKontaktService().kontakt(kontaktId);
       kontakt    = new Kontakt(kontaktDto);
       setAktie(PersistenceConstants.RETRIEVE);
+      setDeletetekst(kontakt.getNaam());
       setSubTitel(kontakt.getDisplaynaam());
       redirect(KONTAKT_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -211,6 +212,7 @@ public class KontaktController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(kontaktDto.getNaam());
     setSubTitel(getTekst(TIT_UPDATE, kontaktDto.getDisplaynaam()));
   }
 }

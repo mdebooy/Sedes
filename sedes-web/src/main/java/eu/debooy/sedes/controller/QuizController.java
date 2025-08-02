@@ -22,6 +22,8 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.form.Landnaam;
 import eu.debooy.sedes.form.Quizvraag;
 import eu.debooy.sedes.form.Werelddeelnaam;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.MessageFormat;
@@ -30,8 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -98,7 +98,7 @@ public class QuizController extends Sedes {
         new TreeSet<>(new Werelddeelnaam.NaamComparator());
     werelddelen
         .addAll(getWerelddeelnaamService()
-            .werelddeelnamen(getGebruikersTaal()));
+            .werelddeelnamen(getGebruikersTaalInIso6392t()));
 
     return werelddelen;
   }
@@ -146,7 +146,8 @@ public class QuizController extends Sedes {
     setSubTitel(getTekst(TIT_QUIZ1));
     List<Landnaam>  landnamen = new ArrayList<>();
     for (var  landnaam :
-            getLandnaamService().bestaandeLandnamen(getGebruikersTaal())) {
+            getLandnaamService()
+                .bestaandeLandnamen(getGebruikersTaalInIso6392t())) {
       if (!DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
                    .isBlank()) {
         landnamen.add(landnaam);
@@ -165,13 +166,13 @@ public class QuizController extends Sedes {
         MessageFormat
             .format(getTekst(TIT_QUIZ2),
                 getWerelddeelnaamService()
-                    .werelddeelnaam(werelddeelId, getGebruikersTaal())
+                    .werelddeelnaam(werelddeelId, getGebruikersTaalInIso6392t())
                     .getNaam()));
 
     List<Landnaam>  landnamen = new ArrayList<>();
     for (var  landnaam :
             getLandnaamService()
-                .bestaandeLandnamenPerWerelddeel(getGebruikersTaal(),
+                .bestaandeLandnamenPerWerelddeel(getGebruikersTaalInIso6392t(),
                                                  werelddeelId)) {
       if (!DoosUtils.nullToEmpty(landnaam.getHoofdstad()).replace("-", "")
                    .isBlank()) {

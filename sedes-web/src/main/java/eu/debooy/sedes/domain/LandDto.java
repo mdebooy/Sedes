@@ -17,23 +17,24 @@
 package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.DoosConstants;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosLayer;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKey;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -79,7 +80,7 @@ public class LandDto extends Dto implements Comparable<LandDto> {
   private String  postkodeType;
   @Column(name="POST_LANDKODE", length=3, nullable=false)
   private String  postLandkode;
-  @Column(name="TAAL", length=2, nullable=false)
+  @Column(name="TAAL", length=3, nullable=false)
   private String  taal;
   @Column(name="WERELDDEEL_ID", nullable=false)
   private Long    werelddeelId;
@@ -198,52 +199,53 @@ public class LandDto extends Dto implements Comparable<LandDto> {
   }
 
   public void setBestaat(boolean bestaat) {
-    this.bestaat  = bestaat ? DoosConstants.WAAR : DoosConstants.ONWAAR;
+    this.bestaat            = bestaat ? DoosConstants.WAAR
+                                      : DoosConstants.ONWAAR;
   }
 
   public void setIso2(String iso2) {
-    this.iso2 = iso2;
+    this.iso2               = DoosUtils.stripToUpperCase(iso2);
   }
 
   public void setIso3(String iso3) {
-    this.iso3 = iso3;
+    this.iso3               = DoosUtils.stripToUpperCase(iso3);
   }
 
-  public void setTeksten(Collection<LandnaamDto> landnamen) {
+  public void setLandId(Long landId) {
+    this.landId             = landId;
+  }
+
+  public void setLandnamen(Collection<LandnaamDto> landnamen) {
     for (LandnaamDto landnaam : landnamen) {
       this.landnamen.put(landnaam.getTaal(), landnaam);
     }
   }
 
-  public void setLandId(Long landId) {
-    this.landId = landId;
-  }
-
   public void setLandnummer(Long landnummer) {
-    this.landnummer = landnummer;
+    this.landnummer         = landnummer;
   }
 
   public void setMuntId(Long muntId) {
-    this.muntId = muntId;
+    this.muntId             = muntId;
   }
 
   public void setPostkodeScheiding(String postkodeScheiding) {
-    this.postkodeScheiding = postkodeScheiding;
+    this.postkodeScheiding  = postkodeScheiding;
   }
 
   public void setPostkodeType(String postkodeType) {
-    this.postkodeType = postkodeType;
+    this.postkodeType       = DoosUtils.strip(postkodeType);
   }
 
   public void setPostLandkode(String postLandkode) {
-    this.postLandkode = postLandkode;
+    this.postLandkode       = DoosUtils.stripToUpperCase(postLandkode);
   }
 
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal               = DoosUtils.stripToLowerCase(taal);
   }
 
   public void setWerelddeelId(Long werelddeelId) {
-    this.werelddeelId = werelddeelId;
+    this.werelddeelId       = werelddeelId;
   }
 }

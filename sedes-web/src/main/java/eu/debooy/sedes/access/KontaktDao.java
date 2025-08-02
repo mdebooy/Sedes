@@ -19,11 +19,13 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.KontaktDto;
+import jakarta.interceptor.Interceptors;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.util.Collection;
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -44,10 +46,9 @@ public class KontaktDao extends Dao<KontaktDto> {
   }
 
   public Collection<KontaktDto> getPerKontakttype(String kontakttype) {
-    var query = getEntityManager().createNamedQuery(KontaktDto.QRY_PERTYPE)
-                                  .setParameter(KontaktDto.PAR_KONTAKTTYPE,
-                                                kontakttype);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(KontaktDto.PAR_KONTAKTTYPE, kontakttype);
 
-    return query.getResultList();
+    return namedQuery(KontaktDto.QRY_PERTYPE, params);
   }
 }

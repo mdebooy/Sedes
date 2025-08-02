@@ -1,11 +1,64 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
+  <ui:define name="head">
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var taal = '#{gebruiker.locale.language}';
+        var regionamenTabel = $('#regionamenTabel').DataTable( {
+          data: #{sedesRegio.regionamen},
+          order: [[1, 'asc']],
+          pagingType: 'full_numbers',
+          pageLength: #{properties.appValue('sedes.pagelength.tab')},
+          lengthChange: false,
+          stateSave: true,
+          language: {
+            paginate: {
+              first: '#{properties.appValue('sedes.pager.first')}',
+              last: '#{properties.appValue('sedes.pager.last')}',
+              next: '#{properties.appValue('sedes.pager.next')}',
+              previous: '#{properties.appValue('sedes.pager.previous')}'
+            },
+            search: '#{i18nTeksten.tekst('pager.search')}',
+            zeroRecords: '#{i18nTeksten.tekst('pager.zero.records')}',
+            loadingRecords: '#{i18nTeksten.tekst('pager.loading')}',
+            info: '#{i18nTeksten.tekst('pager.info')}',
+            infoEmpty: '#{i18nTeksten.tekst('pager.info.empty')}',
+            infoFiltered: '#{i18nTeksten.tekst('pager.info.filtered')}'
+          },
+          columns: [
+            { data: 'taal', visible: false },
+            { data: null, title: '#{i18nTeksten.tekst('label.taal')}', width: '50px', class: 'has-text-centered', orderData: 0, render: function ( data, type, row ) {
+                return taalvlag(data.taal);
+              }
+            },
+            { data: null, title: '#{i18nTeksten.tekst('label.regionaam')}', render: function ( data, type, row ) {
+                if (data.hasOwnProperty('naam')) {
+                  return data.naam;
+                }
+                return '';
+              }
+            }
+          ]
+        } );
+        $( '#regionamenTabel tbody').on('click', 'tr', function() {
+          if (regionamenTabel.row(this).data() === undefined || #{!sedesRegio.user} || #{sedesRegio.aktie.bekijk}) {
+            return;
+          }
+          var jsfCommandLink = document.getElementById('formRegio:linkRegionaam');
+          alterParam(jsfCommandLink, regionamenTabel.row(this).data().taal);
+          jsfCommandLink.click();
+        } );
+        if (#{sedesRegio.aktie.wijzig and sedesRegio.user}) {
+          addInsertButton('regionamenTabel', 'formRegio', '#{i18nTeksten.tekst('img.nieuw')}');
+        }
+      } );
+    </script>
+  </ui:define>
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-12">
@@ -21,19 +74,21 @@
                 </div>
               </div>
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
-                <div class="field-body is-normal">
-                  <d:inputText id="naam" value="#{sedesRegio.regio.naam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.aktie.readonly}" />
-                </div>
-              </div>
-              <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesLand.selectLandnamen()}" textvalue="#{sedesLand.i18nLandnaam(sedesRegio.regio.landId)}" />
+                  <d:listbox id="landId" value="#{sedesRegio.regio.landId}" fullwidth="true" required="true" readonly="#{sedesRegio.aktie.readonly}" items="#{sedesLand.selectLandnamen}" textvalue="#{sedesLand.i18nLandnaam(sedesRegio.regio.landId)}" />
                 </div>
               </div>
 
-              <d:crudbuttonbar bean="#{sedesRegio}" form="formRegio" returnto="#{sedes.path}/regios/regios.xhtml" tekst="#{sedesRegio.regio.naam}" />
+              <d:crudbuttonbar bean="#{sedesRegio}" form="formRegio" returnto="#{sedes.path}/regios/regios.xhtml" />
+
+              <h:panelGroup rendered="#{!sedesRegio.aktie.nieuw}">
+                <table id="regionamenTabel" class="table is-striped is-narrow #{sedesRegio.user ? 'is-hoverable' : ''}" aria-describedby="regionamenTabel" />
+                <h:commandLink id="linkRegionaam" class="is-hidden" action="#{sedesRegio.retrieveDetail}">
+                  <f:param name="taal" value="XX" />
+                </h:commandLink>
+                <h:commandLink id="addRegionamen" class="is-hidden" action="#{sedesRegio.createDetail}" />
+              </h:panelGroup>
             </div>
           </div>
         </h:form>

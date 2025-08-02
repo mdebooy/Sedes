@@ -22,26 +22,23 @@ import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.KontaktDao;
 import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.faces.model.SelectItem;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @Path("/kontakten")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Lock(LockType.WRITE)
+@Lock(LockType.READ)
 public class KontaktService {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(KontaktService.class);
@@ -67,7 +64,7 @@ public class KontaktService {
     LOGGER.debug("init KontaktService");
   }
 
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  @Lock(LockType.WRITE)
   public void delete(Long kontaktId) {
     KontaktDto kontakt  = kontaktDao.getByPrimaryKey(kontaktId);
     kontaktDao.delete(kontakt);
@@ -110,12 +107,10 @@ public class KontaktService {
     }
   }
 
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public KontaktDto kontakt(Long kontaktId) {
     return kontaktDao.getByPrimaryKey(kontaktId);
   }
 
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<Kontakt> query() {
     Collection<Kontakt>      kontakten  = new ArrayList<>();
     try {
@@ -130,7 +125,6 @@ public class KontaktService {
     return kontakten;
   }
 
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void save(KontaktDto kontakt) {
     if (null == kontakt.getKontaktId()) {
       kontaktDao.create(kontakt);
@@ -139,10 +133,9 @@ public class KontaktService {
     }
   }
 
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectKontakten() {
-    List<SelectItem>  items = new ArrayList<>();
-    Set<KontaktDto>   rijen =
+    Collection<SelectItem>  items = new ArrayList<>();
+    Set<KontaktDto>         rijen =
         new TreeSet<>(new KontaktDto.DisplaynaamComparator());
     try {
       rijen.addAll(kontaktDao.getAll());

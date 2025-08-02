@@ -19,6 +19,7 @@ package eu.debooy.sedes.controller;
 
 import eu.debooy.doos.model.I18nSelectItem;
 import eu.debooy.doosutils.ComponentsConstants;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
@@ -32,14 +33,14 @@ import eu.debooy.sedes.form.Kontaktadres;
 import eu.debooy.sedes.form.Land;
 import eu.debooy.sedes.form.Plaats;
 import eu.debooy.sedes.validator.KontaktadresValidator;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,13 +57,15 @@ public class KontaktadresController extends Sedes {
 
   private static final  String  KONTAKTADRESTYPE  = "sedes.kontaktadres.type";
 
-  private static final  String  TIT_CREATE    =
+  private static final  String  TIT_CREATE      =
       "sedes.titel.kontaktadres.create";
-  private static final  String  TIT_DELETE    =
+  private static final  String  TIT_DELETE      =
       "sedes.titel.kontaktadres.delete";
-  private static final  String  TIT_RETRIEVE  =
+  private static final  String  TIT_RETRIEVE    =
       "sedes.titel.kontaktadres.retrieve";
-  private static final  String  TIT_UPDATE    =
+  private static final  String  TIT_RETRIEVE_B  =
+      "sedes.titel.kontaktadres.retrieve.basic";
+  private static final  String  TIT_UPDATE      =
       "sedes.titel.kontaktadres.update";
 
   private Adres           adres;
@@ -165,6 +168,11 @@ public class KontaktadresController extends Sedes {
 
     kontaktadres.setAdresId(adres.getAdresId());
     kontaktadres.setKontaktId(kontakt.getKontaktId());
+    if (DoosUtils.isNotBlankOrNull(kontakt.getKontaktId())) {
+      kontaktadres.setTaal(kontakt.getTaal());
+    } else {
+      kontaktadres.setTaal(getParameter(Sedes.PAR_DEFAULT_TAAL));
+    }
     kontaktadres.setStartdatum(new Date());
     kontaktadres.persist(kontaktadresDto);
 
@@ -216,7 +224,8 @@ public class KontaktadresController extends Sedes {
       return kontakt.getDisplaynaam();
     }
 
-    return "??";
+    setSubTitel(getTekst(TIT_RETRIEVE_B));
+    return "";
   }
 
   public String getInTitel() {
@@ -230,7 +239,8 @@ public class KontaktadresController extends Sedes {
       return kontakt.getDisplaynaam();
     }
 
-    return "??";
+    setSubTitel(getTekst(TIT_RETRIEVE_B));
+    return "";
   }
 
   public Kontakt getKontakt() {
@@ -245,7 +255,7 @@ public class KontaktadresController extends Sedes {
     Collection<SelectItem>  items = new LinkedList<>();
 
     items.add(new SelectItem("", "--"));
-    items.addAll(getI18nLijst(KONTAKTADRESTYPE, getGebruikersTaal(),
+    items.addAll(getI18nLijst(KONTAKTADRESTYPE, getGebruikersTaalInIso6392t(),
                               new I18nSelectItem.WaardeComparator()));
 
     return items;
@@ -256,13 +266,7 @@ public class KontaktadresController extends Sedes {
       return "--";
     }
 
-    return getDoosRemote().getIso6392tNaam(kontaktadres.getTaal(),
-                                           getGebruikersTaalInIso6392t());
-  }
-
-  public Collection<SelectItem> getTalenIso6392t() {
-    return getDoosRemote().getTalenIso6392t(getGebruikersTaalInIso6392t(),
-                                            true);
+    return getGebruikersTaalInIso6392t();
   }
 
   public boolean isAdres() {
@@ -303,6 +307,7 @@ public class KontaktadresController extends Sedes {
       setAdresEnKontakt();
       setAktie(PersistenceConstants.RETRIEVE);
       setSubTitel(getTekst(TIT_RETRIEVE, getInTitel()));
+      setDeletetekst(getInOmschrijving());
       redirect(KONTAKTADRES_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, getInTitel());
@@ -323,24 +328,22 @@ public class KontaktadresController extends Sedes {
 
     try {
       switch (getAktie().getAktie()) {
-        case PersistenceConstants.CREATE:
+        case PersistenceConstants.CREATE -> {
           kontaktadres.persist(kontaktadresDto);
           getKontaktadresService().save(kontaktadresDto);
           kontaktadres.setKontaktadresId(kontaktadresDto.getKontaktadresId());
           setAdresEnKontakt();
           addInfo(PersistenceConstants.CREATED, getInOmschrijving());
           update();
-          break;
-        case PersistenceConstants.UPDATE:
+        }
+        case PersistenceConstants.UPDATE -> {
           kontaktadres.persist(kontaktadresDto);
           getKontaktadresService().save(kontaktadresDto);
           setAdresEnKontakt();
           addInfo(PersistenceConstants.UPDATED, getInOmschrijving());
           update();
-          break;
-        default:
-          addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
-          break;
+        }
+        default -> addError(ComponentsConstants.WRONGREDIRECT, getAktie().getAktie());
       }
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, getInOmschrijving());
@@ -407,6 +410,7 @@ public class KontaktadresController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
+    setDeletetekst(getInOmschrijving());
     setSubTitel(getTekst(TIT_UPDATE, getInTitel()));
   }
 }

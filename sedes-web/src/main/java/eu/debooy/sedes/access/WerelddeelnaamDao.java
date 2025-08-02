@@ -19,11 +19,13 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
+import jakarta.interceptor.Interceptors;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.util.Collection;
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -44,19 +46,16 @@ public class WerelddeelnaamDao extends Dao<WerelddeelnaamDto> {
   }
 
   public Collection<WerelddeelnaamDto> getPerWerelddeel(Long werelddeelId) {
-    var query =
-        getEntityManager().createNamedQuery(WerelddeelnaamDto.QRY_PERWERELDDEEL)
-                          .setParameter(WerelddeelnaamDto.COL_WERELDDEELID,
-                                        werelddeelId);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(WerelddeelnaamDto.COL_WERELDDEELID, werelddeelId);
 
-    return query.getResultList();
+    return namedQuery(WerelddeelnaamDto.QRY_PERWERELDDEEL, params);
   }
 
   public Collection<WerelddeelnaamDto> getPerTaal(String taal) {
-    var query =
-        getEntityManager().createNamedQuery(WerelddeelnaamDto.QRY_PERTAAL)
-                          .setParameter(WerelddeelnaamDto.COL_TAAL, taal);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(WerelddeelnaamDto.COL_TAAL, taal);
 
-    return query.getResultList();
+    return namedQuery(WerelddeelnaamDto.QRY_PERTAAL, params);
   }
 }

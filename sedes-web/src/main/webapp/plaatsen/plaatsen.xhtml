@@ -1,14 +1,15 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
         var taal = '#{gebruiker.locale.language}';
+        var iso6392t = getISO6391ToISO6392t(taal);
         var plaatsenTabel = $('#plaatsenTabel').DataTable( {
           ajax: { url: '/sedes/plaatsen',
                   dataSrc: '' },
@@ -41,12 +42,12 @@
             },
             { data: 'plaatsnaam', title: '#{i18nTeksten.tekst('label.plaatsnaam')}' },
             { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
-                return getLandIdNaam(data.landId, taal);
+                return getLandIdNaam(data.landId, iso6392t);
               }
             },
             { data: null, title: '#{i18nTeksten.tekst('label.regio')}', render: function ( data, type, row ) {
                 if (data.hasOwnProperty('regioId')) {
-                  return getRegionaam(data.regioId);
+                  return getRegioIdNaam(data.regioId, iso6392t);
                 }
                 return '';
               }

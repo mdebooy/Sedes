@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.MuntDto;
 import java.io.Serializable;
@@ -131,7 +132,7 @@ public class Munt
   }
 
   public void setIso3(String iso3) {
-    this.iso3       = iso3;
+    this.iso3       = DoosUtils.stripToUpperCase(iso3);
   }
 
   public void setMuntId(Long muntId) {
@@ -139,14 +140,14 @@ public class Munt
   }
 
   public void setMuntteken(String muntteken) {
-    this.muntteken  = muntteken;
+    this.muntteken  = DoosUtils.strip(muntteken);
   }
 
   public void setNaam(String naam) {
-    this.naam       = naam;
+    this.naam       = DoosUtils.strip(naam);
   }
 
   public void setSubeenheid(String subeenheid) {
-    this.subeenheid = subeenheid;
+    this.subeenheid = DoosUtils.strip(subeenheid);
   }
 }

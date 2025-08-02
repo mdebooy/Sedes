@@ -1,18 +1,18 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:d="http://java.debooy.eu/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:t="http://myfaces.apache.org/tomahawk"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- template="/WEB-INF/templates/template.xhtml">
+     xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+   xmlns:d="http://java.debooy.eu/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  template="/WEB-INF/templates/template.xhtml">
   <ui:define name="head">
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function() {
         $('#vragenTabel').DataTable( {
           data: #{sedesQuiz.antwoorden},
           pagingType: 'full_numbers',
-          pageLength: #{properties.appValue('sedes.pagelength.tab')},
+          pageLength: #{properties.appValue('sedes.quizvragen')},
           lengthChange: false,
         	searching: false,
           stateSave: false,
@@ -58,7 +58,7 @@
 
           <div class="columns is-centered">
             <div class="column">
-              <t:div rendered="#{! empty sedesQuiz.quizvraag.naam}">
+              <c:if test="#{! empty sedesQuiz.quizvraag.naam}">
                 <div class="field is-horizontal">
                   <d:label label="#{i18nTeksten.tekst('label.landnaam')}" />
                   <div class="field-body is-normal">
@@ -74,18 +74,18 @@
 
                 <h:commandLink action="#{sedesQuiz.beantwoordVraag}" id="confirm" styleClass="button is-primary">#{i18nTeksten.tekst('button.confirm')}</h:commandLink>
                 <a class="button" href="#{sedes.path}/quiz/quizzen.xhtml">#{i18nTeksten.tekst('button.cancel')}</a>
-              </t:div>
+              </c:if>
 
-             <t:div rendered="#{! empty sedesQuiz.antwoorden}">
+              <c:if test="#{! empty sedesQuiz.antwoorden}">
                 <d:spacer aantal="2"/>
                 <table id="vragenTabel" class="table is-narrow" aria-describedby="vragenTabel" />
-              </t:div>
+              </c:if>
 
               <h3>#{sedesQuiz.quizResultaat}</h3>
-              <t:div rendered="#{empty sedesQuiz.quizvraag.naam}">
+              <c:if test="#{empty sedesQuiz.quizvraag.naam}">
                 <d:spacer aantal="2"/>
                 <d:cancel returnto="#{sedes.path}/quiz/quizzen.xhtml" aktie="#{sedesQuiz.aktie}"/>
-              </t:div>
+              </c:if>
             </div>
           </div>
         </h:form>

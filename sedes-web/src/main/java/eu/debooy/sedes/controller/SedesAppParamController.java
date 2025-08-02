@@ -17,8 +17,8 @@
 package eu.debooy.sedes.controller;
 
 import eu.debooy.doos.controller.AppParamController;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 
 /**

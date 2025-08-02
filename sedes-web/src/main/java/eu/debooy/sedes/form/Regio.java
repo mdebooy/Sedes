@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.form;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.form.Formulier;
 import eu.debooy.sedes.domain.RegioDto;
 import java.io.Serializable;
@@ -28,20 +29,26 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * @author Marco de Booij
  */
-public class Regio extends Formulier
-                   implements Comparable<Regio>, Serializable {
+public class Regio
+    extends Formulier implements Comparable<Regio>, Serializable {
   private Long    landId;
+  private String  naam;
   private Long    regioId;
   private String  regiokode;
-  private String  naam;
 
   public Regio() {}
 
   public Regio(RegioDto regioDto) {
+    this(regioDto, null);
+  }
+
+  public Regio(RegioDto regioDto, String taal) {
     landId    = regioDto.getLandId();
+    if (!DoosUtils.isBlankOrNull(taal)) {
+      naam      = regioDto.getNaam(taal);
+    }
     regioId   = regioDto.getRegioId();
     regiokode = regioDto.getRegiokode();
-    naam      = regioDto.getNaam();
   }
 
   @Override
@@ -68,16 +75,16 @@ public class Regio extends Formulier
     return landId;
   }
 
+  public String getNaam() {
+    return naam;
+  }
+
   public Long getRegioId() {
     return regioId;
   }
 
   public String getRegiokode() {
     return regiokode;
-  }
-
-  public String getNaam() {
-    return naam;
   }
 
   @Override
@@ -89,11 +96,14 @@ public class Regio extends Formulier
     regioDto.setLandId(getLandId());
     regioDto.setRegioId(getRegioId());
     regioDto.setRegiokode(getRegiokode());
-    regioDto.setNaam(getNaam());
   }
 
   public void setLandId(Long landId) {
     this.landId     = landId;
+  }
+
+  public void setNaam(String naam) {
+    this.naam       = DoosUtils.strip(naam);
   }
 
   public void setRegioId(Long regioId) {
@@ -101,10 +111,6 @@ public class Regio extends Formulier
   }
 
   public void setRegiokode(String regiokode) {
-    this.regiokode  = regiokode;
-  }
-
-  public void setNaam(String naam) {
-    this.naam       = naam;
+    this.regiokode  = DoosUtils.stripToUpperCase(regiokode);
   }
 }

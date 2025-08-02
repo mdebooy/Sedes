@@ -22,7 +22,6 @@ import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.TestConstants;
 import eu.debooy.sedes.domain.RegioDto;
 import eu.debooy.sedes.form.Regio;
-import static eu.debooy.sedes.validator.RegioValidator.LBL_NAAM;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -35,13 +34,6 @@ import org.junit.Test;
  * @author Marco de Booij
  */
 public class RegioValidatorTest {
-  private static final  Message ERR_NAAM      =
-      new Message.Builder()
-                 .setAttribute(RegioDto.COL_NAAM)
-                 .setSeverity(Message.ERROR)
-                 .setMessage(PersistenceConstants.MAXLENGTH)
-                 .setParams(new Object[]{RegioValidator.LBL_NAAM, 100})
-                 .build();
   private static final  Message ERR_REGIOKODE =
       new Message.Builder()
                  .setAttribute(RegioDto.COL_REGIOKODE)
@@ -56,13 +48,6 @@ public class RegioValidatorTest {
                  .setMessage(PersistenceConstants.REQUIRED)
                  .setParams(new Object[]{RegioValidator.LBL_LANDID})
                  .build();
-  private static final  Message REQ_NAAM      =
-      new Message.Builder()
-                 .setAttribute(RegioDto.COL_NAAM)
-                 .setSeverity(Message.ERROR)
-                 .setMessage(PersistenceConstants.REQUIRED)
-                 .setParams(new Object[]{LBL_NAAM})
-                 .build();
   private static final  Message REQ_REGIOKODE =
       new Message.Builder()
                  .setAttribute(RegioDto.COL_REGIOKODE)
@@ -73,13 +58,11 @@ public class RegioValidatorTest {
 
   private void setFouten(List<Message> expResult) {
     expResult.add(REQ_LANDID);
-    expResult.add(ERR_NAAM);
     expResult.add(ERR_REGIOKODE);
   }
 
   private void setLeeg(List<Message> expResult) {
     expResult.add(REQ_LANDID);
-    expResult.add(REQ_NAAM);
     expResult.add(REQ_REGIOKODE);
   }
 
@@ -88,7 +71,6 @@ public class RegioValidatorTest {
     var           regio     = new Regio();
     List<Message> expResult = new ArrayList<>();
 
-    regio.setNaam(DoosUtils.stringMetLengte(TestConstants.REGIONAAM, 101, "X"));
     regio.setRegiokode(
         DoosUtils.stringMetLengte(TestConstants.REGIOKODE, 6, "X"));
 
@@ -100,12 +82,62 @@ public class RegioValidatorTest {
   }
 
   @Test
-  public void testValideerGoedeRegio() {
+  public void testValideerFouteRegioDto() {
+    var           regio     = new RegioDto();
+    List<Message> expResult = new ArrayList<>();
+
+    regio.setRegiokode(
+        DoosUtils.stringMetLengte(TestConstants.REGIOKODE, 6, "X"));
+
+    setFouten(expResult);
+
+    List<Message> result    = RegioValidator.valideer(regio);
+
+    assertEquals(expResult.toString(), result.toString());
+  }
+
+  @Test
+  public void testValideerGoedeRegio1() {
     var           regio     = new Regio();
 
     regio.setLandId(TestConstants.LANDID);
-    regio.setNaam(TestConstants.REGIONAAM);
     regio.setRegiokode(TestConstants.REGIOKODE);
+
+    List<Message> result    = RegioValidator.valideer(regio);
+
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void testValideerGoedeRegio2() {
+    var           regio     = new Regio();
+
+    regio.setLandId(TestConstants.LANDID);
+    regio.setRegiokode(TestConstants.REGIOKODE.toLowerCase());
+
+    List<Message> result    = RegioValidator.valideer(regio);
+
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void testValideerGoedeRegioDto1() {
+    var           regio      = new RegioDto();
+
+    regio.setLandId(TestConstants.LANDID);
+    regio.setRegiokode(TestConstants.REGIOKODE);
+
+    List<Message> result    = RegioValidator.valideer(regio);
+
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void testValideerGoedeRegioDto2() {
+    var           regio      = new RegioDto();
+
+    regio.setLandId(TestConstants.LANDID);
+    regio.setRegiokode(TestConstants.REGIOKODE.toLowerCase());
 
     List<Message> result    = RegioValidator.valideer(regio);
 
@@ -122,35 +154,6 @@ public class RegioValidatorTest {
     List<Message> result    = RegioValidator.valideer(regio);
 
     assertEquals(expResult.toString(), result.toString());
-  }
-
-  @Test
-  public void testValideerFouteRegioDto() {
-    var           regio     = new RegioDto();
-    List<Message> expResult = new ArrayList<>();
-
-    regio.setNaam(DoosUtils.stringMetLengte(TestConstants.REGIONAAM, 101, "X"));
-    regio.setRegiokode(
-        DoosUtils.stringMetLengte(TestConstants.REGIOKODE, 6, "X"));
-
-    setFouten(expResult);
-
-    List<Message> result    = RegioValidator.valideer(regio);
-
-    assertEquals(expResult.toString(), result.toString());
-  }
-
-  @Test
-  public void testValideerGoedeRegioDto() {
-    var           regio      = new RegioDto();
-
-    regio.setLandId(TestConstants.LANDID);
-    regio.setNaam(TestConstants.REGIONAAM);
-    regio.setRegiokode(TestConstants.REGIOKODE);
-
-    List<Message> result    = RegioValidator.valideer(regio);
-
-    assertTrue(result.isEmpty());
   }
 
   @Test

@@ -20,23 +20,30 @@ package eu.debooy.sedes;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.domain.KontaktDto;
-import eu.debooy.sedes.validator.SedesValidator;
 
 /**
  * @author Marco de Booij
  */
 public final class TestConstants {
   public static final String  AANSPREEKID     = "Mr.";
+  public static final String  BREEDTE1        = "N";
+  public static final String  BREEDTE2        = "S";
   public static final String  ADRESDATA       = "Adres 12";
   public static final String  GEBRUIKERSNAAM  = "login";
   public static final String  INITIALEN       = "SI";
+  public static final String  ISO6391         = "nl";
+  public static final String  ISO6392T        = "nld";
   public static final String  KONTAKTTYPE     = "P";
   public static final String  KONTAKTTYPEF    = "@";
   public static final String  KONTAKTNAAM     = "Kontakt";
   public static final String  KONTAKTTAAL     = "nld";
   public static final String  KONTAKTTAAL2    = "nl";
   public static final Long    LANDID          = 100L;
+  public static final String  LENGTE1         = "E";
+  public static final String  LENGTE2         = "W";
   public static final String  OPMERKING       = "Opmerking";
+  public static final String  PLAATSNAAM      = "Plaats";
+  public static final String  POSTKODE        = "PK-001";
   public static final String  PSEUDONIEM      = "Pseudo";
   public static final String  REGIONAAM       = "Regio";
   public static final String  REGIONAAM_G     = "Z-Regio";
@@ -53,12 +60,14 @@ public final class TestConstants {
   public static final Long    WERELDDEELID    = 200L;
   public static final String  WERELDDEELNAAM  = "Werelddeelnaam";
 
+  protected static final  String  LBL_OPMERKING = "_I18N.label.opmerking";
+
   public static final  Message ERR_OPMERKING =
     new Message.Builder()
                .setAttribute(KontaktDto.COL_OPMERKING)
                .setSeverity(Message.ERROR)
                .setMessage(PersistenceConstants.MAXLENGTH)
-               .setParams(new Object[]{SedesValidator.LBL_OPMERKING, 2000})
+               .setParams(new Object[]{LBL_OPMERKING, 2000})
                .build();
 
   private TestConstants() {

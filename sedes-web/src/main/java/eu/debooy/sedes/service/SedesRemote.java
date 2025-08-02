@@ -17,22 +17,22 @@
 
 package eu.debooy.sedes.service;
 
+import eu.debooy.doos.component.business.IDoosRemote;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.service.JNDI;
 import eu.debooy.sedes.component.business.ISedesRemote;
 import eu.debooy.sedes.component.entity.Kontakt;
 import eu.debooy.sedes.component.entity.Regio;
 import eu.debooy.sedes.domain.LandnaamDto;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Named("sedesRemote")
-@Lock(LockType.WRITE)
+@Lock(LockType.READ)
 public class SedesRemote implements ISedesRemote {
   private static final  Logger  LOGGER  =
       LoggerFactory.getLogger(SedesRemote.class);
@@ -55,14 +55,15 @@ public class SedesRemote implements ISedesRemote {
   private final Map<Long, Map<String, String>>
                                 landnamenCache  = new HashMap<>();
 
-  private static final  String  STANDAARDTAAL = "nl";
+  @EJB
+  private IDoosRemote doosRemote;
 
   public SedesRemote() {
     LOGGER.debug("init SedesRemote");
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  @Lock(LockType.WRITE)
   public void clear() {
     landnamenCache.clear();
   }
@@ -77,13 +78,11 @@ public class SedesRemote implements ISedesRemote {
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public String getI18nLandnaam(Long landId) {
-    return getI18nLandnaam(landId, getStandaardTaal());
+    return getI18nLandnaam(landId, getStandaardISO6392t());
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public String getI18nLandnaam(Long landId, String taal) {
     Map<String, String> landnamen = new HashMap<>();
     if (landnamenCache.containsKey(landId)) {
@@ -104,22 +103,22 @@ public class SedesRemote implements ISedesRemote {
       // Probeer het nu met de standaardtaal.
     }
 
-    if (landnamen.containsKey(getStandaardTaal())) {
-      return landnamen.get(getStandaardTaal());
+    if (landnamen.containsKey(getStandaardISO6392t())) {
+      return landnamen.get(getStandaardISO6392t());
     }
 
     try {
-      landnaamDto = getLandnaamService().landnaam(landId, getStandaardTaal());
-      landnamen.put(getStandaardTaal(), landnaamDto.getNaam());
+      landnaamDto = getLandnaamService().landnaam(landId,
+                                                  getStandaardISO6392t());
+      landnamen.put(getStandaardISO6392t(), landnaamDto.getNaam());
       landnamenCache.put(landId, landnamen);
       return landnamen.get(taal);
     } catch (ObjectNotFoundException e) {
-      return "???" + landId + ":" + taal + "???";
+      return String.format("??? %d:%s", landId, taal);
     }
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Kontakt getKontakt(Long kontaktId) {
     var kontakt = new Kontakt.Builder();
     try {
@@ -164,14 +163,13 @@ public class SedesRemote implements ISedesRemote {
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Regio getRegio(Long regioId) {
+  public Regio getRegio(Long regioId, String taal) {
     var regio = new Regio.Builder();
     try {
       var item  = getRegioService().regio(regioId);
 
       regio.setLandId(item.getLandId())
-           .setNaam(item.getNaam())
+           .setNaam(item.getNaam(taal))
            .setRegioId(item.getRegioId())
            .setRegiokode(item.getRegiokode());
     } catch (ObjectNotFoundException e) {
@@ -190,38 +188,38 @@ public class SedesRemote implements ISedesRemote {
     return regioService;
   }
 
-  private String getStandaardTaal() {
-    return STANDAARDTAAL;
+  private String getStandaardISO6392t() {
+    return doosRemote.getStandaardISO6392t();
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectAdressen() {
     return getAdresService().selectAdressen();
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectKontakten() {
     return getKontaktService().selectKontakten();
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectLandnamen() {
-    return selectLandnamen(getStandaardTaal());
+    return selectLandnamen(getStandaardISO6392t());
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> selectLandnamen(String taal) {
     return getLandnaamService().selectLandnamen(taal);
   }
 
   @Override
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Collection<SelectItem> getSelectRegios() {
-    return getRegioService().selectRegios();
+    return getSelectRegios(getStandaardISO6392t());
+  }
+
+  @Override
+  public Collection<SelectItem> getSelectRegios(String taal) {
+    return getRegioService().selectRegios(taal);
   }
 
   @Override

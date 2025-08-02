@@ -16,10 +16,10 @@
  */
 package eu.debooy.sedes.validator;
 
-import eu.debooy.doosutils.DoosUtils;
-import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.LandnaamDto;
+import eu.debooy.sedes.domain.PlaatsDto;
 import eu.debooy.sedes.form.Landnaam;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,63 +44,28 @@ public final class LandnaamValidator {
   public static List<Message> valideer(Landnaam landnaam) {
     List<Message> fouten  = new ArrayList<>();
 
-    valideerLandId(landnaam.getLandId(), fouten);
-    valideerNaam(landnaam.getNaam(), fouten);
-    valideerTaal(landnaam.getTaal(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(landnaam.getLandId())
+                               .setAttribute(PlaatsDto.COL_LANDID)
+                               .setLabel(LBL_LANDID)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(landnaam.getNaam())
+                               .setAttribute(LandnaamDto.COL_NAAM)
+                               .setLabel(LBL_NAAM)
+                               .setMaxLengte(100)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(landnaam.getTaal())
+                               .setAttribute(LandnaamDto.COL_TAAL)
+                               .setLabel(LBL_NAAM)
+                               .setFixLengte(3)
+                               .setRequired()
+                               .setLowerCase()
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerLandId(Long landId, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(landId)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_LANDID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_LANDID})
-                            .build());
-    }
-  }
-
-  private static void valideerNaam(String naam, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(naam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_NAAM})
-                            .build());
-      return;
-    }
-
-    if (naam.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_NAAM, 100})
-                            .build());
-    }
-  }
-
-  private static void valideerTaal(String taal, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(taal)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_TAAL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_TAAL})
-                            .build());
-      return;
-    }
-
-    if (taal.length() != 2) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(LandnaamDto.COL_TAAL)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.FIXLENGTH)
-                            .setParams(new Object[]{LBL_TAAL, 2})
-                            .build());
-    }
   }
 }

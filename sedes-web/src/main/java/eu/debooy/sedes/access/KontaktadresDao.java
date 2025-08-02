@@ -19,13 +19,14 @@ package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
-import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.domain.KontaktadresDto;
+import jakarta.interceptor.Interceptors;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.util.Collection;
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -45,20 +46,17 @@ public class KontaktadresDao extends Dao<KontaktadresDto> {
     return em;
   }
 
-  public Collection<KontaktDto> getPerAdres(Long adresId) {
-    var query =
-            getEntityManager().createNamedQuery(KontaktadresDto.QRY_PERADRES)
-                              .setParameter(KontaktadresDto.PAR_ADRES, adresId);
+  public Collection<KontaktadresDto> getPerAdres(Long adresId) {
+    Map<String, Object> params  = new HashMap<>();
+    params.put(KontaktadresDto.PAR_ADRES, adresId);
 
-    return query.getResultList();
+    return namedQuery(KontaktadresDto.QRY_PERADRES, params);
   }
 
-  public Collection<KontaktDto> getPerKontakt(Long kontaktId) {
-    var query =
-            getEntityManager().createNamedQuery(KontaktadresDto.QRY_PERKONTAKT)
-                              .setParameter(KontaktadresDto.PAR_KONTAKT,
-                                            kontaktId);
+  public Collection<KontaktadresDto> getPerKontakt(Long kontaktId) {
+    Map<String, Object> params  = new HashMap<>();
+    params.put(KontaktadresDto.PAR_KONTAKT, kontaktId);
 
-    return query.getResultList();
+    return namedQuery(KontaktadresDto.QRY_PERKONTAKT, params);
   }
 }

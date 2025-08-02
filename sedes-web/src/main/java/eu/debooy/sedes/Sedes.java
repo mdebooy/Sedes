@@ -28,8 +28,8 @@ import eu.debooy.sedes.service.PlaatsService;
 import eu.debooy.sedes.service.RegioService;
 import eu.debooy.sedes.service.WerelddeelService;
 import eu.debooy.sedes.service.WerelddeelnaamService;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +79,8 @@ public class Sedes extends DoosBean {
   public static final String  MUNT_REDIRECT             = "/munten/munt.xhtml";
   public static final String  MUNTEN_REDIRECT           =
       "/munten/munten.xhtml";
+  public static final String  PAR_DEFAULT_LANDID        =
+      "sedes.default.landid";
   public static final String  PAR_DEFAULT_TAAL          = "sedes.default.taal";
   public static final String  PAR_DEFAULT_TYPE          =
       "sedes.kontakt.type";
@@ -89,6 +91,8 @@ public class Sedes extends DoosBean {
   public static final String  QUIZ_REDIRECT             = "/quiz/quiz.xhtml";
   public static final String  QUIZZEN_REDIRECT          = "/quiz/quizzen.xhtml";
   public static final String  REGIO_REDIRECT            = "/regios/regio.xhtml";
+  public static final String  REGIONAAM_REDIRECT        =
+      "/regios/regionaam.xhtml";
   public static final String  REGIOS_REDIRECT           =
       "/regios/regios.xhtml";
   public static final String  TYP_GROEP                 = "G";

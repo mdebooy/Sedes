@@ -20,11 +20,13 @@ package eu.debooy.sedes.access;
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
 import eu.debooy.sedes.domain.PlaatsDto;
+import jakarta.interceptor.Interceptors;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.util.Collection;
-import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -45,16 +47,16 @@ public class PlaatsDao extends Dao<PlaatsDto> {
   }
 
   public Collection<PlaatsDto> getPerLand(Long landId) {
-    var query = getEntityManager().createNamedQuery(PlaatsDto.QRY_PERLAND)
-                                  .setParameter(PlaatsDto.PAR_LANDID, landId);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(PlaatsDto.PAR_LANDID, landId);
 
-    return query.getResultList();
+    return namedQuery(PlaatsDto.QRY_PERLAND, params);
   }
 
   public Collection<PlaatsDto> getPerRegio(Long regioId) {
-    var query = getEntityManager().createNamedQuery(PlaatsDto.QRY_PERREGIO)
-                                  .setParameter(PlaatsDto.PAR_REGIOID, regioId);
+    Map<String, Object> params  = new HashMap<>();
+    params.put(PlaatsDto.PAR_REGIOID, regioId);
 
-    return query.getResultList();
+    return namedQuery(PlaatsDto.QRY_PERREGIO, params);
   }
 }

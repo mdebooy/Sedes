@@ -17,16 +17,29 @@
 
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
+import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
+import eu.debooy.doosutils.errorhandling.exception.base.DoosLayer;
+import eu.debooy.sedes.SedesConstants;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKey;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Comparator;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -46,7 +59,6 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
   private static final  long  serialVersionUID  = 1L;
 
   public static final String  COL_LANDID    = "landId";
-  public static final String  COL_NAAM      = "naam";
   public static final String  COL_REGIOKODE = "regiokode";
   public static final String  COL_REGIOID   = "regioId";
 
@@ -60,14 +72,17 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
   @Column(name="LAND_ID", nullable=false)
   private Long    landId;
-  @Column(name="NAAM", length=100, nullable=false)
-  private String  naam;
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="REGIO_ID", nullable=false)
   private Long    regioId;
   @Column(name="REGIOKODE", length=5, nullable=false)
   private String  regiokode;
+
+  @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, targetEntity=RegionaamDto.class, orphanRemoval=true)
+  @JoinColumn(name="REGIO_ID", nullable=false, updatable=false, insertable=true)
+  @MapKey(name="taal")
+  private Map<String, RegionaamDto>  regionamen = new HashMap<>();
 
   /**
    * De regiokode is toegevoegd om dubbele namen niet te laten verdwijnen in een
@@ -77,14 +92,27 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
       implements Comparator<RegioDto>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
+    private String  taal  = SedesConstants.DEF_TAAL;
+
+    public void setTaal(String taal) {
+      this.taal = taal;
+    }
+
     @Override
     public int compare(RegioDto regioDto1, RegioDto regioDto2) {
-      return new CompareToBuilder().append(regioDto1.naam,
-                                           regioDto2.naam)
+      return new CompareToBuilder().append(regioDto1.getNaam(taal),
+                                           regioDto2.getNaam(taal))
                                    .append(regioDto1.regiokode,
                                            regioDto2.regiokode)
                                    .toComparison();
     }
+  }
+
+  public void addRegionaam(RegionaamDto regionaamDto) {
+    if (null == regionaamDto.getRegioId()) {
+      regionaamDto.setRegioId(landId);
+    }
+    regionamen.put(regionaamDto.getTaal(), regionaamDto);
   }
 
   @Override
@@ -111,8 +139,13 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     return landId;
   }
 
-  public String getNaam() {
-    return naam;
+  @Transient
+  public String getNaam(String taal) {
+    if (regionamen.containsKey(taal)) {
+      return regionamen.get(taal).getNaam();
+    }
+
+    return "";
   }
 
   public Long getRegioId() {
@@ -123,17 +156,37 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     return regiokode;
   }
 
+  public RegionaamDto getRegionaam(String taal) {
+    if (regionamen.containsKey(taal)) {
+      return regionamen.get(taal);
+    } else {
+      throw new ObjectNotFoundException(DoosLayer.PERSISTENCE, taal);
+    }
+  }
+
+  public Collection<RegionaamDto> getRegionamen() {
+    return regionamen.values();
+  }
+
   @Override
   public int hashCode() {
     return new HashCodeBuilder().append(regioId).toHashCode();
   }
 
-  public void setLandId(Long landId) {
-    this.landId     = landId;
+  public boolean hasRegionaam(String taal) {
+    return regionamen.containsKey(taal);
   }
 
-  public void setNaam(String naam) {
-    this.naam       = naam;
+  public void removeRegionaam(String taal) {
+    if (regionamen.containsKey(taal)) {
+      regionamen.remove(taal);
+    } else {
+      throw new ObjectNotFoundException(DoosLayer.PERSISTENCE, taal);
+    }
+  }
+
+  public void setLandId(Long landId) {
+    this.landId     = landId;
   }
 
   public void setRegioId(Long regioId) {
@@ -141,6 +194,6 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
   }
 
   public void setRegiokode(String regiokode) {
-    this.regiokode  = regiokode;
+    this.regiokode  = DoosUtils.stripToUpperCase(regiokode);
   }
 }

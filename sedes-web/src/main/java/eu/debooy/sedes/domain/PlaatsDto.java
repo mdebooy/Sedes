@@ -17,14 +17,15 @@
 
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -40,10 +41,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class PlaatsDto extends Dto implements Comparable<PlaatsDto> {
   private static final  long  serialVersionUID  = 1L;
 
-  public static final String  COL_BREEDTE       = "breedte";
   public static final String  COL_BREEDTEGRAAD  = "breedtegraad";
   public static final String  COL_LANDID        = "landId";
-  public static final String  COL_LENGTE        = "lengte";
   public static final String  COL_LENGTEGRAAD   = "lengtegraad";
   public static final String  COL_PLAATSID      = "plaatsId";
   public static final String  COL_POSTKODE      = "postkode";
@@ -57,15 +56,11 @@ public class PlaatsDto extends Dto implements Comparable<PlaatsDto> {
   public static final String  QRY_PERLAND   = "plaatsenPerLand";
   public static final String  QRY_PERREGIO  = "plaatsenPerRegio";
 
-  @Column(name="BREEDTE", length=1)
-  private String  breedte;
-  @Column(name="BREEDTEGRAAD", precision=4, scale=2)
+  @Column(name="BREEDTEGRAAD", precision=8, scale=6)
   private Double  breedtegraad;
   @Column(name="LAND_ID", nullable=false)
-  private Long    landId    = Long.valueOf(0);
-  @Column(name="LENGTE", length=1)
-  private String  lengte;
-  @Column(name="LENGTEGRAAD", precision=4, scale=2)
+  private Long    landId;
+  @Column(name="LENGTEGRAAD", precision=9, scale=6)
   private Double  lengtegraad;
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -105,20 +100,12 @@ public class PlaatsDto extends Dto implements Comparable<PlaatsDto> {
     return serialVersionUID;
   }
 
-  public String getBreedte() {
-    return breedte;
-  }
-
   public Double getBreedtegraad() {
     return breedtegraad;
   }
 
   public Long getLandId() {
     return landId;
-  }
-
-  public String getLengte() {
-    return lengte;
   }
 
   public Double getLengtegraad() {
@@ -150,20 +137,12 @@ public class PlaatsDto extends Dto implements Comparable<PlaatsDto> {
     return new HashCodeBuilder().append(plaatsId).toHashCode();
   }
 
-  public void setBreedte(String breedte) {
-    this.breedte      = breedte;
-  }
-
   public void setBreedtegraad(Double breedtegraad) {
     this.breedtegraad = breedtegraad;
   }
 
   public void setLandId(Long landId) {
     this.landId       = landId;
-  }
-
-  public void setLengte(String lengte) {
-    this.lengte       = lengte;
   }
 
   public void setLengtegraad(Double lengtegraad) {
@@ -175,11 +154,11 @@ public class PlaatsDto extends Dto implements Comparable<PlaatsDto> {
   }
 
   public void setPlaatsnaam(String plaatsnaam) {
-    this.plaatsnaam   = plaatsnaam;
+    this.plaatsnaam   = DoosUtils.strip(plaatsnaam);
   }
 
   public void setPostkode(String postkode) {
-    this.postkode     = postkode;
+    this.postkode     = DoosUtils.strip(postkode);
   }
 
   public void setRegioId(Long regioId) {

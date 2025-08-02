@@ -395,7 +395,7 @@ public class KontaktValidatorTest {
     setLeeg(expResult);
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
-
+    
     assertEquals(3, result.size());
     assertEquals(expResult.toString(), result.toString());
   }

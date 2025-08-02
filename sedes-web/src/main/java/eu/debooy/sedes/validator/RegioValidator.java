@@ -17,9 +17,9 @@
 
 package eu.debooy.sedes.validator;
 
-import eu.debooy.doosutils.DoosUtils;
-import eu.debooy.doosutils.PersistenceConstants;
+import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.RegioDto;
 import eu.debooy.sedes.form.Regio;
 import java.util.ArrayList;
@@ -32,77 +32,41 @@ import java.util.List;
 public final class RegioValidator {
   protected static final  String  LBL_LANDID    = "_I18N.label.land";
   protected static final  String  LBL_REGIOKODE = "_I18N.label.regiokode";
-  protected static final  String  LBL_NAAM      = "_I18N.label.regionaam";
 
   private RegioValidator() {
    throw new IllegalStateException("Utility class");
   }
 
   public static List<Message> valideer(RegioDto regio) {
+    if (null == regio) {
+      return ComponentsUtils.objectIsNull("RegioDto");
+    }
+
     return valideer(new Regio(regio));
   }
 
   public static List<Message> valideer(Regio regio) {
+    if (null == regio) {
+      return ComponentsUtils.objectIsNull("Regio");
+    }
+
     List<Message> fouten  = new ArrayList<>();
 
-    valideerLandId(regio.getLandId(), fouten);
-    valideerNaam(regio.getNaam(), fouten);
-    valideerRegiokode(regio.getRegiokode(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(regio.getLandId())
+                               .setAttribute(RegioDto.COL_LANDID)
+                               .setLabel(LBL_LANDID)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(regio.getRegiokode())
+                               .setAttribute(RegioDto.COL_REGIOKODE)
+                               .setLabel(LBL_REGIOKODE)
+                               .setMaxLengte(5)
+                               .setUpperCase()
+                               .setRequired()
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerLandId(Long landId, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(landId)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_LANDID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_LANDID})
-                            .build());
-    }
-  }
-
-  private static void valideerNaam(String naam, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(naam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_NAAM})
-                            .build());
-      return;
-    }
-
-    if (naam.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_NAAM, 100})
-                            .build());
-    }
-  }
-
-  private static void valideerRegiokode(String regiokode,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(regiokode)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_REGIOKODE)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_REGIOKODE})
-                            .build());
-      return;
-    }
-
-    if (regiokode.length() > 5) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(RegioDto.COL_REGIOKODE)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_REGIOKODE, 5})
-                            .build());
-    }
   }
 }

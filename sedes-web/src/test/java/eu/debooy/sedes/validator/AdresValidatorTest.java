@@ -58,6 +58,7 @@ public class AdresValidatorTest {
 
   private void setFout(List<Message> expResult) {
     expResult.add(ERR_ADRESDATA);
+    expResult.add(TestConstants.ERR_OPMERKING);
     expResult.add(ERR_SUBPOSTKODE);
   }
 
@@ -70,12 +71,14 @@ public class AdresValidatorTest {
 
     adres.setAdresdata(DoosUtils.stringMetLengte(TestConstants.ADRESDATA,
                                                      256, "X"));
+    adres.setOpmerking(
+        DoosUtils.stringMetLengte(TestConstants.OPMERKING, 2001, "X"));
     adres.setSubPostkode(
         DoosUtils.stringMetLengte(TestConstants.SUBPOSTKODE, 11, "X"));
 
     var           result    = AdresValidator.valideer(adres);
 
-    assertEquals(2, result.size());
+    assertEquals(3, result.size());
     assertEquals(expResult.toString(), result.toString());
   }
 
@@ -88,12 +91,14 @@ public class AdresValidatorTest {
 
     adres.setAdresdata(DoosUtils.stringMetLengte(TestConstants.ADRESDATA,
                                                      256, "X"));
+    adres.setOpmerking(
+        DoosUtils.stringMetLengte(TestConstants.OPMERKING, 2001, "X"));
     adres.setSubPostkode(
         DoosUtils.stringMetLengte(TestConstants.SUBPOSTKODE, 11, "X"));
 
     var           result    = AdresValidator.valideer(adres);
 
-    assertEquals(2, result.size());
+    assertEquals(3, result.size());
     assertEquals(expResult.toString(), result.toString());
   }
 

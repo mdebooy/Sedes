@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -64,7 +65,7 @@ public class WerelddeelnaamPK implements Serializable {
   }
 
   public void setTaal(String taal) {
-    this.taal = taal;
+    this.taal         = DoosUtils.stripToLowerCase(taal);
   }
 
   public void setWerelddeelId(Long werelddeelId) {

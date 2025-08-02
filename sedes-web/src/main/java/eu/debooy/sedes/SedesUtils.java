@@ -37,29 +37,32 @@ public final class SedesUtils {
     }
 
     switch (kontakttype) {
-      case Sedes.TYP_GROEP:
+      case Sedes.TYP_GROEP -> {
         return String.format("%s %s%s",
-                             naam,
-                             DoosUtils.isNotBlankOrNull(voornaam) ? "- " : "",
-                             DoosUtils.nullToEmpty(voornaam)).trim();
-      case Sedes.TYP_RECHTSPERSOON:
+                naam,
+                DoosUtils.isNotBlankOrNull(voornaam) ? "- " : "",
+                DoosUtils.nullToEmpty(voornaam)).trim();
+      }
+      case Sedes.TYP_RECHTSPERSOON -> {
         return String.format("%s %s%s",
-                             DoosUtils.nullToValue(roepnaam, naam),
-                             DoosUtils.isNotBlankOrNull(voornaam) ? "- " : "",
-                             DoosUtils.nullToEmpty(voornaam)).trim();
-      default:
+                DoosUtils.nullToValue(roepnaam, naam),
+                DoosUtils.isNotBlankOrNull(voornaam) ? "- " : "",
+                DoosUtils.nullToEmpty(voornaam)).trim();
+      }
+      default -> {
         var tekst = voornaam;
         if (DoosUtils.isBlankOrNull(tekst)) {
           tekst   = initialen;
         }
         return String.format("%s %s%s %s%s",
-                             DoosUtils.nullToEmpty(tussenvoegsel).toUpperCase(),
-                             naam.toUpperCase(),
-                             DoosUtils.isNotBlankOrNull(tekst) ? "," : "",
-                             DoosUtils.nullToEmpty(tekst),
-                             DoosUtils.isNotBlankOrNull(roepnaam)
-                                 ? " (" + roepnaam + ")" : "")
-                     .trim();
+                DoosUtils.nullToEmpty(tussenvoegsel).toUpperCase(),
+                naam.toUpperCase(),
+                DoosUtils.isNotBlankOrNull(tekst) ? "," : "",
+                DoosUtils.nullToEmpty(tekst),
+                DoosUtils.isNotBlankOrNull(roepnaam)
+                        ? " (" + roepnaam + ")" : "")
+                .trim();
+      }
     }
   }
 

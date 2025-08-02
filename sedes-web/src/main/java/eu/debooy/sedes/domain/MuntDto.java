@@ -18,13 +18,14 @@
 package eu.debooy.sedes.domain;
 
 import eu.debooy.doosutils.DoosConstants;
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -121,30 +122,30 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
   }
 
   public void setBestaat(boolean bestaat) {
-    this.bestaat  = bestaat ? DoosConstants.WAAR : DoosConstants.ONWAAR;
+    this.bestaat    = bestaat ? DoosConstants.WAAR : DoosConstants.ONWAAR;
   }
 
   public void setDecimalen(Integer decimalen) {
-    this.decimalen = decimalen;
+    this.decimalen  = decimalen;
   }
 
   public void setIso3(String iso3) {
-    this.iso3 = iso3;
+    this.iso3       = DoosUtils.stripToUpperCase(iso3);
   }
 
   public void setMuntId(Long muntId) {
-    this.muntId = muntId;
+    this.muntId     = muntId;
   }
 
   public void setMuntteken(String muntteken) {
-    this.muntteken = muntteken;
+    this.muntteken  = DoosUtils.strip(muntteken);
   }
 
   public void setNaam(String naam) {
-    this.naam     = naam;
+    this.naam       = DoosUtils.strip(naam);
   }
 
   public void setSubeenheid(String subeenheid) {
-    this.subeenheid = subeenheid;
+    this.subeenheid = DoosUtils.strip(subeenheid);
   }
 }

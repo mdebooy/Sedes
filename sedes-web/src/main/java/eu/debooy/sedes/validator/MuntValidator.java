@@ -17,9 +17,8 @@
 
 package eu.debooy.sedes.validator;
 
-import eu.debooy.doosutils.DoosUtils;
-import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.MuntDto;
 import eu.debooy.sedes.form.Munt;
 import java.util.ArrayList;
@@ -47,109 +46,41 @@ public final class MuntValidator {
   public static List<Message> valideer(Munt munt) {
     List<Message> fouten  = new ArrayList<>();
 
-    valideerDecimalen(munt.getDecimalen(), fouten);
-    valideerIso3(munt.getIso3(), fouten);
-    valideerMuntteken(munt.getMuntteken(), fouten);
-    valideerNaam(munt.getNaam(), fouten);
-    valideerSubeenheid(munt.getSubeenheid(), fouten);
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(munt.getDecimalen())
+                               .setAttribute(MuntDto.COL_DECIMALEN)
+                               .setLabel(LBL_DECIMALEN)
+                               .setMinWaarde(0L)
+                               .setMaxWaarde(99L)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(munt.getIso3())
+                               .setAttribute(MuntDto.COL_ISO3)
+                               .setLabel(LBL_ISO3)
+                               .setMaxLengte(3)
+                               .setUpperCase()
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(munt.getMuntteken())
+                               .setAttribute(MuntDto.COL_MUNTTEKEN)
+                               .setLabel(LBL_MUNTTEKEN)
+                               .setMaxLengte(3)
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(munt.getMuntteken())
+                               .setAttribute(MuntDto.COL_NAAM)
+                               .setLabel(LBL_NAAM)
+                               .setMaxLengte(100)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(munt.getMuntteken())
+                               .setAttribute(MuntDto.COL_SUBEENHEID)
+                               .setLabel(LBL_SUBEENHEID)
+                               .setMaxLengte(100)
+                               .valideer().getFouten());
 
     return fouten;
-  }
-
-  private static void valideerDecimalen(Integer decimalen,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(decimalen)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_DECIMALEN)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_DECIMALEN})
-                            .build());
-      return;
-    }
-
-    if (decimalen < 0 || decimalen > 99) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_DECIMALEN)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.RANGE)
-                            .setParams(new Object[]{LBL_DECIMALEN, 0, 99})
-                            .build());
-    }
-  }
-
-  private static void valideerIso3(String iso3,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(iso3)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_ISO3)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_ISO3})
-                            .build());
-      return;
-    }
-
-    if (iso3.length() != 3) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_ISO3)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.FIXLENGTH)
-                            .setParams(new Object[]{LBL_ISO3, 3})
-                            .build());
-    }
-  }
-
-  private static void valideerMuntteken(String muntteken,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(muntteken)) {
-      return;
-    }
-
-    if (muntteken.length() > 3) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_MUNTTEKEN)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_MUNTTEKEN, 3})
-                            .build());
-    }
-  }
-
-  private static void valideerNaam(String naam, List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(naam)) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.REQUIRED)
-                            .setParams(new Object[]{LBL_NAAM})
-                            .build());
-      return;
-    }
-
-    if (naam.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_NAAM)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_NAAM, 100})
-                            .build());
-    }
-  }
-
-  private static void valideerSubeenheid(String subeenheid,
-                                        List<Message> fouten) {
-    if (DoosUtils.isBlankOrNull(subeenheid)) {
-      return;
-    }
-
-    if (subeenheid.length() > 100) {
-      fouten.add(new Message.Builder()
-                            .setAttribute(MuntDto.COL_SUBEENHEID)
-                            .setSeverity(Message.ERROR)
-                            .setMessage(PersistenceConstants.MAXLENGTH)
-                            .setParams(new Object[]{LBL_MUNTTEKEN, 100})
-                            .build());
-    }
   }
 }

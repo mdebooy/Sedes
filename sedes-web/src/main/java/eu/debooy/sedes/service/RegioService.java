@@ -22,25 +22,26 @@ import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.sedes.access.RegioDao;
 import eu.debooy.sedes.domain.RegioDto;
+import eu.debooy.sedes.form.Regio;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.faces.model.SelectItem;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,11 +153,30 @@ public class RegioService {
     }
   }
 
-  @GET
-  @Path("/ddlb")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getSelectRegios() {
-    return Response.ok().entity(selectRegios()).build();
+  public Collection<Regio> query() {
+    Collection<Regio> taxa  = new ArrayList<>();
+
+    try {
+      regioDao.getAll().forEach(rij -> taxa.add(new Regio(rij)));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+
+    return taxa;
+  }
+
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<Regio> query(String taal) {
+    Collection<Regio> taxa  = new ArrayList<>();
+
+    try {
+      regioDao.getAll().forEach(rij -> taxa.add(new Regio(rij, taal)));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+
+    return taxa;
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -178,19 +198,20 @@ public class RegioService {
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public List<SelectItem> selectRegios() {
-    List<SelectItem>  items = new ArrayList<>();
-    Set<RegioDto>     rijen =
+  public Collection<SelectItem> selectRegios(String taal) {
+    Collection<SelectItem>  items = new ArrayList<>();
+    Set<RegioDto>           rijen =
         new TreeSet<>(new RegioDto.NaamComparator());
 
     try {
       rijen.addAll(regioDao.getAll());
       rijen.forEach(
-          regio -> items.add(new SelectItem(regio.getRegioId().toString(),
-                                            regio.getNaam())));
+          item  -> items.add(new SelectItem(item.getRegioId().toString(),
+                                            item.getNaam(taal))));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }
+
     return items;
   }
 }

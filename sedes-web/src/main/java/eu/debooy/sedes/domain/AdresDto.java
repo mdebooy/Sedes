@@ -17,13 +17,14 @@
 
 package eu.debooy.sedes.domain;
 
+import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -102,35 +103,22 @@ public class AdresDto extends Dto implements Comparable<AdresDto> {
   }
 
   public void setAdresId(Long adresId) {
-    this.adresId        = adresId;
+    this.adresId      = adresId;
   }
 
   public void setAdresdata(String adresdata) {
-    if (null == adresdata) {
-      this.adresdata    = null;
-    } else {
-      this.adresdata    = adresdata.trim();
-    }
+    this.adresdata    = DoosUtils.strip(adresdata);
   }
 
   public void setOpmerking(String opmerking) {
-    if (null == opmerking) {
-      this.opmerking    = null;
-    } else {
-      this.opmerking    = opmerking.trim();
-    }
+    this.opmerking    = DoosUtils.strip(opmerking);
   }
 
   public void setPlaatsId(Long plaatsId) {
-    this.plaatsId       = plaatsId;
+    this.plaatsId     = plaatsId;
   }
 
   public void setSubPostkode(String subPostkode) {
-    if (null == subPostkode) {
-      this.subPostkode  = null;
-    } else {
-      this.subPostkode  = subPostkode.trim();
-    }
-    this.subPostkode  = subPostkode;
+    this.subPostkode  = DoosUtils.strip(subPostkode);
   }
 }
