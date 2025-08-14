@@ -69,7 +69,7 @@ function getAdres(adresId) {
 function getAdresMetPlaats(adresId) {
   var adres = getAdres(adresId);
   if (adres.hasOwnProperty('plaatsId')) {
-    return adres.adresdata + ' - ' + getPlaatsnaam(adres.plaatsId);
+    return `${adres.adresdata} - ${getPlaatsnaam(adres.plaatsId)}`;
   }
 
   return adres.adresdata;
@@ -219,7 +219,7 @@ function getPlaatsnaam(plaatsId) {
     return plaats.naam;
   }
 
-  return plaats.plaatsnaam + ' (' + land.postLandkode.toString().trim() + ')';
+  return `${plaats.plaatsnaam} (${land.postLandkode.toString().trim()})`;
 }
 
 function getRegio(regioId) {

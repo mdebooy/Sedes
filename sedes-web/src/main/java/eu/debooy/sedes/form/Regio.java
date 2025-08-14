@@ -44,7 +44,7 @@ public class Regio
 
   public Regio(RegioDto regioDto, String taal) {
     landId    = regioDto.getLandId();
-    if (!DoosUtils.isBlankOrNull(taal)) {
+    if (DoosUtils.isNotBlankOrNull(taal)) {
       naam      = regioDto.getNaam(taal);
     }
     regioId   = regioDto.getRegioId();

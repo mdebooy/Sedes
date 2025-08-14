@@ -35,7 +35,7 @@ function getI18N(code) {
 
   var naam = teksten.findIndex(i => i.taalKode === taal);
   if (naam < 0) {
-    return '??' + code+ '??';
+    return `??${code}??`;
   }
 
   return teksten[naam].tekst;

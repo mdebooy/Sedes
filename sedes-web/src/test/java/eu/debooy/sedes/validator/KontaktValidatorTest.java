@@ -299,7 +299,7 @@ public class KontaktValidatorTest {
 
   @Test
   public void testValideerFoutKontaktDto1() {
-    var           kontakt   = new Kontakt();
+    var           kontakt   = new KontaktDto();
     List<Message> expResult = new ArrayList<>();
 
     setFout(expResult);
@@ -342,7 +342,7 @@ public class KontaktValidatorTest {
 
   @Test
   public void testValideerGoedKontaktDto1() {
-    var           kontakt   = new Kontakt();
+    var           kontakt   = new KontaktDto();
 
     kontakt.setKontakttype(TestConstants.KONTAKTTYPE);
     kontakt.setNaam(TestConstants.KONTAKTNAAM);
@@ -355,7 +355,7 @@ public class KontaktValidatorTest {
 
   @Test
   public void testValideerGoedKontaktDto2() {
-    var           kontakt   = new Kontakt();
+    var           kontakt   = new KontaktDto();
 
     kontakt.setAanspreekId(TestConstants.AANSPREEKID);
     kontakt.setGeboortedatum(new Date());
