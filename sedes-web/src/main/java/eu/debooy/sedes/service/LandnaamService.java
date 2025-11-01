@@ -17,7 +17,7 @@
 package eu.debooy.sedes.service;
 
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
-import eu.debooy.sedes.SedesConstants;
+import eu.debooy.sedes.SedesWebConstants;
 import eu.debooy.sedes.access.LandnaamDao;
 import eu.debooy.sedes.domain.LandnaamDto;
 import eu.debooy.sedes.domain.LandnaamPK;
@@ -73,7 +73,7 @@ public class LandnaamService {
   private LandnaamDao   landnaamDao;
 
   public LandnaamService() {
-    this(SedesConstants.DEF_TAAL);
+    this(SedesWebConstants.DEF_TAAL);
   }
 
   public LandnaamService(String iso6392t) {

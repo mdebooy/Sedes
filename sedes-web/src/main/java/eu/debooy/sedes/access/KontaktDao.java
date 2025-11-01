@@ -18,6 +18,7 @@ package eu.debooy.sedes.access;
 
 import eu.debooy.doosutils.access.Dao;
 import eu.debooy.doosutils.errorhandling.handler.interceptor.PersistenceExceptionHandlerInterceptor;
+import static eu.debooy.sedes.SedesWebConstants.SEDES_EM;
 import eu.debooy.sedes.domain.KontaktDto;
 import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
@@ -33,7 +34,8 @@ import java.util.Map;
  */
 @Interceptors({PersistenceExceptionHandlerInterceptor.class})
 public class KontaktDao extends Dao<KontaktDto> {
-  @PersistenceContext(unitName="sedes", type=PersistenceContextType.TRANSACTION)
+  @PersistenceContext(unitName=SEDES_EM,
+                      type=PersistenceContextType.TRANSACTION)
   private EntityManager em;
 
   public KontaktDao() {

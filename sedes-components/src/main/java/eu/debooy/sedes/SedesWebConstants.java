@@ -21,10 +21,11 @@ package eu.debooy.sedes;
 /**
  * @author Marco de Booij
  */
-public class SedesConstants {
-  private SedesConstants() {
+public class SedesWebConstants {
+  private SedesWebConstants() {
     throw new IllegalStateException("Utility class");
   }
 
   public static final String  DEF_TAAL  = "nld";
+  public static final String  SEDES_EM  = "sedes";
 }

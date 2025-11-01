@@ -21,7 +21,7 @@ import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.domain.Dto;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosLayer;
-import eu.debooy.sedes.SedesConstants;
+import eu.debooy.sedes.SedesWebConstants;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -92,7 +92,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
       implements Comparator<RegioDto>, Serializable {
     private static final  long  serialVersionUID  = 1L;
 
-    private String  taal  = SedesConstants.DEF_TAAL;
+    private String  taal  = SedesWebConstants.DEF_TAAL;
 
     public void setTaal(String taal) {
       this.taal = taal;
