@@ -29,7 +29,6 @@ import jakarta.ejb.Lock;
 import jakarta.ejb.LockType;
 import jakarta.ejb.Singleton;
 import jakarta.faces.model.SelectItem;
-import jakarta.inject.Named;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +40,10 @@ import org.slf4j.LoggerFactory;
  * @author Marco de Booij
  */
 @Singleton
-@Named("sedesRemote")
 @Lock(LockType.READ)
-public class SedesRemote implements ISedesRemote {
+public class SedesRemoteService implements ISedesRemote {
   private static final  Logger  LOGGER  =
-      LoggerFactory.getLogger(SedesRemote.class);
+      LoggerFactory.getLogger(SedesRemoteService.class);
 
   private AdresService    adresService;
   private KontaktService  kontaktService;
@@ -58,8 +56,8 @@ public class SedesRemote implements ISedesRemote {
   @EJB
   private IDoosRemote doosRemote;
 
-  public SedesRemote() {
-    LOGGER.debug("init SedesRemote");
+  public SedesRemoteService() {
+    LOGGER.debug("init SedesRemoteService");
   }
 
   @Override
