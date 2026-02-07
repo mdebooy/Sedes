@@ -26,7 +26,6 @@ import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.TestConstants;
 import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
-import static eu.debooy.sedes.validator.KontaktValidator.LBL_KONTAKTTYPE;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,7 +70,7 @@ public class KontaktValidatorTest {
                  .setAttribute(KontaktDto.COL_KONTAKTTYPE)
                  .setSeverity(Message.ERROR)
                  .setMessage(PersistenceConstants.WRONGVALUE)
-                 .setParams(new Object[]{LBL_KONTAKTTYPE,
+                 .setParams(new Object[]{KontaktValidator.LBL_KONTAKTTYPE,
                                          String.format("%s, %s",
                                                     Sedes.TYP_GROEP,
                                                     Sedes.TYP_PERSOON),
