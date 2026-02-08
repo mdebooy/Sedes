@@ -24,7 +24,6 @@ import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
 import eu.debooy.doosutils.errorhandling.exception.base.DoosRuntimeException;
 import eu.debooy.sedes.Sedes;
-import static eu.debooy.sedes.Sedes.LAND_REDIRECT;
 import eu.debooy.sedes.domain.RegioDto;
 import eu.debooy.sedes.domain.RegionaamDto;
 import eu.debooy.sedes.form.Regio;

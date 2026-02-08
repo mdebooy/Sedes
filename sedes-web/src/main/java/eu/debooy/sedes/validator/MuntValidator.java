@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.validator;
 
+import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.MuntDto;
@@ -40,10 +41,20 @@ public final class MuntValidator {
   }
 
   public static List<Message> valideer(MuntDto munt) {
+    if (null == munt) {
+      return
+          ComponentsUtils.objectIsNull(MuntDto.class.getSimpleName());
+    }
+
     return valideer(new Munt(munt));
   }
 
   public static List<Message> valideer(Munt munt) {
+    if (null == munt) {
+      return
+          ComponentsUtils.objectIsNull(Munt.class.getSimpleName());
+    }
+
     List<Message> fouten  = new ArrayList<>();
 
     fouten.addAll(new Validator.Builder()
@@ -68,14 +79,14 @@ public final class MuntValidator {
                                .setMaxLengte(3)
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
-                               .setWaarde(munt.getMuntteken())
+                               .setWaarde(munt.getNaam())
                                .setAttribute(MuntDto.COL_NAAM)
                                .setLabel(LBL_NAAM)
                                .setMaxLengte(100)
                                .setRequired()
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
-                               .setWaarde(munt.getMuntteken())
+                               .setWaarde(munt.getSubeenheid())
                                .setAttribute(MuntDto.COL_SUBEENHEID)
                                .setLabel(LBL_SUBEENHEID)
                                .setMaxLengte(100)

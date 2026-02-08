@@ -23,7 +23,7 @@ import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.Sedes;
-import eu.debooy.sedes.TestConstants;
+import eu.debooy.sedes.SedesTestConstants;
 import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ import org.junit.Test;
  * @author Marco de Booij
  */
 public class KontaktValidatorTest {
+  @SuppressWarnings("java:S3008")
   private static  Message ERR_GEBOORTEDATUM;
 
   private static final  Message ERR_AANSPREEKID     =
@@ -166,7 +167,7 @@ public class KontaktValidatorTest {
     expResult.add(ERR_INITIALEN);
     expResult.add(ERR_KONTAKTTYPE);
     expResult.add(ERR_NAAM);
-    expResult.add(TestConstants.ERR_OPMERKING);
+    expResult.add(SedesTestConstants.ERR_OPMERKING);
     expResult.add(ERR_PSEUDONIEM);
     expResult.add(ERR_ROEPNAAM);
     expResult.add(ERR_TAAL);
@@ -181,51 +182,30 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testNullKontakt() {
-    Kontakt       kontakt   = null;
-    List<Message> result    = KontaktValidator.valideer(kontakt);
-
-    assertEquals(1, result.size());
-    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
-  }
-
-  @Test
-  public void testNullKontaktDto() {
-    KontaktDto    kontakt   = null;
-    List<Message> result    = KontaktValidator.valideer(kontakt);
-
-    assertEquals(1, result.size());
-    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
-  }
-
-  @Test
-  public void testValideerFoutKontakt1() {
+  public void testFoutKontakt1() {
     var           kontakt   = new Kontakt();
     List<Message> expResult = new ArrayList<>();
 
     setFout(expResult);
 
-    kontakt.setAanspreekId(DoosUtils.stringMetLengte(TestConstants.AANSPREEKID,
+    kontakt.setAanspreekId(DoosUtils.stringMetLengte(SedesTestConstants.AANSPREEKID,
                                                      11, "X"));
     kontakt.setGeboortedatum(morgen);
-    kontakt.setGebruikersnaam(
-        DoosUtils.stringMetLengte(TestConstants.GEBRUIKERSNAAM, 21, "X"));
-    kontakt.setInitialen(
-        DoosUtils.stringMetLengte(TestConstants.INITIALEN, 21, "X"));
-    kontakt.setKontakttype(TestConstants.KONTAKTTYPEF);
-    kontakt.setNaam(DoosUtils.stringMetLengte(TestConstants.KONTAKTNAAM,
+    kontakt.setGebruikersnaam(DoosUtils.stringMetLengte(SedesTestConstants.GEBRUIKERSNAAM, 21, "X"));
+    kontakt.setInitialen(DoosUtils.stringMetLengte(SedesTestConstants.INITIALEN, 21, "X"));
+    kontakt.setKontakttype(SedesTestConstants.KONTAKTTYPEF);
+    kontakt.setNaam(DoosUtils.stringMetLengte(SedesTestConstants.KONTAKTNAAM,
                                               256, "X"));
-    kontakt.setOpmerking(DoosUtils.stringMetLengte(TestConstants.OPMERKING,
+    kontakt.setOpmerking(DoosUtils.stringMetLengte(SedesTestConstants.OPMERKING,
                                               2001, "X"));
-    kontakt.setPseudoniem(DoosUtils.stringMetLengte(TestConstants.PSEUDONIEM,
+    kontakt.setPseudoniem(DoosUtils.stringMetLengte(SedesTestConstants.PSEUDONIEM,
                                               256, "X"));
-    kontakt.setRoepnaam(DoosUtils.stringMetLengte(TestConstants.ROEPNAAM,
+    kontakt.setRoepnaam(DoosUtils.stringMetLengte(SedesTestConstants.ROEPNAAM,
                                               256, "X"));
-    kontakt.setTaal(DoosUtils.stringMetLengte(TestConstants.KONTAKTTAAL,
+    kontakt.setTaal(DoosUtils.stringMetLengte(SedesTestConstants.KONTAKTTAAL,
                                               4, "X"));
-    kontakt.setTussenvoegsel(
-        DoosUtils.stringMetLengte(TestConstants.TUSSENVOEGSEL, 11, "X"));
-    kontakt.setVoornaam(DoosUtils.stringMetLengte(TestConstants.VOORNAAM,
+    kontakt.setTussenvoegsel(DoosUtils.stringMetLengte(SedesTestConstants.TUSSENVOEGSEL, 11, "X"));
+    kontakt.setVoornaam(DoosUtils.stringMetLengte(SedesTestConstants.VOORNAAM,
                                               256, "X"));
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
@@ -233,7 +213,7 @@ public class KontaktValidatorTest {
     assertEquals(12, result.size());
     assertEquals(expResult.toString(), result.toString());
 
-    kontakt.setTaal(TestConstants.KONTAKTTAAL2);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL2);
 
     result  = KontaktValidator.valideer(kontakt);
 
@@ -242,12 +222,12 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerGoedKontakt1() {
+  public void testGoedKontakt1() {
     var           kontakt   = new Kontakt();
 
-    kontakt.setKontakttype(TestConstants.KONTAKTTYPE);
-    kontakt.setNaam(TestConstants.KONTAKTNAAM);
-    kontakt.setTaal(TestConstants.KONTAKTTAAL);
+    kontakt.setKontakttype(SedesTestConstants.KONTAKTTYPE);
+    kontakt.setNaam(SedesTestConstants.KONTAKTNAAM);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL);
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
 
@@ -255,21 +235,21 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerGoedKontakt2() {
+  public void testGoedKontakt2() {
     var           kontakt   = new Kontakt();
 
-    kontakt.setAanspreekId(TestConstants.AANSPREEKID);
+    kontakt.setAanspreekId(SedesTestConstants.AANSPREEKID);
     kontakt.setGeboortedatum(new Date());
-    kontakt.setGebruikersnaam(TestConstants.GEBRUIKERSNAAM);
-    kontakt.setInitialen(TestConstants.INITIALEN);
+    kontakt.setGebruikersnaam(SedesTestConstants.GEBRUIKERSNAAM);
+    kontakt.setInitialen(SedesTestConstants.INITIALEN);
     kontakt.setKontakttype(Sedes.TYP_PERSOON);
-    kontakt.setNaam(TestConstants.KONTAKTNAAM);
-    kontakt.setOpmerking(TestConstants.OPMERKING);
-    kontakt.setPseudoniem(TestConstants.PSEUDONIEM);
-    kontakt.setRoepnaam(TestConstants.ROEPNAAM);
-    kontakt.setTaal(TestConstants.KONTAKTTAAL);
-    kontakt.setTussenvoegsel(TestConstants.TUSSENVOEGSEL);
-    kontakt.setVoornaam(TestConstants.VOORNAAM);
+    kontakt.setNaam(SedesTestConstants.KONTAKTNAAM);
+    kontakt.setOpmerking(SedesTestConstants.OPMERKING);
+    kontakt.setPseudoniem(SedesTestConstants.PSEUDONIEM);
+    kontakt.setRoepnaam(SedesTestConstants.ROEPNAAM);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL);
+    kontakt.setTussenvoegsel(SedesTestConstants.TUSSENVOEGSEL);
+    kontakt.setVoornaam(SedesTestConstants.VOORNAAM);
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
 
@@ -289,7 +269,7 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerLeegKontakt() {
+  public void testLeegKontakt() {
     var           kontakt   = new Kontakt();
     List<Message> expResult = new ArrayList<>();
 
@@ -302,33 +282,30 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerFoutKontaktDto1() {
+  public void testFoutKontaktDto1() {
     var           kontakt   = new KontaktDto();
     List<Message> expResult = new ArrayList<>();
 
     setFout(expResult);
 
-    kontakt.setAanspreekId(DoosUtils.stringMetLengte(TestConstants.AANSPREEKID,
+    kontakt.setAanspreekId(DoosUtils.stringMetLengte(SedesTestConstants.AANSPREEKID,
                                                      11, "X"));
     kontakt.setGeboortedatum(morgen);
-    kontakt.setGebruikersnaam(
-        DoosUtils.stringMetLengte(TestConstants.GEBRUIKERSNAAM, 21, "X"));
-    kontakt.setInitialen(
-        DoosUtils.stringMetLengte(TestConstants.INITIALEN, 21, "X"));
-    kontakt.setKontakttype(TestConstants.KONTAKTTYPEF);
-    kontakt.setNaam(DoosUtils.stringMetLengte(TestConstants.KONTAKTNAAM,
+    kontakt.setGebruikersnaam(DoosUtils.stringMetLengte(SedesTestConstants.GEBRUIKERSNAAM, 21, "X"));
+    kontakt.setInitialen(DoosUtils.stringMetLengte(SedesTestConstants.INITIALEN, 21, "X"));
+    kontakt.setKontakttype(SedesTestConstants.KONTAKTTYPEF);
+    kontakt.setNaam(DoosUtils.stringMetLengte(SedesTestConstants.KONTAKTNAAM,
                                               256, "X"));
-    kontakt.setOpmerking(DoosUtils.stringMetLengte(TestConstants.OPMERKING,
+    kontakt.setOpmerking(DoosUtils.stringMetLengte(SedesTestConstants.OPMERKING,
                                               2001, "X"));
-    kontakt.setPseudoniem(DoosUtils.stringMetLengte(TestConstants.PSEUDONIEM,
+    kontakt.setPseudoniem(DoosUtils.stringMetLengte(SedesTestConstants.PSEUDONIEM,
                                               256, "X"));
-    kontakt.setRoepnaam(DoosUtils.stringMetLengte(TestConstants.ROEPNAAM,
+    kontakt.setRoepnaam(DoosUtils.stringMetLengte(SedesTestConstants.ROEPNAAM,
                                               256, "X"));
-    kontakt.setTaal(DoosUtils.stringMetLengte(TestConstants.KONTAKTTAAL,
+    kontakt.setTaal(DoosUtils.stringMetLengte(SedesTestConstants.KONTAKTTAAL,
                                               4, "X"));
-    kontakt.setTussenvoegsel(
-        DoosUtils.stringMetLengte(TestConstants.TUSSENVOEGSEL, 11, "X"));
-    kontakt.setVoornaam(DoosUtils.stringMetLengte(TestConstants.VOORNAAM,
+    kontakt.setTussenvoegsel(DoosUtils.stringMetLengte(SedesTestConstants.TUSSENVOEGSEL, 11, "X"));
+    kontakt.setVoornaam(DoosUtils.stringMetLengte(SedesTestConstants.VOORNAAM,
                                               256, "X"));
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
@@ -336,7 +313,7 @@ public class KontaktValidatorTest {
     assertEquals(12, result.size());
     assertEquals(expResult.toString(), result.toString());
 
-    kontakt.setTaal(TestConstants.KONTAKTTAAL2);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL2);
 
     result  = KontaktValidator.valideer(kontakt);
 
@@ -345,12 +322,12 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerGoedKontaktDto1() {
+  public void testGoedKontaktDto1() {
     var           kontakt   = new KontaktDto();
 
-    kontakt.setKontakttype(TestConstants.KONTAKTTYPE);
-    kontakt.setNaam(TestConstants.KONTAKTNAAM);
-    kontakt.setTaal(TestConstants.KONTAKTTAAL);
+    kontakt.setKontakttype(SedesTestConstants.KONTAKTTYPE);
+    kontakt.setNaam(SedesTestConstants.KONTAKTNAAM);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL);
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
 
@@ -358,21 +335,21 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerGoedKontaktDto2() {
+  public void testGoedKontaktDto2() {
     var           kontakt   = new KontaktDto();
 
-    kontakt.setAanspreekId(TestConstants.AANSPREEKID);
+    kontakt.setAanspreekId(SedesTestConstants.AANSPREEKID);
     kontakt.setGeboortedatum(new Date());
-    kontakt.setGebruikersnaam(TestConstants.GEBRUIKERSNAAM);
-    kontakt.setInitialen(TestConstants.INITIALEN);
+    kontakt.setGebruikersnaam(SedesTestConstants.GEBRUIKERSNAAM);
+    kontakt.setInitialen(SedesTestConstants.INITIALEN);
     kontakt.setKontakttype(Sedes.TYP_PERSOON);
-    kontakt.setNaam(TestConstants.KONTAKTNAAM);
-    kontakt.setOpmerking(TestConstants.OPMERKING);
-    kontakt.setPseudoniem(TestConstants.PSEUDONIEM);
-    kontakt.setRoepnaam(TestConstants.ROEPNAAM);
-    kontakt.setTaal(TestConstants.KONTAKTTAAL);
-    kontakt.setTussenvoegsel(TestConstants.TUSSENVOEGSEL);
-    kontakt.setVoornaam(TestConstants.VOORNAAM);
+    kontakt.setNaam(SedesTestConstants.KONTAKTNAAM);
+    kontakt.setOpmerking(SedesTestConstants.OPMERKING);
+    kontakt.setPseudoniem(SedesTestConstants.PSEUDONIEM);
+    kontakt.setRoepnaam(SedesTestConstants.ROEPNAAM);
+    kontakt.setTaal(SedesTestConstants.KONTAKTTAAL);
+    kontakt.setTussenvoegsel(SedesTestConstants.TUSSENVOEGSEL);
+    kontakt.setVoornaam(SedesTestConstants.VOORNAAM);
 
     List<Message> result    = KontaktValidator.valideer(kontakt);
 
@@ -392,7 +369,7 @@ public class KontaktValidatorTest {
   }
 
   @Test
-  public void testValideerLeegKontaktDto() {
+  public void testLeegKontaktDto() {
     var           kontakt   = new KontaktDto();
     List<Message> expResult = new ArrayList<>();
 
@@ -402,5 +379,26 @@ public class KontaktValidatorTest {
     
     assertEquals(3, result.size());
     assertEquals(expResult.toString(), result.toString());
+  }
+
+  @Test
+  public void testNullKontakt() {
+    Kontakt       kontakt   = null;
+    List<Message> result    = KontaktValidator.valideer(kontakt);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(Kontakt.class.getSimpleName(), result.get(0).getAttribute());
+  }
+
+  @Test
+  public void testNullKontaktDto() {
+    KontaktDto    kontakt   = null;
+    List<Message> result    = KontaktValidator.valideer(kontakt);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(KontaktDto.class.getSimpleName(),
+                 result.get(0).getAttribute());
   }
 }

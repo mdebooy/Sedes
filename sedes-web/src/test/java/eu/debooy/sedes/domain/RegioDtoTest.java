@@ -16,7 +16,7 @@
  */
 package eu.debooy.sedes.domain;
 
-import eu.debooy.sedes.TestConstants;
+import eu.debooy.sedes.SedesTestConstants;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,9 +35,9 @@ public class RegioDtoTest {
   public static void setUpClass() {
     regioDto  = new RegioDto();
 
-    regioDto.setLandId(TestConstants.LANDID);
-    regioDto.setRegioId(TestConstants.REGIOID);
-    regioDto.setRegiokode(TestConstants.REGIOKODE);
+    regioDto.setLandId(SedesTestConstants.LANDID);
+    regioDto.setRegioId(SedesTestConstants.REGIOID);
+    regioDto.setRegiokode(SedesTestConstants.REGIOKODE);
   }
 
   @Test
@@ -46,9 +46,9 @@ public class RegioDtoTest {
     var groter  = new RegioDto();
     var kleiner = new RegioDto();
 
-    gelijk.setRegiokode(TestConstants.REGIOKODE);
-    groter.setRegiokode(TestConstants.REGIOKODE_G);
-    kleiner.setRegiokode(TestConstants.REGIOKODE_K);
+    gelijk.setRegiokode(SedesTestConstants.REGIOKODE);
+    groter.setRegiokode(SedesTestConstants.REGIOKODE_G);
+    kleiner.setRegiokode(SedesTestConstants.REGIOKODE_K);
 
     assertTrue(regioDto.compareTo(groter) < 0);
     assertEquals(0, regioDto.compareTo(gelijk));
@@ -61,63 +61,63 @@ public class RegioDtoTest {
 
     assertEquals(regioDto, regioDto);
     assertNotEquals(regioDto, null);
-    assertNotEquals(regioDto, TestConstants.REGIONAAM);
+    assertNotEquals(regioDto, SedesTestConstants.REGIONAAM);
     assertNotEquals(regioDto, instance);
 
-    instance.setRegioId(TestConstants.REGIOID);
+    instance.setRegioId(SedesTestConstants.REGIOID);
     assertEquals(regioDto, instance);
   }
 
   @Test
   public void testGetLandId() {
-    assertEquals(TestConstants.LANDID, regioDto.getLandId());
+    assertEquals(SedesTestConstants.LANDID, regioDto.getLandId());
   }
 
   @Test
   public void testGetRegioId() {
-    assertEquals(TestConstants.REGIOID, regioDto.getRegioId());
+    assertEquals(SedesTestConstants.REGIOID, regioDto.getRegioId());
   }
 
   @Test
   public void testGetRegiokode() {
-    assertEquals(TestConstants.REGIOKODE, regioDto.getRegiokode());
+    assertEquals(SedesTestConstants.REGIOKODE, regioDto.getRegiokode());
   }
 
   @Test
   public void testHashCode() {
-    assertEquals(TestConstants.REGIO_HASH, regioDto.hashCode());
+    assertEquals(SedesTestConstants.REGIO_HASH, regioDto.hashCode());
   }
 
   @Test
   public void testSetLandId() {
     var instance  = new RegioDto();
 
-    assertNotEquals(TestConstants.LANDID, instance.getLandId());
+    assertNotEquals(SedesTestConstants.LANDID, instance.getLandId());
 
-    instance.setLandId(TestConstants.LANDID);
+    instance.setLandId(SedesTestConstants.LANDID);
 
-    assertEquals(TestConstants.LANDID, instance.getLandId());
+    assertEquals(SedesTestConstants.LANDID, instance.getLandId());
   }
 
   @Test
   public void testSetRegioId() {
     var instance  = new RegioDto();
 
-    assertNotEquals(TestConstants.REGIOID, instance.getRegioId());
+    assertNotEquals(SedesTestConstants.REGIOID, instance.getRegioId());
 
-    instance.setRegioId(TestConstants.REGIOID);
+    instance.setRegioId(SedesTestConstants.REGIOID);
 
-    assertEquals(TestConstants.REGIOID, instance.getRegioId());
+    assertEquals(SedesTestConstants.REGIOID, instance.getRegioId());
   }
 
   @Test
   public void testSetRegiokode() {
     var instance  = new RegioDto();
 
-    assertNotEquals(TestConstants.REGIOKODE, instance.getRegiokode());
+    assertNotEquals(SedesTestConstants.REGIOKODE, instance.getRegiokode());
 
-    instance.setRegiokode(TestConstants.REGIOKODE.toUpperCase());
+    instance.setRegiokode(SedesTestConstants.REGIOKODE.toUpperCase());
 
-    assertEquals(TestConstants.REGIOKODE, instance.getRegiokode());
+    assertEquals(SedesTestConstants.REGIOKODE, instance.getRegiokode());
   }
 }

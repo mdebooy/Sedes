@@ -21,16 +21,18 @@ import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.sedes.domain.KontaktDto;
 
+
 /**
  * @author Marco de Booij
  */
-public final class TestConstants {
+public final class SedesTestConstants {
   public static final String  AANSPREEKID     = "Mr.";
   public static final String  BREEDTE1        = "N";
   public static final String  BREEDTE2        = "S";
   public static final String  ADRESDATA       = "Adres 12";
   public static final String  GEBRUIKERSNAAM  = "login";
   public static final String  INITIALEN       = "SI";
+  public static final String  ISO3            = "ISO";
   public static final String  ISO6391         = "nl";
   public static final String  ISO6392T        = "nld";
   public static final String  KONTAKTTYPE     = "P";
@@ -41,6 +43,8 @@ public final class TestConstants {
   public static final Long    LANDID          = 100L;
   public static final String  LENGTE1         = "E";
   public static final String  LENGTE2         = "W";
+  public static final String  MUNTNAAM        = "Valuta";
+  public static final String  MUNTTEKEN       = "cnt";
   public static final String  OPMERKING       = "Opmerking";
   public static final String  PLAATSNAAM      = "Plaats";
   public static final String  POSTKODE        = "PK-001";
@@ -54,6 +58,7 @@ public final class TestConstants {
   public static final String  REGIOKODE_G     = "ZK123";
   public static final String  REGIOKODE_K     = "AK123";
   public static final String  ROEPNAAM        = "Roepnaam";
+  public static final String  SUBEENHEID      = "CentiValuta";
   public static final String  SUBPOSTKODE     = "1234 AB";
   public static final String  TUSSENVOEGSEL   = "van der";
   public static final String  VOORNAAM        = "Voornaam";
@@ -70,7 +75,7 @@ public final class TestConstants {
                .setParams(new Object[]{LBL_OPMERKING, 2000})
                .build();
 
-  private TestConstants() {
+  private SedesTestConstants() {
     throw new IllegalStateException("Utility class");
   }
 }

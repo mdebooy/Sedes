@@ -49,7 +49,7 @@ public final class PlaatsValidator {
 
   public static List<Message> valideer(PlaatsDto plaats) {
     if (null == plaats) {
-      return ComponentsUtils.objectIsNull("PlaatsDto");
+      return ComponentsUtils.objectIsNull(PlaatsDto.class.getSimpleName());
     }
 
     return valideer(new Plaats(plaats));
@@ -57,7 +57,7 @@ public final class PlaatsValidator {
 
   public static List<Message> valideer(Plaats plaats) {
     if (null == plaats) {
-      return ComponentsUtils.objectIsNull("Plaats");
+      return ComponentsUtils.objectIsNull(Plaats.class.getSimpleName());
     }
 
     List<Message> fouten  = new ArrayList<>();

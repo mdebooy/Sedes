@@ -39,7 +39,7 @@ public final class RegioValidator {
 
   public static List<Message> valideer(RegioDto regio) {
     if (null == regio) {
-      return ComponentsUtils.objectIsNull("RegioDto");
+      return ComponentsUtils.objectIsNull(RegioDto.class.getSimpleName());
     }
 
     return valideer(new Regio(regio));
@@ -47,7 +47,7 @@ public final class RegioValidator {
 
   public static List<Message> valideer(Regio regio) {
     if (null == regio) {
-      return ComponentsUtils.objectIsNull("Regio");
+      return ComponentsUtils.objectIsNull(Regio.class.getSimpleName());
     }
 
     List<Message> fouten  = new ArrayList<>();

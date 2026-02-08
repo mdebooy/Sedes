@@ -38,7 +38,8 @@ public final class WerelddeelnaamValidator {
 
   public static List<Message> valideer(WerelddeelnaamDto werelddeelnaam) {
     if (null == werelddeelnaam) {
-      return ComponentsUtils.objectIsNull("WerelddeelnaamDto");
+      return
+          ComponentsUtils.objectIsNull(WerelddeelnaamDto.class.getSimpleName());
     }
 
     return valideer(new Werelddeelnaam(werelddeelnaam));
@@ -46,7 +47,7 @@ public final class WerelddeelnaamValidator {
 
   public static List<Message> valideer(Werelddeelnaam werelddeelnaam) {
     if (null == werelddeelnaam) {
-      return ComponentsUtils.objectIsNull("Werelddeelnaam");
+      return ComponentsUtils.objectIsNull(Werelddeelnaam.class.getSimpleName());
     }
 
     List<Message> fouten  = new ArrayList<>();

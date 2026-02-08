@@ -40,7 +40,7 @@ public class AdresValidator {
 
   public static List<Message> valideer(AdresDto adres) {
   if (null == adres) {
-     return ComponentsUtils.objectIsNull("AdresDto");
+     return ComponentsUtils.objectIsNull(AdresDto.class.getSimpleName());
    }
 
    return valideer(new Adres(adres));
@@ -48,7 +48,7 @@ public class AdresValidator {
 
   public static List<Message> valideer(Adres adres) {
     if (null == adres) {
-      return ComponentsUtils.objectIsNull("Adres");
+      return ComponentsUtils.objectIsNull(Adres.class.getSimpleName());
     }
 
     List<Message> fouten  = new ArrayList<>();

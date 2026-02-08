@@ -19,7 +19,7 @@ package eu.debooy.sedes.validator;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
-import eu.debooy.sedes.TestConstants;
+import eu.debooy.sedes.SedesTestConstants;
 import eu.debooy.sedes.domain.PlaatsDto;
 import eu.debooy.sedes.form.Plaats;
 import java.util.ArrayList;
@@ -92,13 +92,13 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerFoutePlaats1() {
+  public void testFoutePlaats1() {
     var           plaats    = new Plaats();
     List<Message> expResult = new ArrayList<>();
 
-    plaats.setPlaatsnaam(DoosUtils.stringMetLengte(TestConstants.PLAATSNAAM,
+    plaats.setPlaatsnaam(DoosUtils.stringMetLengte(SedesTestConstants.PLAATSNAAM,
                                                    101, "X"));
-    plaats.setPostkode(DoosUtils.stringMetLengte(TestConstants.POSTKODE,
+    plaats.setPostkode(DoosUtils.stringMetLengte(SedesTestConstants.POSTKODE,
                                                  16, "X"));
     plaats.setZonenummer(1000000L);
 
@@ -110,13 +110,13 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerFoutePlaatsDto1() {
+  public void testFoutePlaatsDto1() {
     var           plaats    = new PlaatsDto();
     List<Message> expResult = new ArrayList<>();
 
-    plaats.setPlaatsnaam(DoosUtils.stringMetLengte(TestConstants.PLAATSNAAM,
+    plaats.setPlaatsnaam(DoosUtils.stringMetLengte(SedesTestConstants.PLAATSNAAM,
                                                    101, "X"));
-    plaats.setPostkode(DoosUtils.stringMetLengte(TestConstants.POSTKODE,
+    plaats.setPostkode(DoosUtils.stringMetLengte(SedesTestConstants.POSTKODE,
                                                  16, "X"));
     plaats.setZonenummer(-1L);
 
@@ -128,12 +128,12 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerGoedePlaats1() {
+  public void testGoedePlaats1() {
     var           plaats    = new Plaats();
 
-    plaats.setLandId(TestConstants.LANDID);
-    plaats.setPlaatsnaam(TestConstants.PLAATSNAAM);
-    plaats.setRegioId(TestConstants.REGIOID);
+    plaats.setLandId(SedesTestConstants.LANDID);
+    plaats.setPlaatsnaam(SedesTestConstants.PLAATSNAAM);
+    plaats.setRegioId(SedesTestConstants.REGIOID);
 
     List<Message> result    = PlaatsValidator.valideer(plaats);
 
@@ -141,12 +141,12 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerGoedePlaatsDto1() {
+  public void testGoedePlaatsDto1() {
     var           plaats    = new PlaatsDto();
 
-    plaats.setLandId(TestConstants.LANDID);
-    plaats.setPlaatsnaam(TestConstants.PLAATSNAAM);
-    plaats.setRegioId(TestConstants.REGIOID);
+    plaats.setLandId(SedesTestConstants.LANDID);
+    plaats.setPlaatsnaam(SedesTestConstants.PLAATSNAAM);
+    plaats.setRegioId(SedesTestConstants.REGIOID);
 
     List<Message> result    = PlaatsValidator.valideer(plaats);
 
@@ -154,7 +154,7 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerLegePlaats() {
+  public void testLegePlaats() {
     var           plaats    = new Plaats();
     List<Message> expResult = new ArrayList<>();
 
@@ -166,7 +166,7 @@ public class PlaatsValidatorTest {
   }
 
   @Test
-  public void testValideerLegePlaatsDto() {
+  public void testLegePlaatsDto() {
     var           plaats    = new PlaatsDto();
     List<Message> expResult = new ArrayList<>();
 
@@ -175,5 +175,27 @@ public class PlaatsValidatorTest {
     List<Message> result    = PlaatsValidator.valideer(plaats);
 
     assertEquals(expResult.toString(), result.toString());
+  }
+
+  @Test
+  public void testNullPlaatsnaam() {
+    Plaats        plaats  = null;
+    List<Message> result  = PlaatsValidator.valideer(plaats);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(Plaats.class.getSimpleName(),
+                 result.get(0).getAttribute());
+  }
+
+  @Test
+  public void testNullPlaatsDto() {
+    PlaatsDto     plaats  = null;
+    List<Message> result  = PlaatsValidator.valideer(plaats);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(PlaatsDto.class.getSimpleName(),
+                 result.get(0).getAttribute());
   }
 }

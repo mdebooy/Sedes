@@ -19,7 +19,7 @@ package eu.debooy.sedes.validator;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
-import eu.debooy.sedes.TestConstants;
+import eu.debooy.sedes.SedesTestConstants;
 import eu.debooy.sedes.domain.WerelddeelnaamDto;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import java.util.ArrayList;
@@ -80,14 +80,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerFouteWerelddeelnaam() {
+  public void testFouteWerelddeelnaam() {
     var           werelddeelnaam  = new Werelddeelnaam();
     List<Message> expResult       = new ArrayList<>();
 
-    werelddeelnaam.setNaam(
-            DoosUtils.stringMetLengte(TestConstants.WERELDDEELNAAM, 101, "X"));
-    werelddeelnaam.setTaal(
-            DoosUtils.stringMetLengte(TestConstants.ISO6392T, 4, "X"));
+    werelddeelnaam.setNaam(DoosUtils.stringMetLengte(SedesTestConstants.WERELDDEELNAAM, 101, "X"));
+    werelddeelnaam.setTaal(DoosUtils.stringMetLengte(SedesTestConstants.ISO6392T, 4, "X"));
     werelddeelnaam.setWerelddeelId(null);
 
     setFouten(expResult);
@@ -98,14 +96,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerFouteWerelddeelnaamDto() {
+  public void testFouteWerelddeelnaamDto() {
     var           werelddeelnaam  = new WerelddeelnaamDto();
     List<Message> expResult       = new ArrayList<>();
 
-    werelddeelnaam.setNaam(
-            DoosUtils.stringMetLengte(TestConstants.WERELDDEELNAAM, 101, "X"));
-    werelddeelnaam.setTaal(
-            DoosUtils.stringMetLengte(TestConstants.ISO6392T, 4, "X"));
+    werelddeelnaam.setNaam(DoosUtils.stringMetLengte(SedesTestConstants.WERELDDEELNAAM, 101, "X"));
+    werelddeelnaam.setTaal(DoosUtils.stringMetLengte(SedesTestConstants.ISO6392T, 4, "X"));
     werelddeelnaam.setWerelddeelId(null);
 
     setFouten(expResult);
@@ -116,12 +112,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerGoedeWerelddeelnaam1() {
+  public void testGoedeWerelddeelnaam1() {
     var             werelddeelnaam  = new Werelddeelnaam();
 
-    werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
-    werelddeelnaam.setTaal(TestConstants.ISO6392T);
-    werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
+    werelddeelnaam.setNaam(SedesTestConstants.WERELDDEELNAAM);
+    werelddeelnaam.setTaal(SedesTestConstants.ISO6392T);
+    werelddeelnaam.setWerelddeelId(SedesTestConstants.WERELDDEELID);
 
     List<Message> result  = WerelddeelnaamValidator.valideer(werelddeelnaam);
 
@@ -129,12 +125,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerGoedeWerelddeelnaam2() {
+  public void testGoedeWerelddeelnaam2() {
     var             werelddeelnaam  = new Werelddeelnaam();
 
-    werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
-    werelddeelnaam.setTaal(TestConstants.ISO6392T.toUpperCase());
-    werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
+    werelddeelnaam.setNaam(SedesTestConstants.WERELDDEELNAAM);
+    werelddeelnaam.setTaal(SedesTestConstants.ISO6392T.toUpperCase());
+    werelddeelnaam.setWerelddeelId(SedesTestConstants.WERELDDEELID);
 
     List<Message> result  = WerelddeelnaamValidator.valideer(werelddeelnaam);
 
@@ -142,12 +138,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerGoedeWerelddeelnaamDto1() {
+  public void testGoedeWerelddeelnaamDto1() {
     var               werelddeelnaam  = new WerelddeelnaamDto();
 
-    werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
-    werelddeelnaam.setTaal(TestConstants.ISO6392T);
-    werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
+    werelddeelnaam.setNaam(SedesTestConstants.WERELDDEELNAAM);
+    werelddeelnaam.setTaal(SedesTestConstants.ISO6392T);
+    werelddeelnaam.setWerelddeelId(SedesTestConstants.WERELDDEELID);
 
     List<Message> result  = WerelddeelnaamValidator.valideer(werelddeelnaam);
 
@@ -155,12 +151,12 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerGoedeWerelddeelnaamDto2() {
+  public void testGoedeWerelddeelnaamDto2() {
     var               werelddeelnaam  = new WerelddeelnaamDto();
 
-    werelddeelnaam.setNaam(TestConstants.WERELDDEELNAAM);
-    werelddeelnaam.setTaal(TestConstants.ISO6392T.toUpperCase());
-    werelddeelnaam.setWerelddeelId(TestConstants.WERELDDEELID);
+    werelddeelnaam.setNaam(SedesTestConstants.WERELDDEELNAAM);
+    werelddeelnaam.setTaal(SedesTestConstants.ISO6392T.toUpperCase());
+    werelddeelnaam.setWerelddeelId(SedesTestConstants.WERELDDEELID);
 
     List<Message> result  = WerelddeelnaamValidator.valideer(werelddeelnaam);
 
@@ -168,7 +164,7 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerLegeWerelddeelnaam() {
+  public void testLegeWerelddeelnaam() {
     var           werelddeelnaam  = new Werelddeelnaam();
     List<Message> expResult       = new ArrayList<>();
 
@@ -181,7 +177,7 @@ public class WerelddeelnaamValidatorTest {
   }
 
   @Test
-  public void testValideerLegeWerelddeelnaamDto() {
+  public void testLegeWerelddeelnaamDto() {
     var           werelddeelnaam  = new WerelddeelnaamDto();
     List<Message> expResult       = new ArrayList<>();
 
@@ -191,5 +187,29 @@ public class WerelddeelnaamValidatorTest {
         WerelddeelnaamValidator.valideer(werelddeelnaam);
 
     assertEquals(expResult.toString(), result.toString());
+  }
+
+  @Test
+  public void testNullWerelddeelnaam() {
+    Werelddeelnaam  werelddeelnaam  = null;
+    List<Message>   result          =
+        WerelddeelnaamValidator.valideer(werelddeelnaam);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(Werelddeelnaam.class.getSimpleName(),
+                 result.get(0).getAttribute());
+  }
+
+  @Test
+  public void testNullWerelddeelnaamDto() {
+    WerelddeelnaamDto werelddeelnaam    = null;
+    List<Message>     result            =
+        WerelddeelnaamValidator.valideer(werelddeelnaam);
+
+    assertEquals(1, result.size());
+    assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(WerelddeelnaamDto.class.getSimpleName(),
+                 result.get(0).getAttribute());
   }
 }

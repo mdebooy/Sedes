@@ -52,7 +52,7 @@ public class KontaktadresValidator {
 
   public static List<Message> valideer(KontaktadresDto kontaktadres) {
   if (null == kontaktadres) {
-     return ComponentsUtils.objectIsNull("KontaktadresDto");
+     return ComponentsUtils.objectIsNull(KontaktadresDto.class.getSimpleName());
    }
 
    return valideer(new Kontaktadres(kontaktadres));
@@ -60,7 +60,7 @@ public class KontaktadresValidator {
 
   public static List<Message> valideer(Kontaktadres kontaktadres) {
     if (null == kontaktadres) {
-      return ComponentsUtils.objectIsNull("Kontaktadres");
+      return ComponentsUtils.objectIsNull(Kontaktadres.class.getSimpleName());
     }
 
     List<Message> fouten  = new ArrayList<>();

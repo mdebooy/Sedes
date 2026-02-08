@@ -20,7 +20,7 @@ package eu.debooy.sedes.validator;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
-import eu.debooy.sedes.TestConstants;
+import eu.debooy.sedes.SedesTestConstants;
 import eu.debooy.sedes.domain.AdresDto;
 import eu.debooy.sedes.form.Adres;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class AdresValidatorTest {
 
   private void setFout(List<Message> expResult) {
     expResult.add(ERR_ADRESDATA);
-    expResult.add(TestConstants.ERR_OPMERKING);
+    expResult.add(SedesTestConstants.ERR_OPMERKING);
     expResult.add(ERR_SUBPOSTKODE);
   }
 
@@ -69,12 +69,10 @@ public class AdresValidatorTest {
 
     setFout(expResult);
 
-    adres.setAdresdata(DoosUtils.stringMetLengte(TestConstants.ADRESDATA,
+    adres.setAdresdata(DoosUtils.stringMetLengte(SedesTestConstants.ADRESDATA,
                                                      256, "X"));
-    adres.setOpmerking(
-        DoosUtils.stringMetLengte(TestConstants.OPMERKING, 2001, "X"));
-    adres.setSubPostkode(
-        DoosUtils.stringMetLengte(TestConstants.SUBPOSTKODE, 11, "X"));
+    adres.setOpmerking(DoosUtils.stringMetLengte(SedesTestConstants.OPMERKING, 2001, "X"));
+    adres.setSubPostkode(DoosUtils.stringMetLengte(SedesTestConstants.SUBPOSTKODE, 11, "X"));
 
     var           result    = AdresValidator.valideer(adres);
 
@@ -89,12 +87,10 @@ public class AdresValidatorTest {
 
     setFout(expResult);
 
-    adres.setAdresdata(DoosUtils.stringMetLengte(TestConstants.ADRESDATA,
+    adres.setAdresdata(DoosUtils.stringMetLengte(SedesTestConstants.ADRESDATA,
                                                      256, "X"));
-    adres.setOpmerking(
-        DoosUtils.stringMetLengte(TestConstants.OPMERKING, 2001, "X"));
-    adres.setSubPostkode(
-        DoosUtils.stringMetLengte(TestConstants.SUBPOSTKODE, 11, "X"));
+    adres.setOpmerking(DoosUtils.stringMetLengte(SedesTestConstants.OPMERKING, 2001, "X"));
+    adres.setSubPostkode(DoosUtils.stringMetLengte(SedesTestConstants.SUBPOSTKODE, 11, "X"));
 
     var           result    = AdresValidator.valideer(adres);
 
@@ -106,8 +102,8 @@ public class AdresValidatorTest {
   public void testGoedAdres() {
     var           adres     = new Adres();
 
-    adres.setAdresdata(TestConstants.ADRESDATA);
-    adres.setSubPostkode(TestConstants.SUBPOSTKODE);
+    adres.setAdresdata(SedesTestConstants.ADRESDATA);
+    adres.setSubPostkode(SedesTestConstants.SUBPOSTKODE);
 
     var           result    = AdresValidator.valideer(adres);
 
@@ -118,8 +114,8 @@ public class AdresValidatorTest {
   public void testFoutGoedDto() {
     var           adres     = new AdresDto();
 
-    adres.setAdresdata(TestConstants.ADRESDATA);
-    adres.setSubPostkode(TestConstants.SUBPOSTKODE);
+    adres.setAdresdata(SedesTestConstants.ADRESDATA);
+    adres.setSubPostkode(SedesTestConstants.SUBPOSTKODE);
 
     var           result    = AdresValidator.valideer(adres);
 
@@ -153,15 +149,16 @@ public class AdresValidatorTest {
 
     assertEquals(1, result.size());
     assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(Adres.class.getSimpleName(), result.get(0).getAttribute());
   }
 
   @Test
-  public void testNullKontaktDto() {
+  public void testNullAdresDto() {
     AdresDto      adres     = null;
     List<Message> result    = AdresValidator.valideer(adres);
 
     assertEquals(1, result.size());
     assertEquals(PersistenceConstants.NULL, result.get(0).getMessage());
+    assertEquals(AdresDto.class.getSimpleName(), result.get(0).getAttribute());
   }
-
 }

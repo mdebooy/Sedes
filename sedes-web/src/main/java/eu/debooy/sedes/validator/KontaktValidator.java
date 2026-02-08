@@ -81,6 +81,7 @@ public final class KontaktValidator {
         kontakt.setTussenvoegsel(null);
       }
       default -> {
+        // Geen speciaal type, niets te doen
       }
     }
 
@@ -107,6 +108,7 @@ public final class KontaktValidator {
         kontakt.setTussenvoegsel(null);
       }
       default -> {
+        // Geen speciaal type, niets te doen
       }
     }
 

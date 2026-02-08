@@ -16,6 +16,7 @@
  */
 package eu.debooy.sedes.validator;
 
+import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.domain.LandDto;
@@ -45,10 +46,20 @@ public final class LandValidator {
   }
 
   public static List<Message> valideer(LandDto land) {
+    if (null == land) {
+      return
+          ComponentsUtils.objectIsNull(LandDto.class.getSimpleName());
+    }
+
     return valideer(new Land(land));
   }
 
   public static List<Message> valideer(Land land) {
+    if (null == land) {
+      return
+          ComponentsUtils.objectIsNull(Land.class.getSimpleName());
+    }
+
     List<Message> fouten  = new ArrayList<>();
 
     fouten.addAll(new Validator.Builder()
