@@ -44,13 +44,13 @@ public class Munt
   public Munt() {}
 
   public Munt(MuntDto muntDto) {
-    bestaat     = muntDto.getBestaat();
-    decimalen   = muntDto.getDecimalen();
-    iso3        = muntDto.getIso3();
-    muntId      = muntDto.getMuntId();
-    muntteken   = muntDto.getMuntteken();
-    naam        = muntDto.getNaam();
-    subeenheid  = muntDto.getSubeenheid();
+    setBestaat(muntDto.getBestaat());
+    setDecimalen(muntDto.getDecimalen());
+    setIso3(muntDto.getIso3());
+    setMuntId(muntDto.getMuntId());
+    setMuntteken(muntDto.getMuntteken());
+    setNaam(muntDto.getNaam());
+    setSubeenheid(muntDto.getSubeenheid());
   }
 
   @Override
@@ -123,31 +123,31 @@ public class Munt
     muntDto.setSubeenheid(getSubeenheid());
   }
 
-  public void setBestaat(boolean bestaat) {
+  public final void setBestaat(boolean bestaat) {
     this.bestaat    = bestaat;
   }
 
-  public void setDecimalen(Integer decimalen) {
+  public final void setDecimalen(Integer decimalen) {
     this.decimalen  = decimalen;
   }
 
-  public void setIso3(String iso3) {
+  public final void setIso3(String iso3) {
     this.iso3       = DoosUtils.stripToUpperCase(iso3);
   }
 
-  public void setMuntId(Long muntId) {
+  public final void setMuntId(Long muntId) {
     this.muntId     = muntId;
   }
 
-  public void setMuntteken(String muntteken) {
+  public final void setMuntteken(String muntteken) {
     this.muntteken  = DoosUtils.strip(muntteken);
   }
 
-  public void setNaam(String naam) {
+  public final void setNaam(String naam) {
     this.naam       = DoosUtils.strip(naam);
   }
 
-  public void setSubeenheid(String subeenheid) {
+  public final void setSubeenheid(String subeenheid) {
     this.subeenheid = DoosUtils.strip(subeenheid);
   }
 }

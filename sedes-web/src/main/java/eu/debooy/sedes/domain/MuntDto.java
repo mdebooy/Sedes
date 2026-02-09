@@ -55,7 +55,7 @@ public class MuntDto extends Dto implements Comparable<MuntDto> {
   private String  iso3;
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
-  @Column(name="MUNT_ID", nullable=false)
+  @Column(name="MUNT_ID", nullable=false, unique=true)
   private Long    muntId;
   @Column(name="MUNTTEKEN", length=3)
   private String  muntteken;

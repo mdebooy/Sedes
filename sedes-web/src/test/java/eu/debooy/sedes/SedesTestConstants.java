@@ -27,14 +27,18 @@ import eu.debooy.sedes.domain.KontaktDto;
  */
 public final class SedesTestConstants {
   public static final String  AANSPREEKID     = "Mr.";
+  public static final Long    ADRESID         = 246L;
   public static final String  BREEDTE1        = "N";
   public static final String  BREEDTE2        = "S";
   public static final String  ADRESDATA       = "Adres 12";
+  public static final String  EINDDATUM       = "08-02-2026";
   public static final String  GEBRUIKERSNAAM  = "login";
   public static final String  INITIALEN       = "SI";
   public static final String  ISO3            = "ISO";
   public static final String  ISO6391         = "nl";
   public static final String  ISO6392T        = "nld";
+  public static final String  KONTAKTADTYPE   = "prive";
+  public static final Long    KONTAKTID       = 64L;
   public static final String  KONTAKTTYPE     = "P";
   public static final String  KONTAKTTYPEF    = "@";
   public static final String  KONTAKTNAAM     = "Kontakt";
@@ -58,8 +62,11 @@ public final class SedesTestConstants {
   public static final String  REGIOKODE_G     = "ZK123";
   public static final String  REGIOKODE_K     = "AK123";
   public static final String  ROEPNAAM        = "Roepnaam";
+  public static final String  STARTDATUM      = "01-01-2026";
   public static final String  SUBEENHEID      = "CentiValuta";
+  public static final String  SUBADRES        = "sub-adres";
   public static final String  SUBPOSTKODE     = "1234 AB";
+  public static final String  TAAL            = "nld";
   public static final String  TUSSENVOEGSEL   = "van der";
   public static final String  VOORNAAM        = "Voornaam";
   public static final Long    WERELDDEELID    = 200L;

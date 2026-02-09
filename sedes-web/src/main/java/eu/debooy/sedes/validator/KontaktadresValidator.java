@@ -23,7 +23,6 @@ import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.doosutils.validator.ValidatorUtils;
 import eu.debooy.sedes.domain.KontaktadresDto;
 import eu.debooy.sedes.form.Kontaktadres;
-import static eu.debooy.sedes.validator.LandnaamValidator.LBL_NAAM;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,17 +70,6 @@ public class KontaktadresValidator {
                                .setLabel(LBL_ADRESID)
                                .setRequired()
                                .valideer().getFouten());
-    ValidatorUtils.valideerDatums(kontaktadres.getStartdatum(),
-                                  kontaktadres.getEinddatum(),
-                                  fouten, KontaktadresDto.COL_STARTDATUM,
-                                  KontaktadresDto.COL_EINDDATUM, LBL_STARTDATUM,
-                                  LBL_EINDDATUM);
-    fouten.addAll(new Validator.Builder()
-                               .setWaarde(kontaktadres.getKontaktId())
-                               .setAttribute(KontaktadresDto.COL_KONTAKTID)
-                               .setLabel(LBL_KONTAKTID)
-                               .setRequired()
-                               .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
                                .setWaarde(kontaktadres.getKontaktadrestype())
                                .setAttribute(
@@ -91,11 +79,22 @@ public class KontaktadresValidator {
                                .setRequired()
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
+                               .setWaarde(kontaktadres.getKontaktId())
+                               .setAttribute(KontaktadresDto.COL_KONTAKTID)
+                               .setLabel(LBL_KONTAKTID)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
                                .setWaarde(kontaktadres.getOpmerking())
                                .setAttribute( KontaktadresDto.COL_OPMERKING)
                                .setLabel(LBL_OPMERKING)
                                .setMaxLengte(2000)
                                .valideer().getFouten());
+    ValidatorUtils.valideerDatums(kontaktadres.getStartdatum(),
+                                  kontaktadres.getEinddatum(),
+                                  fouten, KontaktadresDto.COL_STARTDATUM,
+                                  KontaktadresDto.COL_EINDDATUM, LBL_STARTDATUM,
+                                  LBL_EINDDATUM);
     fouten.addAll(new Validator.Builder()
                                .setWaarde(kontaktadres.getSubAdres())
                                .setAttribute( KontaktadresDto.COL_SUBADRES)
@@ -105,7 +104,7 @@ public class KontaktadresValidator {
     fouten.addAll(new Validator.Builder()
                                .setWaarde(kontaktadres.getTaal())
                                .setAttribute(KontaktadresDto.COL_TAAL)
-                               .setLabel(LBL_NAAM)
+                               .setLabel(LBL_TAAL)
                                .setFixLengte(3)
                                .setRequired()
                                .setLowerCase()

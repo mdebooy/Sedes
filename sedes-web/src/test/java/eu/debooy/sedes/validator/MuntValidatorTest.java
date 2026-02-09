@@ -183,7 +183,7 @@ public class MuntValidatorTest {
     var           munt      = new MuntDto();
 
     munt.setDecimalen(99);
-    munt.setIso3(SedesTestConstants.ISO3);
+    munt.setIso3(SedesTestConstants.ISO3.toLowerCase());
     munt.setMuntteken(SedesTestConstants.MUNTTEKEN);
     munt.setNaam(SedesTestConstants.MUNTNAAM);
     munt.setSubeenheid(SedesTestConstants.SUBEENHEID);
