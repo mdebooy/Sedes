@@ -32,7 +32,7 @@ public class Land
     extends Formulier implements Comparable<Land>, Serializable {
   private static final  long  serialVersionUID  = 1L;
 
-  private boolean bestaat;
+  private boolean bestaat           = true;
   private String  iso2;
   private String  iso3;
   private Long    landId;

@@ -61,7 +61,7 @@ public class LandDto extends Dto implements Comparable<LandDto> {
   public static final String  COL_WERELDDEELID      = "werelddeelId";
 
   @Column(name="BESTAAT", length=1, nullable=false)
-  private String  bestaat;
+  private String  bestaat           = DoosConstants.WAAR;
   @Column(name="ISO2", length=2)
   private String  iso2;
   @Column(name="ISO3", length=3, nullable=false)

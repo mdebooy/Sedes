@@ -71,7 +71,7 @@ public final class LandnaamValidator {
     fouten.addAll(new Validator.Builder()
                                .setWaarde(landnaam.getTaal())
                                .setAttribute(LandnaamDto.COL_TAAL)
-                               .setLabel(LBL_NAAM)
+                               .setLabel(LBL_TAAL)
                                .setFixLengte(3)
                                .setRequired()
                                .setLowerCase()

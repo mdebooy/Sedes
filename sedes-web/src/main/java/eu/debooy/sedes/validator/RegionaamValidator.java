@@ -69,7 +69,7 @@ public final class RegionaamValidator {
     fouten.addAll(new Validator.Builder()
                                .setWaarde(regionaam.getTaal())
                                .setAttribute(RegionaamDto.COL_TAAL)
-                               .setLabel(LBL_NAAM)
+                               .setLabel(LBL_TAAL)
                                .setFixLengte(3)
                                .setRequired()
                                .setLowerCase()

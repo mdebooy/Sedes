@@ -30,9 +30,10 @@ import java.util.List;
  */
 public final class LandValidator {
   protected static final  String  LBL_BESTAAT           = "_I18N.label.bestaat";
+  protected static final  String  LBL_ISO2              = "_I18N.label.iso2";
   protected static final  String  LBL_ISO3              = "_I18N.label.iso3";
   protected static final  String  LBL_POSTKODESCHEIDING =
-      "label.postkodeScheiding";
+      "_I18N.label.postkodeScheiding";
   protected static final  String  LBL_POSTKODETYPE      =
       "_I18N.label.postkodeType";
   protected static final  String  LBL_POSTLANDKODE      =
@@ -63,24 +64,17 @@ public final class LandValidator {
     List<Message> fouten  = new ArrayList<>();
 
     fouten.addAll(new Validator.Builder()
-                               .setWaarde(land.getBestaat())
-                               .setAttribute(LandDto.COL_BESTAAT)
-                               .setLabel(LBL_BESTAAT)
-                               .setRequired()
+                               .setWaarde(land.getIso2())
+                               .setAttribute(LandDto.COL_ISO2)
+                               .setLabel(LBL_ISO2)
+                               .setFixLengte(2)
+                               .setUpperCase()
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
                                .setWaarde(land.getIso3())
                                .setAttribute(LandDto.COL_ISO3)
                                .setLabel(LBL_ISO3)
-                               .setMaxLengte(3)
-                               .setUpperCase()
-                               .setRequired()
-                               .valideer().getFouten());
-    fouten.addAll(new Validator.Builder()
-                               .setWaarde(land.getPostLandkode())
-                               .setAttribute(LandDto.COL_POSTLANDKODE)
-                               .setLabel(LBL_ISO3)
-                               .setMaxLengte(3)
+                               .setFixLengte(3)
                                .setUpperCase()
                                .setRequired()
                                .valideer().getFouten());
@@ -95,6 +89,14 @@ public final class LandValidator {
                                .setAttribute(LandDto.COL_POSTKODETYPE)
                                .setLabel(LBL_POSTKODETYPE)
                                .setFixLengte(1)
+                               .setRequired()
+                               .valideer().getFouten());
+    fouten.addAll(new Validator.Builder()
+                               .setWaarde(land.getPostLandkode())
+                               .setAttribute(LandDto.COL_POSTLANDKODE)
+                               .setLabel(LBL_POSTLANDKODE)
+                               .setMaxLengte(3)
+                               .setUpperCase()
                                .setRequired()
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()

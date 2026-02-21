@@ -57,7 +57,6 @@ public class RegioValidatorTest {
                  .build();
 
   private void setFouten(List<Message> expResult) {
-    expResult.add(REQ_LANDID);
     expResult.add(ERR_REGIOKODE);
   }
 
@@ -71,7 +70,9 @@ public class RegioValidatorTest {
     var           regio     = new Regio();
     List<Message> expResult = new ArrayList<>();
 
-    regio.setRegiokode(DoosUtils.stringMetLengte(SedesTestConstants.REGIOKODE, 6, "X"));
+    regio.setLandId(SedesTestConstants.LANDID);
+    regio.setRegiokode(DoosUtils.stringMetLengte(SedesTestConstants.REGIOKODE,
+                       6, "X"));
 
     setFouten(expResult);
 
@@ -85,7 +86,9 @@ public class RegioValidatorTest {
     var           regio     = new RegioDto();
     List<Message> expResult = new ArrayList<>();
 
-    regio.setRegiokode(DoosUtils.stringMetLengte(SedesTestConstants.REGIOKODE, 6, "X"));
+    regio.setLandId(SedesTestConstants.LANDID);
+    regio.setRegiokode(DoosUtils.stringMetLengte(SedesTestConstants.REGIOKODE,
+                       6, "X"));
 
     setFouten(expResult);
 
