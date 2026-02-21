@@ -35,7 +35,7 @@ import java.util.Collection;
 @SessionScoped
 public class SedesRemote implements Serializable {
   @EJB
-  private ISedesRemote remote;
+  private transient ISedesRemote remote;
 
   protected SedesRemote() {}
 

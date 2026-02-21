@@ -275,7 +275,7 @@ public class KontaktadresValidatorTest {
 
   @Test
   public void testGoedeKontaktadres1() {
-    var           kontaktadres  = new KontaktadresDto();
+    var           kontaktadres  = new Kontaktadres();
 
     kontaktadres.setAdresId(SedesTestConstants.ADRESID);
     kontaktadres.setKontaktadrestype(SedesTestConstants.KONTAKTADTYPE);
@@ -291,7 +291,7 @@ public class KontaktadresValidatorTest {
 
   @Test
   public void testGoedeKontaktadres2() {
-    var           kontaktadres  = new KontaktadresDto();
+    var           kontaktadres  = new Kontaktadres();
 
     kontaktadres.setAdresId(SedesTestConstants.ADRESID);
     kontaktadres.setEinddatum(einddatum);

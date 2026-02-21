@@ -54,7 +54,7 @@ public class SedesRemoteService implements ISedesRemote {
                                 landnamenCache  = new HashMap<>();
 
   @EJB
-  private transient IDoosRemote doosRemote;
+  private IDoosRemote doosRemote;
 
   public SedesRemoteService() {
     LOGGER.debug("init SedesRemoteService");
