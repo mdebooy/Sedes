@@ -21,6 +21,7 @@ import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.ValiDatum;
 import eu.debooy.doosutils.validator.Validator;
 import eu.debooy.sedes.Sedes;
 import eu.debooy.sedes.domain.KontaktDto;
@@ -63,7 +64,7 @@ public final class KontaktValidator {
 
   public static List<Message> valideer(KontaktDto kontakt) {
     if (null == kontakt) {
-      return ComponentsUtils.objectIsNull("KontaktDto");
+      return ComponentsUtils.objectIsNull(KontaktDto.class.getSimpleName());
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
@@ -90,7 +91,7 @@ public final class KontaktValidator {
 
   public static List<Message> valideer(Kontakt kontakt) {
     if (null == kontakt) {
-      return ComponentsUtils.objectIsNull("Kontakt");
+      return ComponentsUtils.objectIsNull(Kontakt.class.getSimpleName());
     }
 
     switch (DoosUtils.nullToEmpty(kontakt.getKontakttype())) {
@@ -120,11 +121,11 @@ public final class KontaktValidator {
                                .setLabel(LBL_AANSPREEKID)
                                .setMaxLengte(10)
                                .valideer().getFouten());
-    fouten.addAll(new Validator.Builder()
-                               .setWaarde(kontakt.getGeboortedatum())
-                               .setAttribute(KontaktDto.COL_GEBOORTEDATUM)
-                               .setLabel(LBL_GEBOORTEDATUM)
-                               .setVerleden()
+    fouten.addAll(new ValiDatum.Builder()
+                               .setDatum(kontakt.getGeboortedatum())
+                               .setDatumAttribuut(KontaktDto.COL_GEBOORTEDATUM)
+                               .setDatumLabel(LBL_GEBOORTEDATUM)
+                               .setDatumVerleden()
                                .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
                                .setWaarde(kontakt.getGebruikersnaam())

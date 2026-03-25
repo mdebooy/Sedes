@@ -17,8 +17,6 @@
 
 package eu.debooy.sedes.validator;
 
-import eu.debooy.doosutils.Datum;
-import eu.debooy.doosutils.DoosConstants;
 import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
@@ -40,15 +38,19 @@ import org.junit.Test;
  * @author Marco de Booij
  */
 public class KontaktValidatorTest {
-  @SuppressWarnings("java:S3008")
-  private static  Message ERR_GEBOORTEDATUM;
-
   private static final  Message ERR_AANSPREEKID     =
       new Message.Builder()
                  .setAttribute(KontaktDto.COL_AANSPREEKID)
                  .setSeverity(Message.ERROR)
                  .setMessage(PersistenceConstants.MAXLENGTH)
                  .setParams(new Object[]{KontaktValidator.LBL_AANSPREEKID, 10})
+                 .build();
+  private static final  Message ERR_GEBOORTEDATUM   =
+      new Message.Builder()
+                 .setAttribute(KontaktDto.COL_GEBOORTEDATUM)
+                 .setSeverity(Message.ERROR)
+                 .setMessage(PersistenceConstants.FUTURE)
+                 .setParams(new Object[]{KontaktValidator.LBL_GEBOORTEDATUM})
                  .build();
   private static final  Message ERR_GEBRUIKERSNAAM  =
       new Message.Builder()
@@ -150,14 +152,6 @@ public class KontaktValidatorTest {
     Calendar  kalender  = Calendar.getInstance();
     kalender.add(Calendar.DAY_OF_YEAR, 1);
     morgen    = kalender.getTime();
-    ERR_GEBOORTEDATUM   =
-      new Message.Builder()
-                 .setAttribute(KontaktDto.COL_GEBOORTEDATUM)
-                 .setSeverity(Message.ERROR)
-                 .setMessage(PersistenceConstants.FUTURE)
-                 .setParams(new Object[]{Datum.fromDate(morgen,
-                                                        DoosConstants.DATUM)})
-                 .build();
   }
 
   private void setFout(List<Message> expResult) {

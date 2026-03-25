@@ -19,8 +19,8 @@ package eu.debooy.sedes.validator;
 
 import eu.debooy.doosutils.ComponentsUtils;
 import eu.debooy.doosutils.components.Message;
+import eu.debooy.doosutils.validator.ValiDatum;
 import eu.debooy.doosutils.validator.Validator;
-import eu.debooy.doosutils.validator.ValidatorUtils;
 import eu.debooy.sedes.domain.KontaktadresDto;
 import eu.debooy.sedes.form.Kontaktadres;
 import java.util.ArrayList;
@@ -90,11 +90,19 @@ public class KontaktadresValidator {
                                .setLabel(LBL_OPMERKING)
                                .setMaxLengte(2000)
                                .valideer().getFouten());
-    ValidatorUtils.valideerDatums(kontaktadres.getStartdatum(),
-                                  kontaktadres.getEinddatum(),
-                                  fouten, KontaktadresDto.COL_STARTDATUM,
-                                  KontaktadresDto.COL_EINDDATUM, LBL_STARTDATUM,
-                                  LBL_EINDDATUM);
+    fouten.addAll(new ValiDatum.Builder()
+                               .setStartdatum(kontaktadres.getStartdatum())
+                               .setStartdatumAttribuut(
+                                  KontaktadresDto.COL_STARTDATUM)
+                               .setStartdatumLabel(LBL_STARTDATUM)
+                               .setStartdatumRequired()
+                               .setStartdatumVerleden()
+                               .setEinddatum(kontaktadres.getEinddatum())
+                               .setEinddatumAttribuut(
+                                  KontaktadresDto.COL_EINDDATUM)
+                               .setEinddatumLabel(LBL_EINDDATUM)
+                               .setEinddatumVerleden()
+                               .valideer().getFouten());
     fouten.addAll(new Validator.Builder()
                                .setWaarde(kontaktadres.getSubAdres())
                                .setAttribute( KontaktadresDto.COL_SUBADRES)
