@@ -145,7 +145,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
       return regionamen.get(taal).getNaam();
     }
 
-    return "";
+    return regiokode;
   }
 
   public Long getRegioId() {
@@ -160,7 +160,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
     if (regionamen.containsKey(taal)) {
       return regionamen.get(taal);
     } else {
-      throw new ObjectNotFoundException(DoosLayer.PERSISTENCE, taal);
+      return new RegionaamDto();
     }
   }
 

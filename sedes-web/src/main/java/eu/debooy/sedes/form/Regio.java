@@ -76,7 +76,7 @@ public class Regio
   }
 
   public String getNaam() {
-    return naam;
+    return DoosUtils.nullToValue(naam, regiokode);
   }
 
   public Long getRegioId() {

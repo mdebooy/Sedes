@@ -7,44 +7,38 @@
   <ui:define name="body">
     <div class="columns is-centered content">
       <div class="column is-8">
-        <h:form id="formLandnaam">
-          <d:titel titel="#{sedesLand.detailSubTitel}" />
+        <h:form id="formRegionaam">
+          <d:titel titel="#{sedesRegio.detailSubTitel}" />
 
           <div class="columns is-centered">
             <div class="column">
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.taal')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="taal" value="#{sedesRegio.regionaam.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesRegio.regionaam.taal)}" fullwidth="true" required="true" readonly="#{!sedesLand.detailAktie.nieuw}" />
+                  <d:listbox id="taal" value="#{sedesRegio.regionaam.taal}" items="#{doosRemote.talenIso6392t}" textvalue="#{doosRemote.taalIso6392t(sedesRegio.regionaam.taal)}" fullwidth="true" required="true" readonly="#{!sedesRegio.detailAktie.nieuw}" />
                 </div>
               </div>
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="naam" value="#{sedesLand.landnaam.naam}" maxlength="100" size="100" required="true" readonly="#{natuurTaxon.detailAktie.readonly}" />
+                  <d:inputText id="naam" value="#{sedesRegio.regionaam.naam}" maxlength="100" size="100" required="true" readonly="#{sedesRegio.detailAktie.readonly}" />
                 </div>
               </div>
               <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.officieleNaam')}" />
+                <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:inputText id="officieleNaam" value="#{sedesLand.landnaam.officieleNaam}" maxlength="255" size="100" readonly="#{natuurTaxon.detailAktie.readonly}" />
-                </div>
-              </div>
-              <div class="field is-horizontal">
-                <d:label label="#{i18nTeksten.tekst('label.hoofdstad')}" />
-                <div class="field-body is-normal">
-                  <d:inputText id="hoofdstad" value="#{sedesLand.landnaam.hoofdstad}" maxlength="100" size="100" readonly="#{natuurTaxon.detailAktie.readonly}" />
+                  <d:inputText id="officieleNaam" value="#{sedesLand.i18nLandnaam(sedesRegio.regio.landId)}" maxlength="255" size="100" readonly="true" />
                 </div>
               </div>
             </div>
           </div>
 
-          <d:crudbuttonbar bean="#{sedesLand}" form="formLandnaam" detail="detail" returnto="#{sedes.path}/landen/land.xhtml" />
+          <d:crudbuttonbar bean="#{sedesRegio}" form="formRegionaam" detail="detail" returnto="#{sedes.path}/regios/regio.xhtml" />
         </h:form>
       </div>
     </div>
   </ui:define>
   <ui:define name="modal">
-    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.landnaam.delete')}" />
+    <d:confirmatie titel="#{i18nTeksten.tekst('sedes.titel.regionaam.delete')}" />
   </ui:define>
 </ui:composition>

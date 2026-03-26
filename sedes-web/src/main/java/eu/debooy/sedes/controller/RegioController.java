@@ -18,7 +18,6 @@
 package eu.debooy.sedes.controller;
 
 import eu.debooy.doosutils.ComponentsConstants;
-import eu.debooy.doosutils.DoosUtils;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.errorhandling.exception.DuplicateObjectException;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
@@ -88,6 +87,8 @@ public class RegioController extends Sedes {
     }
 
     regionaam = new Regionaam();
+    regionaam.setRegioId(regio.getRegioId());
+    regionaam.setTaal(getGebruikersTaalInIso6392t());
     setDetailAktie(PersistenceConstants.CREATE);
     setDetailSubTitel(getTekst(DTIT_CREATE));
     redirect(REGIONAAM_REDIRECT);
@@ -125,10 +126,11 @@ public class RegioController extends Sedes {
       regioDto.removeRegionaam(regionaam.getTaal());
       getRegioService().save(regioDto);
       regionaam = new Regionaam();
-      addInfo(PersistenceConstants.DELETED, "'" + regionaam.getTaal() + "'");
+      addInfo(PersistenceConstants.DELETED, regionaam.getTaal());
       if (getGebruikersTaalInIso6392t().equals(regionaam.getTaal())) {
-        setSubTitel(getTekst(TIT_UPDATE,
-                             regioDto.getNaam(getGebruikersTaalInIso6392t())));
+        regio.setNaam(regioDto.getNaam(getGebruikersTaalInIso6392t()));
+        setDeletetekst(regio.getNaam());
+        setSubTitel(getTekst(TIT_UPDATE, regio.getNaam()));
       }
       redirect(REGIO_REDIRECT);
     } catch (ObjectNotFoundException e) {
@@ -149,7 +151,7 @@ public class RegioController extends Sedes {
       return regioDto.getRegionaam(getDefTaal()).getNaam();
     }
 
-    return DoosUtils.onbekendeCode(getGebruikersTaalInIso6392t());
+    return regioDto.getRegiokode();
   }
 
   public Regio getRegio() {
@@ -180,8 +182,7 @@ public class RegioController extends Sedes {
 
     var ec      = FacesContext.getCurrentInstance().getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(RegioDto.COL_REGIOID)) {
-      addError(ComponentsConstants.GEENPARAMETER, RegioDto.COL_REGIOID);
+    if (!checkEcParameters(ec.getRequestParameterMap(), RegioDto.COL_REGIOID)) {
       return;
     }
 
@@ -190,14 +191,13 @@ public class RegioController extends Sedes {
 
     try {
       regioDto  = getRegioService().regio(regioId);
-      regio     = new Regio(regioDto);
+      regio     = new Regio(regioDto, getGebruikersTaalInIso6392t());
       setAktie(PersistenceConstants.RETRIEVE);
       setDeletetekst(regio.getNaam());
-      setSubTitel(regioDto.getRegionaam(getGebruikersTaalInIso6392t())
-                          .getNaam());
+      setSubTitel(regio.getNaam());
       redirect(REGIO_REDIRECT);
     } catch (ObjectNotFoundException e) {
-      addError(PersistenceConstants.NOTFOUND, LBL_REGIO);
+      addError(PersistenceConstants.NOTFOUND, getTekst(LBL_REGIO));
     }
   }
 
@@ -294,26 +294,23 @@ public class RegioController extends Sedes {
           regionaam.persist(regionaamDto);
           regioDto.addRegionaam(regionaamDto);
           getRegioService().save(regioDto);
-          addInfo(PersistenceConstants.CREATED,
-                  String.format("'%s'", regionaam.getTaal()));
+          addInfo(PersistenceConstants.CREATED, regionaam.getTaal());
         }
         case PersistenceConstants.UPDATE -> {
           regionaam.persist(regionaamDto);
           regioDto.addRegionaam(regionaamDto);
           getRegioService().save(regioDto);
-          addInfo(PersistenceConstants.UPDATED,
-                  String.format("'%s'", regionaam.getTaal()));
+          addInfo(PersistenceConstants.UPDATED, regionaam.getTaal());
         }
         default -> addError(ComponentsConstants.WRONGREDIRECT,
                             getAktie().getAktie()) ;
       }
       if (regionaam.getTaal().equals(getGebruikersTaalInIso6392t())) {
-        setSubTitel(
-            getTekst(TIT_UPDATE,
-                     regioDto.getRegionaam(getGebruikersTaalInIso6392t())
-                             .getNaam()));
+        regio.setNaam(regioDto.getNaam(getGebruikersTaalInIso6392t()));
+        setDeletetekst(regio.getNaam());
+        setSubTitel(getTekst(TIT_UPDATE, regio.getNaam()));
       }
-      redirect(LAND_REDIRECT);
+      redirect(REGIO_REDIRECT);
     } catch (DuplicateObjectException e) {
       addError(PersistenceConstants.DUPLICATE, regionaam.getTaal());
     } catch (ObjectNotFoundException e) {
@@ -348,9 +345,7 @@ public class RegioController extends Sedes {
     }
 
     setAktie(PersistenceConstants.UPDATE);
-    setDeletetekst(regioDto.getNaam(getGebruikersTaalInIso6392t()));
-    setSubTitel(getTekst(TIT_UPDATE,
-                         regioDto.getRegionaam(getGebruikersTaalInIso6392t())
-                                 .getNaam()));
+    setDeletetekst(regio.getNaam());
+    setSubTitel(getTekst(TIT_UPDATE, regio.getNaam()));
   }
 }
