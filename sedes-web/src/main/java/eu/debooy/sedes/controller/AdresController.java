@@ -27,7 +27,6 @@ import eu.debooy.sedes.domain.AdresDto;
 import eu.debooy.sedes.form.Adres;
 import eu.debooy.sedes.validator.AdresValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,10 +95,10 @@ public class AdresController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(AdresDto.COL_ADRESID)) {
-      addError(ComponentsConstants.GEENPARAMETER, AdresDto.COL_ADRESID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           AdresDto.COL_ADRESID)) {
       return;
     }
 

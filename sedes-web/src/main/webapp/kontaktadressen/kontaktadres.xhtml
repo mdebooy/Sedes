@@ -37,19 +37,19 @@
                   </div>
                 </div>
               </div>
-              <c:if test="${!sedesKontaktadres.adres}">
+              <c:if test="${!sedesKontaktadres.isAdres()}">
                 <div class="field is-horizontal">
                   <d:label label="#{i18nTeksten.tekst('label.adres')}" />
                   <div class="field-body is-normal">
-                    <d:listbox id="adresId" value="#{sedesKontaktadres.kontaktadres.adresId}" items="#{sedesRemote.selectAdressen()}" textvalue="#{sedesKontaktadres.getAdres().adresdata}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                    <d:listbox id="adresId" value="#{sedesKontaktadres.kontaktadres.adresId}" items="#{sedesRemote.selectAdressen}" textvalue="#{sedesKontaktadres.adres.adresdata}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
                   </div>
                 </div>
               </c:if>
-              <c:if test="${!sedesKontaktadres.kontakt}">
+              <c:if test="${!sedesKontaktadres.isKontakt()}">
                 <div class="field is-horizontal">
                   <d:label label="#{i18nTeksten.tekst('label.kontakt')}" />
                   <div class="field-body is-normal">
-                    <d:listbox id="kontaktId" value="#{sedesKontaktadres.kontaktadres.kontaktId}" items="#{sedesRemote.selectKontakten()}" textvalue="#{sedesKontaktadres.getKontakt().displaynaam}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
+                    <d:listbox id="kontaktId" value="#{sedesKontaktadres.kontaktadres.kontaktId}" items="#{sedesRemote.selectKontakten}" textvalue="#{sedesKontaktadres.kontakt.displaynaam}" fullwidth="true" required="true" readonly="#{sedesKontaktadres.aktie.readonly}" />
                   </div>
                 </div>
               </c:if>

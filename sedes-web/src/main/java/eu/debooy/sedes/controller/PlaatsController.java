@@ -27,7 +27,6 @@ import eu.debooy.sedes.domain.PlaatsDto;
 import eu.debooy.sedes.form.Plaats;
 import eu.debooy.sedes.validator.PlaatsValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import java.util.Collection;
@@ -107,10 +106,10 @@ public class PlaatsController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(PlaatsDto.COL_PLAATSID)) {
-      addError(ComponentsConstants.GEENPARAMETER, PlaatsDto.COL_PLAATSID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           PlaatsDto.COL_PLAATSID)) {
       return;
     }
 

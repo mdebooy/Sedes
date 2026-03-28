@@ -29,7 +29,6 @@ import eu.debooy.sedes.form.Werelddeel;
 import eu.debooy.sedes.form.Werelddeelnaam;
 import eu.debooy.sedes.validator.WerelddeelnaamValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import java.util.Collection;
@@ -177,12 +176,10 @@ public class WerelddeelController extends Sedes {
       return;
     }
 
-    var ec            = FacesContext.getCurrentInstance().getExternalContext();
+    var ec            = getExternalContext();
 
-    if (!ec.getRequestParameterMap()
-           .containsKey(WerelddeelDto.COL_WERELDDEELID)) {
-      addError(ComponentsConstants.GEENPARAMETER,
-               WerelddeelDto.COL_WERELDDEELID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           WerelddeelDto.COL_WERELDDEELID)) {
       return;
     }
 
@@ -210,10 +207,10 @@ public class WerelddeelController extends Sedes {
       return;
     }
 
-    var ec    = FacesContext.getCurrentInstance().getExternalContext();
+    var ec    = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(WerelddeelnaamDto.COL_TAAL)) {
-      addError(ComponentsConstants.GEENPARAMETER, WerelddeelnaamDto.COL_TAAL);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           WerelddeelnaamDto.COL_TAAL)) {
       return;
     }
 

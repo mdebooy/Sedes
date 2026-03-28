@@ -81,7 +81,7 @@ public class RegioDto extends Dto implements Comparable<RegioDto> {
 
   @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, targetEntity=RegionaamDto.class, orphanRemoval=true)
   @JoinColumn(name="REGIO_ID", nullable=false, updatable=false, insertable=true)
-  @MapKey(name="taal")
+  @MapKey(name=RegionaamDto.COL_TAAL)
   private Map<String, RegionaamDto>  regionamen = new HashMap<>();
 
   /**

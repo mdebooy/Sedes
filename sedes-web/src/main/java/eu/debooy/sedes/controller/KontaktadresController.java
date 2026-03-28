@@ -35,7 +35,6 @@ import eu.debooy.sedes.form.Plaats;
 import eu.debooy.sedes.validator.KontaktadresValidator;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import java.util.Collection;
@@ -79,53 +78,28 @@ public class KontaktadresController extends Sedes {
     boolean correct = true;
 
     if (isAdres()) {
-      if(!ec.getRequestParameterMap()
-            .containsKey(KontaktadresDto.COL_ADRESID)) {
-        addError(ComponentsConstants.GEENPARAMETER,
-                 KontaktadresDto.COL_ADRESID);
+      if (!checkEcParameters(ec.getRequestParameterMap(),
+                             KontaktadresDto.COL_ADRESID,
+                             KontaktadresDto.COL_KONTAKTID)) {
         correct = false;
-      }
-      if (ec.getRequestParameterMap()
-            .containsKey(KontaktadresDto.COL_KONTAKTID)) {
-        addError(ComponentsConstants.FOUTEPARAMETER,
-                 KontaktadresDto.COL_KONTAKTID);
-        correct = false;
-
       }
 
       return correct;
     }
 
     if (isKontakt()) {
-      if(!ec.getRequestParameterMap()
-            .containsKey(KontaktadresDto.COL_KONTAKTID)) {
-        addError(ComponentsConstants.GEENPARAMETER,
-                 KontaktadresDto.COL_KONTAKTID);
+      if (!checkEcParameters(ec.getRequestParameterMap(),
+                             KontaktadresDto.COL_KONTAKTID,
+                             KontaktadresDto.COL_ADRESID)) {
         correct = false;
-      }
-      if (ec.getRequestParameterMap()
-            .containsKey(KontaktadresDto.COL_ADRESID)) {
-        addError(ComponentsConstants.FOUTEPARAMETER,
-                 KontaktadresDto.COL_ADRESID);
-        correct = false;
-
       }
 
       return correct;
     }
 
-    if (!ec.getRequestParameterMap()
-           .containsKey(KontaktadresDto.COL_ADRESID)) {
-      addError(ComponentsConstants.GEENPARAMETER,
-               KontaktadresDto.COL_ADRESID);
-      correct = false;
-
-    }
-
-    if(!ec.getRequestParameterMap()
-          .containsKey(KontaktadresDto.COL_KONTAKTID)) {
-      addError(ComponentsConstants.GEENPARAMETER,
-               KontaktadresDto.COL_KONTAKTID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           KontaktadresDto.COL_ADRESID,
+                           KontaktadresDto.COL_KONTAKTID)) {
       correct = false;
     }
 
@@ -138,7 +112,7 @@ public class KontaktadresController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
     setReturnTo(ec, KONTAKTADRES_REDIRECT);
 
@@ -209,10 +183,6 @@ public class KontaktadresController extends Sedes {
     return adres;
   }
 
-  public String getDeletetitel() {
-    return getTekst(TIT_DELETE, getInTitel());
-  }
-
   public String getInOmschrijving() {
     if (isKontakt()) {
       return SedesUtils.getAdresMetPlaatsnaam(adres.getAdresdata(),
@@ -269,11 +239,11 @@ public class KontaktadresController extends Sedes {
     return getGebruikersTaalInIso6392t();
   }
 
-  public boolean isAdres() {
+  public Boolean isAdres() {
     return getReturnTo().equals(ADRES_REDIRECT);
   }
 
-  public boolean isKontakt() {
+  public Boolean isKontakt() {
     return getReturnTo().equals(KONTAKT_REDIRECT);
   }
 
@@ -287,14 +257,10 @@ public class KontaktadresController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    setReturnTo(ec, KONTAKTADRES_REDIRECT);
-
-    if (!ec.getRequestParameterMap()
-           .containsKey(KontaktadresDto.COL_KONTAKTADRESID)) {
-      addError(ComponentsConstants.GEENPARAMETER,
-               KontaktadresDto.COL_KONTAKTADRESID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           KontaktadresDto.COL_KONTAKTADRESID)) {
       return;
     }
 
@@ -304,10 +270,12 @@ public class KontaktadresController extends Sedes {
     try {
       kontaktadresDto = getKontaktadresService().kontaktadres(kontaktadresId);
       kontaktadres    = new Kontaktadres(kontaktadresDto);
+      setReturnTo(ec, KONTAKTADRES_REDIRECT);
       setAdresEnKontakt();
       setAktie(PersistenceConstants.RETRIEVE);
       setSubTitel(getTekst(TIT_RETRIEVE, getInTitel()));
       setDeletetekst(getInOmschrijving());
+      setDeletetitel(getTekst(TIT_DELETE, getInTitel()));
       redirect(KONTAKTADRES_REDIRECT);
     } catch (ObjectNotFoundException e) {
       addError(PersistenceConstants.NOTFOUND, getInTitel());
@@ -411,6 +379,7 @@ public class KontaktadresController extends Sedes {
 
     setAktie(PersistenceConstants.UPDATE);
     setDeletetekst(getInOmschrijving());
+    setDeletetitel(getTekst(TIT_DELETE, getInTitel()));
     setSubTitel(getTekst(TIT_UPDATE, getInTitel()));
   }
 }

@@ -8,7 +8,7 @@
     <div class="columns is-centered content">
       <div class="column is-12">
         <h:form id="formPlaats">
-          <d:titel titel="#{sedesPlaats.subTitel} - #{gebruiker.locale}" />
+          <d:titel titel="#{sedesPlaats.subTitel}" />
 
           <div class="columns is-centered">
             <div class="column">
@@ -21,13 +21,13 @@
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.land')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="landId" value="#{sedesPlaats.plaats.landId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesLand.selectLandnamen()}" textvalue="#{sedesLand.i18nLandnaam(sedesPlaats.plaats.landId)}" />
+                  <d:listbox id="landId" value="#{sedesPlaats.plaats.landId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesLand.selectLandnamen}" textvalue="#{sedesLand.i18nLandnaam(sedesPlaats.plaats.landId)}" />
                 </div>
               </div>
               <div class="field is-horizontal">
                 <d:label label="#{i18nTeksten.tekst('label.regionaam')}" />
                 <div class="field-body is-normal">
-                  <d:listbox id="regioId" value="#{sedesPlaats.plaats.regioId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesRegio.selectRegios()}" textvalue="#{sedesRegio.getRegio(sedesPlaats.plaats.regioId).naam}" />
+                  <d:listbox id="regioId" value="#{sedesPlaats.plaats.regioId}" fullwidth="true" required="true" readonly="#{sedesPlaats.aktie.readonly}" items="#{sedesRegio.selectRegios}" textvalue="#{sedesRegio.getRegio(sedesPlaats.plaats.regioId).naam}" />
                 </div>
               </div>
               <div class="field is-horizontal">

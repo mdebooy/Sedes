@@ -29,7 +29,6 @@ import eu.debooy.sedes.domain.KontaktDto;
 import eu.debooy.sedes.form.Kontakt;
 import eu.debooy.sedes.validator.KontaktValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import java.util.Collection;
@@ -140,10 +139,10 @@ public class KontaktController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(KontaktDto.COL_KONTAKTID)) {
-      addError(ComponentsConstants.GEENPARAMETER, KontaktDto.COL_KONTAKTID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           KontaktDto.COL_KONTAKTID)) {
       return;
     }
 

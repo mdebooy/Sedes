@@ -27,7 +27,6 @@ import eu.debooy.sedes.domain.MuntDto;
 import eu.debooy.sedes.form.Munt;
 import eu.debooy.sedes.validator.MuntValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import java.util.Collection;
@@ -117,10 +116,10 @@ public class MuntController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(MuntDto.COL_MUNTID)) {
-      addError(ComponentsConstants.GEENPARAMETER, MuntDto.COL_MUNTID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           MuntDto.COL_MUNTID)) {
       return;
     }
 

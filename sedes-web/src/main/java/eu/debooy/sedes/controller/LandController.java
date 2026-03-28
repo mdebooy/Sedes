@@ -242,10 +242,10 @@ public class LandController extends Sedes {
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(LandDto.COL_LANDID)) {
-      addError(ComponentsConstants.GEENPARAMETER, LandDto.COL_LANDID);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           LandDto.COL_LANDID)) {
       return;
     }
 
@@ -270,10 +270,10 @@ public class LandController extends Sedes {
       return;
     }
 
-    var ec    = FacesContext.getCurrentInstance().getExternalContext();
+    var ec    = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(LandnaamDto.COL_TAAL)) {
-      addError(ComponentsConstants.GEENPARAMETER, LandnaamDto.COL_TAAL);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           LandnaamDto.COL_TAAL)) {
       return;
     }
 

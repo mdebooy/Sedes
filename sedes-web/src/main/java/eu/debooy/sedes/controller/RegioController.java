@@ -30,14 +30,9 @@ import eu.debooy.sedes.form.Regionaam;
 import eu.debooy.sedes.validator.RegioValidator;
 import eu.debooy.sedes.validator.RegionaamValidator;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +154,8 @@ public class RegioController extends Sedes {
   }
 
   public Regio getRegio(Long regioId) {
-    return new Regio(getRegioService().regio(regioId));
+    return new Regio(getRegioService().regio(regioId),
+                     getGebruikersTaalInIso6392t());
   }
 
   public Regionaam getRegionaam() {
@@ -174,15 +170,20 @@ public class RegioController extends Sedes {
     return regionamen;
   }
 
+  public Collection<SelectItem> getSelectRegios() {
+    return getRegioService().selectRegios(getGebruikersTaalInIso6392t());
+  }
+
   public void retrieve() {
     if (!isGerechtigd()) {
       addError(ComponentsConstants.GEENRECHTEN);
       return;
     }
 
-    var ec      = FacesContext.getCurrentInstance().getExternalContext();
+    var ec      = getExternalContext();
 
-    if (!checkEcParameters(ec.getRequestParameterMap(), RegioDto.COL_REGIOID)) {
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           RegioDto.COL_REGIOID)) {
       return;
     }
 
@@ -207,10 +208,10 @@ public class RegioController extends Sedes {
       return;
     }
 
-    var ec    = FacesContext.getCurrentInstance().getExternalContext();
+    var ec    = getExternalContext();
 
-    if (!ec.getRequestParameterMap().containsKey(RegionaamDto.COL_TAAL)) {
-      addError(ComponentsConstants.GEENPARAMETER, RegionaamDto.COL_TAAL);
+    if (!checkEcParameters(ec.getRequestParameterMap(),
+                           RegionaamDto.COL_TAAL)) {
       return;
     }
 
@@ -320,22 +321,6 @@ public class RegioController extends Sedes {
                                  e.getLocalizedMessage()), e);
       generateExceptionMessage(e);
     }
-  }
-
-  public Collection<SelectItem> selectRegios(String taal) {
-    List<SelectItem>  items = new ArrayList<>();
-    Set<Regio>        rijen = new TreeSet<>();
-
-    try {
-      rijen.addAll(getRegioService().query(taal));
-      rijen.forEach(
-        item -> items.add(new SelectItem(regio.getRegioId().toString(),
-                                         regio.getNaam())));
-    } catch (ObjectNotFoundException e) {
-      // Er wordt nu gewoon een lege ArrayList gegeven.
-    }
-
-    return items;
   }
 
   public void update() {
