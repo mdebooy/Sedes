@@ -206,8 +206,10 @@ public class RegioService {
     try {
       rijen.addAll(regioDao.getAll());
       rijen.forEach(
-          item  -> items.add(new SelectItem(item.getRegioId().toString(),
-                                            item.getNaam(taal))));
+        item  -> items.add(new SelectItem(item.getRegioId().toString(),
+                                          String.format("%s (%s)",
+                                                        item.getNaam(taal),
+                                                        item.getRegiokode()))));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }
