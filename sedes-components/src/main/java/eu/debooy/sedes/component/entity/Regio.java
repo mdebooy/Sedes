@@ -17,6 +17,7 @@
 
 package eu.debooy.sedes.component.entity;
 
+import eu.debooy.doosutils.DoosUtils;
 import java.io.Serializable;
 
 
@@ -88,7 +89,7 @@ public class Regio implements Serializable {
   }
 
   public String getNaam() {
-    return naam;
+    return DoosUtils.nullToEmpty(naam);
   }
 
   public Long getRegioId() {

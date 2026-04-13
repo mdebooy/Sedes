@@ -170,7 +170,7 @@ function getLandIdNaam(landId, taal) {
   var land = getLand(landId);
 
   return getLandnaam(land, taal);
-}
+  }
 
 function getLandnaam(land, taal) {
   var naam = land.landnamen.findIndex(i => i.taal === taal);
