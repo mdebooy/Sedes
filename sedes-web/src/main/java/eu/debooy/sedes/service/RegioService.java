@@ -20,7 +20,9 @@ package eu.debooy.sedes.service;
 import eu.debooy.doosutils.PersistenceConstants;
 import eu.debooy.doosutils.components.Message;
 import eu.debooy.doosutils.errorhandling.exception.ObjectNotFoundException;
+import eu.debooy.sedes.access.LandnaamDao;
 import eu.debooy.sedes.access.RegioDao;
+import eu.debooy.sedes.domain.LandnaamDto;
 import eu.debooy.sedes.domain.RegioDto;
 import eu.debooy.sedes.form.Regio;
 import jakarta.ejb.Lock;
@@ -40,6 +42,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.slf4j.Logger;
@@ -62,6 +66,10 @@ public class RegioService {
   @SuppressWarnings("java:S6813")
   @Inject
   private RegioDao  regioDao;
+
+  @SuppressWarnings("java:S6813")
+  @Inject
+  private LandnaamDao  landnaamDao;
 
   public RegioService() {
     LOGGER.debug("init RegioService");
@@ -144,26 +152,37 @@ public class RegioService {
   }
 
   @GET
+  @Path("/regios/{taal}")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Response getRegios() {
-    try {
-      return Response.ok().entity(regioDao.getAll()).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.ok().entity(new ArrayList<>()).build();
-    }
-  }
+  public Response getRegios(@PathParam(LandnaamDto.COL_TAAL) String taal) {
+    Collection<Regio> regios    = new ArrayList<>();
 
-  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-  public Collection<Regio> query() {
-    Collection<Regio> taxa  = new ArrayList<>();
-
+    Map<Long, String> landnamen = new HashMap<>();
     try {
-      regioDao.getAll().forEach(rij -> taxa.add(new Regio(rij)));
+      regioDao.getAll().forEach(rij -> regios.add(new Regio(rij, taal)));
+      landnaamDao.getPerTaal(taal)
+                 .forEach(landnaam -> landnamen.put(landnaam.getLandId(),
+                                                    landnaam.getNaam()));
+      regios.forEach(
+          regio -> regio.setLandnaam(landnamen.get(regio.getLandId())));
     } catch (ObjectNotFoundException e) {
       // Er wordt nu gewoon een lege ArrayList gegeven.
     }
 
-    return taxa;
+    return Response.ok().entity(regios).build();
+  }
+
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Collection<Regio> query() {
+    Collection<Regio> regios  = new ArrayList<>();
+
+    try {
+      regioDao.getAll().forEach(rij -> regios.add(new Regio(rij)));
+    } catch (ObjectNotFoundException e) {
+      // Er wordt nu gewoon een lege ArrayList gegeven.
+    }
+
+    return regios;
   }
 
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)

@@ -32,6 +32,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Regio
     extends Formulier implements Comparable<Regio>, Serializable {
   private Long    landId;
+  private String  landnaam;
   private String  naam;
   private Long    regioId;
   private String  regiokode;
@@ -75,6 +76,10 @@ public class Regio
     return landId;
   }
 
+  public String getLandnaam() {
+    return landnaam;
+  }
+
   public String getNaam() {
     return DoosUtils.nullToValue(naam, regiokode);
   }
@@ -100,6 +105,10 @@ public class Regio
 
   public void setLandId(Long landId) {
     this.landId     = landId;
+  }
+
+  public void setLandnaam(String landnaam) {
+    this.landnaam = DoosUtils.strip(landnaam);
   }
 
   public void setNaam(String naam) {

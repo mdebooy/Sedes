@@ -114,6 +114,28 @@ public class LandnaamService {
   }
 
   @GET
+  @Path("/{landId}")
+  @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+  public Response getLandnaam(@PathParam(LandnaamDto.COL_LANDID) Long landId) {
+    Map<String, String> landnamen = new HashMap<>();
+    if (landnamenCache.containsKey(landId)) {
+      landnamen = landnamenCache.get(landId);
+    } else {
+      try {
+        var rijen = landnaamDao.getPerLand(landId);
+        for (var rij: rijen) {
+          landnamen.put(rij.getTaal(), rij.getNaam());
+        }
+        landnamenCache.put(landId, landnamen);
+      } catch (ObjectNotFoundException e) {
+        // Land onbekend.
+      }
+    }
+
+    return Response.ok().entity(landnamen).build();
+  }
+
+  @GET
   @Path("/{landId}/{taal}")
   @TransactionAttribute(TransactionAttributeType.SUPPORTS)
   public Response getLandnaam(@PathParam(LandnaamDto.COL_LANDID) Long landId,

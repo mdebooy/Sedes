@@ -11,7 +11,7 @@
         var taal = '#{gebruiker.locale.language}';
         var iso6392t = getISO6391ToISO6392t(taal);
         var regiosTabel = $('#regiosTabel').DataTable( {
-          ajax: { url: '/sedes/regios',
+          ajax: { url: '/sedes/regios/regios/' + iso6392t,
                   dataSrc: '' },
           order: [[0, 'asc']],
           pagingType: 'full_numbers',
@@ -35,11 +35,17 @@
           columns: [
             { data: 'regiokode', title: '#{i18nTeksten.tekst('label.regiokode')}' },
             { data: null, title: '#{i18nTeksten.tekst('label.regionaam')}' , render: function ( data, type, row ) {
-                return getRegioIdNaam(data.regioId, iso6392t);
+                if (data.hasOwnProperty('naam')) {
+                  return data.naam;
+                }
+                return '';
               }
             },
             { data: null, title: '#{i18nTeksten.tekst('label.land')}', render: function ( data, type, row ) {
-                return getLandIdNaam(data.landId, iso6392t);
+                if (data.hasOwnProperty('landnaam')) {
+                  return data.landnaam;
+                }
+                return '';
               }
             }
           ]
