@@ -82,6 +82,10 @@ public class SedesRemoteService implements ISedesRemote {
 
   @Override
   public String getI18nLandnaam(Long landId, String taal) {
+    if (null == landId) {
+      return "";
+    }
+
     Map<String, String> landnamen = new HashMap<>();
     if (landnamenCache.containsKey(landId)) {
       landnamen = landnamenCache.get(landId);
